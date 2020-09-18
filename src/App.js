@@ -14,6 +14,7 @@ function App() {
   const [user, setUser] = useState('');
   const [password, setPassword] = useState('');
   const [mode, setMode] = useState('read');
+  const [showCreateButton, setShowCreateButton] = useState(false);
 
   useEffect(() => {
     async function start() {
@@ -82,20 +83,56 @@ function App() {
     await load(token);
   };
 
-  const doLogout = function () {
+  const doLogout = () => {
     window.localStorage.setItem('appToken', null);
     setLoggedIn(false);
   };
 
-  const switchMode = function () {
+  const switchMode = () => {
     const newMode = mode === 'edit' ? 'read' : 'edit';
     console.log('switchMode', newMode);
     window.localStorage.setItem('mode', newMode);
     setMode(newMode);
   };
 
-  const updateMarkdown = function (content) {
+  const updateMarkdown = content => {
     setMarkdown(content);
+  };
+
+  const createPage = async () => {
+    let pathname = window.location.pathname;
+    console.log('create page');
+    const prefix = Constants.REST_ENDPOINT;
+    const token = window.localStorage.getItem('appToken');
+    try {
+      const response = await fetch(`${prefix}${pathname}?a=create`, {
+        method: 'GET', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+          'Content-Type': 'application/json',
+          'x-app-token': token,
+        },
+        redirect: 'follow', // manual, *follow, error
+        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      });
+
+      if (response.ok) {
+        const results = await response.json();
+
+        console.log(results);
+        if (results.status === 'success') {
+          setShowCreateButton(false);
+        } else {
+          alert('Server Error on create');
+        }
+      } else {
+        console.log('Network response was not ok.');
+      }
+    } catch (error) {
+      console.error('Error: ' + error);
+    }
   };
 
   const load = async function (token) {
@@ -127,7 +164,17 @@ function App() {
         const resultTree = JSON.parse(results.tree);
         console.log(resultTree);
         setTree(resultTree);
-
+        if (results.source === '') {
+          setShowCreateButton(true);
+          const title = pathname
+            .substring(1, pathname.length - 3)
+            .replace(/-/g, ' ')
+            .toLowerCase()
+            .split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.substring(1))
+            .join(' ');
+          results.source = `# ${title}`;
+        }
         setMarkdown(results.source);
         setPath(pathname.substring(1));
 
@@ -158,7 +205,6 @@ function App() {
   }
 
   console.log(mode);
-  
 
   return (
     <div className="App">
@@ -169,22 +215,34 @@ function App() {
           ) : (
             <Fragment>
               <span>breadcrumb</span>
+
+              {showCreateButton ? (
+                <Fragment>
+                  <button onClick={e => createPage()}>Create {path}</button>
+                </Fragment>
+              ) : (
+                <Fragment />
+              )}
+
               <button onClick={e => switchMode()}>Switch Mode</button>
-              { mode === 'edit' ? (
-               <Fragment>
-                Editor Mode
-               <MdEditor content={markdown} path={path} onSave={updateMarkdown} />
-             </Fragment>
-           ):  (
-             <Fragment>
-               Read Mode
-               <div
-                 style={{ textAlign: 'left', padding: '.5em' }}
-                 dangerouslySetInnerHTML={{ __html: output }}
-               />
-             </Fragment>
-           )
-              }
+              {mode === 'edit' ? (
+                <Fragment>
+                  Editor Mode
+                  <MdEditor
+                    content={markdown}
+                    path={path}
+                    onSave={updateMarkdown}
+                  />
+                </Fragment>
+              ) : (
+                <Fragment>
+                  Read Mode
+                  <div
+                    style={{ textAlign: 'left', padding: '.5em' }}
+                    dangerouslySetInnerHTML={{ __html: output }}
+                  />
+                </Fragment>
+              )}
               <div style={{ textAlign: 'left' }}>
                 <Tree items={tree} />
               </div>

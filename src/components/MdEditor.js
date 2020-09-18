@@ -34,7 +34,7 @@ const MdEditor = props => {
 
       if (response.ok) {
         const results = await response.json();
-        alert('saved');
+        // alert('saved');
         console.log(results);
         if (results.status === 'success') {
           setHasChanges(false);
