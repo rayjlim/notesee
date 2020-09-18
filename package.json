@@ -1,6 +1,6 @@
 {
   "name": "@lilplaytime/notesee",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "private": true,
   "proxy": "http://localhost/projects/wikitten2/",
   "dependencies": {
