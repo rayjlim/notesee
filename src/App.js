@@ -144,6 +144,8 @@ function App() {
     }
     // const url = `${Constants.REST_ENDPOINT}record/`;
     try {
+      // handle history
+
       const response = await fetch(prefix + pathname, {
         method: 'GET', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors', // no-cors, *cors, same-origin
@@ -203,8 +205,6 @@ function App() {
   } catch (err) {
     console.log(err);
   }
-
-  console.log(mode);
 
   return (
     <div className="App">
