@@ -9,7 +9,6 @@ fi
 
 echo "FTP HOST " $FTP_HOST
 
-mkdir -p $PREP_DIR
 mkdir -p $PREP_DIR-ui
 
 while getopts rsn option; do
@@ -57,4 +56,4 @@ echo $FTP_TARGETFOLDER
 rsync -rave  'ssh -oHostKeyAlgorithms=+ssh-dss' \
   --delete . $FTP_USER@$FTP_HOST:$FTP_TARGETFOLDER/
 
-ssh  $FTP_USER@$FTP_HOST "chmod -R 755 $FTP_TARGETFOLDER-api/"
+ssh  $FTP_USER@$FTP_HOST "chmod -R 755 $FTP_TARGETFOLDER/"
