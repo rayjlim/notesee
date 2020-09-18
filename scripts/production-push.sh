@@ -23,7 +23,6 @@ if [ -z $BUILD ]; then
   rsync -avz  scripts/production-exclude-push.txt $PREP_DIR/production-exclude-push.txt
 
   if [ -z "$NOBUILDSPA" ]; then
-    cd ui-notesee
     npm run build
     buildresult=$?
     if [ $buildresult != 0 ]; then
