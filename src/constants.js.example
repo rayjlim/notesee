@@ -10,8 +10,7 @@ const isLocalhost = Boolean(
   
   module.exports = {
     REST_ENDPOINT: isLocalhost
-      ? "/"
-      : "https://mydomain/api",
-    PROJECT_ROOT: isLocalhost ? "http://localhost/" : "/",
+      ? "http://localhost/api"
+      : "https://mydomain/api"
   };
   

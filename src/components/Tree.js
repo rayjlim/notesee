@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react';
-import Constants from '../constants';
 function Tree({ items, depth = 0 }) {
   if (!items || !items.length) {
     return null;
@@ -9,7 +8,7 @@ function Tree({ items, depth = 0 }) {
     if (!item.name) {
       return false;
     }
-    const link = `${Constants.PROJECT_ROOT}${item.parent}${item.name}`;
+    const link = `${item.parent}${item.name}`;
     return (
       <Fragment key={item.name}>
         {/* Multiply the depth by a constant to create consistent spacing */}
