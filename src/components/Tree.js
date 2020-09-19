@@ -14,12 +14,14 @@ function Tree({ items, depth = 0 }) {
         {/* Multiply the depth by a constant to create consistent spacing */}
         <div style={{ paddingLeft: depth * 15 }}>
           {!item.children ? (
-            <a href={link}>
+             <Fragment>📄
+             <a href={link}>
               {item.name}
-              {item.active ? '++' : ''}
+              {item.active ? '<---- 🔖' : ''}
             </a>
+            </Fragment>
           ) : (
-            <span>{item.name}</span>
+            <span>📁{item.name}</span>
           )}
         </div>
         <Tree items={item.children} depth={depth + 1} />
