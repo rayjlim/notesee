@@ -160,6 +160,7 @@ function App() {
       });
 
       if (response.ok) {
+        document.title = `Notesee - ${pathname.substring(1,pathname.length-3)}`;
         const results = await response.json();
 
         console.log(results);
