@@ -1,4 +1,6 @@
 import React, { Fragment } from 'react';
+import './Tree.css';
+
 function Tree({ items, depth = 0 }) {
   if (!items || !items.length) {
     return null;
@@ -12,19 +14,20 @@ function Tree({ items, depth = 0 }) {
     return (
       <Fragment key={item.name}>
         {/* Multiply the depth by a constant to create consistent spacing */}
-        <div style={{ paddingLeft: depth * 15 }}>
+        <div className="folder-container">
           {!item.children ? (
-             <Fragment>📄
+             <Fragment><span role="img" aria-label="file">📄</span>
              <a href={link}>
               {item.name}
               {item.active ? '<---- 🔖' : ''}
             </a>
             </Fragment>
           ) : (
-            <span>📁{item.name}</span>
+            <div ><span role="img" aria-label="folder">📁</span><span className="folder">{item.name}</span></div>
           )}
-        </div>
+        
         <Tree items={item.children} depth={depth + 1} />
+        </div>
       </Fragment>
     );
   });
