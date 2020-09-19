@@ -1,0 +1,8 @@
+
+.changed {
+background-color: yellow;
+}
+
+.unchanged {
+    background-color: white;
+}

@@ -3,6 +3,7 @@ import Editor from 'wrap-md-editor';
 import langSetting from '../lang';
 import Constants from '../constants';
 import Prompt from './Prompt';
+import './MdEditor.css';
 
 const MdEditor = props => {
   const [markdown, setMarkdown] = useState(props.content);
@@ -54,6 +55,7 @@ const MdEditor = props => {
   return (
     <Fragment>
       <Prompt dataUnsaved={hasChanges} />
+      <div className={hasChanges? 'changed' : 'unchanged'}>
       <button onClick={e => save()}>Save</button>
       <span>{hasChanges ? 'has changes' : 'unchanged'}</span>
       <Editor
@@ -105,6 +107,7 @@ const MdEditor = props => {
         }}
       />
       <button onClick={e => save()}>Save</button>
+      </div>
     </Fragment>
   );
 };
