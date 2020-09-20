@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.5](https://github.com/rayjlim/notesee/compare/v0.1.4...v0.1.5) (2020-09-20)
+
+
+### Features
+
+* ✨ add doc title to window title ([d147339](https://github.com/rayjlim/notesee/commit/d1473396af07111368526c080cb47dde3a456dcb))
+* ✨ breadrumb ([2f3a2d0](https://github.com/rayjlim/notesee/commit/2f3a2d00484230ff532846f9ffa04811609bcf3b))
+* 💄 accessability for emojis ([d97fc50](https://github.com/rayjlim/notesee/commit/d97fc502cd6c492c7d2b6ed2a85046ed611e6ca2))
+* 🚀 forked my own version of react-editor-md ([fd857e2](https://github.com/rayjlim/notesee/commit/fd857e2107210048865effff4683fa8fc5f2dbe6))
+
 ### [0.1.4](https://github.com/rayjlim/notesee/compare/v0.1.3...v0.1.4) (2020-09-19)
 
 
