@@ -117,7 +117,7 @@ function App() {
     }
   };
 
-  const load = async function (token, _breadcrumb=[]) {
+  const load = async function (token, _breadcrumb = []) {
     let pathname = window.location.pathname;
     console.log(pathname);
     const prefix = Constants.REST_ENDPOINT;
@@ -238,9 +238,8 @@ function App() {
       console.log(_breadcrumbStr);
       let _breadcrumb;
       if (_breadcrumbStr) {
-         _breadcrumb = JSON.parse(_breadcrumbStr);
+        _breadcrumb = JSON.parse(_breadcrumbStr);
         if (Array.isArray(_breadcrumb) && _breadcrumb.length) {
-
           setBreadcrumb(_breadcrumb);
         }
       }
@@ -264,15 +263,14 @@ function App() {
           ) : (
             <Fragment>
               <div>
-                Breadcrumb {' '}
+                Breadcrumb{' '}
                 <ul>
-                {breadcrumb &&
-                  breadcrumb.map(item => (
-                    <li key={item+Math.random()}><a href={item} >
-                      {item}
-                    </a>
-                    </li>
-                  ))}
+                  {breadcrumb &&
+                    breadcrumb.map(item => (
+                      <li key={item + Math.random()}>
+                        <a href={item}>{item}</a>
+                      </li>
+                    ))}
                 </ul>
               </div>
 
