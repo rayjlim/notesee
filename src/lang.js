@@ -32,6 +32,7 @@ const lang = {
       emoji: "Emoji",
       "html-entities": "HTML Entities",
       pagebreak: "Page break",
+      "goto-line": "Goto Line",
       watch: "Unwatch",
       unwatch: "Watch",
       preview: "HTML Preview (Press Shift + ESC exit)",

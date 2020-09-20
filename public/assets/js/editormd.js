@@ -85,7 +85,12 @@
             "undo", "redo", "|",
             "watch", "preview", "|",
             "help", "info"
+        ],
+        custom : [
+            "undo", "redo", "|", "image", "reference-link", "emoji", "table", "datetime", "|",
+            "watch", "preview", "fullscreen", "search"
         ]
+        
     };
     
     editormd.defaults     = {
@@ -172,7 +177,7 @@
                 
         toolbar              : true,           // show/hide toolbar
         toolbarAutoFixed     : true,           // on window scroll auto fixed position
-        toolbarIcons         : "full",
+        toolbarIcons         : "custom",
         toolbarTitles        : {},
         toolbarHandlers      : {
             ucwords : function() {
