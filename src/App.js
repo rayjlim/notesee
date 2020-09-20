@@ -4,6 +4,9 @@ import MdEditor from './components/MdEditor';
 import Tree from './components/Tree';
 import Constants from './constants';
 import marked from 'marked';
+
+const BREADCRUMB_MAX = 10; 
+
 function App() {
   const [markdown, setMarkdown] = useState(``);
   const [path, setPath] = useState('');
@@ -134,26 +137,22 @@ function App() {
       _breadcrumb[_breadcrumb.length - 1] === pathname
     ) {
       console.log('breadcrumb: same', _breadcrumb);
-      // newbreadcrumb = breadcrumb.slice(0, breadcrumb.length-2);
-      // window.localStorage.setItem('breadcrumb', newbreadcrumb);
-
-      // setBreadcrumb(newbreadcrumb);
     } else if (
       _breadcrumb.length > 1 &&
       _breadcrumb[_breadcrumb.length - 2] === pathname
     ) {
       console.log('breadcrumb: went to parent', _breadcrumb);
-      newbreadcrumb = _breadcrumb.slice(0, breadcrumb.length - 1);
+      newbreadcrumb = _breadcrumb.slice(0, _breadcrumb.length - 1);
       window.localStorage.setItem('breadcrumb', JSON.stringify(newbreadcrumb));
 
       setBreadcrumb(newbreadcrumb);
     } else {
       console.log('add current', pathname);
-
+      if(_breadcrumb.length > BREADCRUMB_MAX){
+        _breadcrumb = _breadcrumb.slice(1,_breadcrumb.length - 1);
+      }
       newbreadcrumb = [..._breadcrumb, pathname];
-
       window.localStorage.setItem('breadcrumb', JSON.stringify(newbreadcrumb));
-
       setBreadcrumb(newbreadcrumb);
     }
     console.log('breacdrumb-postcheck', newbreadcrumb);
