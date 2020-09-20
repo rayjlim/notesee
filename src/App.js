@@ -15,25 +15,7 @@ function App() {
   const [password, setPassword] = useState('');
   const [mode, setMode] = useState('read');
   const [showCreateButton, setShowCreateButton] = useState(false);
-
-  useEffect(() => {
-    async function start() {
-      // first check for token
-      const _mode = window.localStorage.getItem('mode');
-      if (_mode) {
-        console.log('_mode', _mode);
-        setMode(_mode);
-      }
-
-      const token = window.localStorage.getItem('appToken');
-      if (token && token !== '') {
-        console.log('logged in', token);
-        setLoggedIn(true);
-        await load(token);
-      }
-    }
-    start();
-  }, []);
+  const [breadcrumb, setBreadcrumb] = useState([]);
 
   const checkLogin = async function (
     formUser = '',
@@ -135,14 +117,47 @@ function App() {
     }
   };
 
-  const load = async function (token) {
+  const load = async function (token, _breadcrumb=[]) {
     let pathname = window.location.pathname;
     console.log(pathname);
     const prefix = Constants.REST_ENDPOINT;
     if (pathname === '/') {
       pathname = '/index.md';
     }
-    // const url = `${Constants.REST_ENDPOINT}record/`;
+
+    // breadcrumb
+
+    let newbreadcrumb;
+    console.log('breadcrumb-precheck', _breadcrumb);
+    if (
+      _breadcrumb.length &&
+      _breadcrumb[_breadcrumb.length - 1] === pathname
+    ) {
+      console.log('breadcrumb: same', _breadcrumb);
+      // newbreadcrumb = breadcrumb.slice(0, breadcrumb.length-2);
+      // window.localStorage.setItem('breadcrumb', newbreadcrumb);
+
+      // setBreadcrumb(newbreadcrumb);
+    } else if (
+      _breadcrumb.length > 1 &&
+      _breadcrumb[_breadcrumb.length - 2] === pathname
+    ) {
+      console.log('breadcrumb: went to parent', _breadcrumb);
+      newbreadcrumb = _breadcrumb.slice(0, breadcrumb.length - 1);
+      window.localStorage.setItem('breadcrumb', JSON.stringify(newbreadcrumb));
+
+      setBreadcrumb(newbreadcrumb);
+    } else {
+      console.log('add current', pathname);
+
+      newbreadcrumb = [..._breadcrumb, pathname];
+
+      window.localStorage.setItem('breadcrumb', JSON.stringify(newbreadcrumb));
+
+      setBreadcrumb(newbreadcrumb);
+    }
+    console.log('breacdrumb-postcheck', newbreadcrumb);
+
     try {
       // handle history
 
@@ -160,7 +175,10 @@ function App() {
       });
 
       if (response.ok) {
-        document.title = `Notesee - ${pathname.substring(1,pathname.length-3)}`;
+        document.title = `Notesee - ${pathname.substring(
+          1,
+          pathname.length - 3
+        )}`;
         const results = await response.json();
 
         console.log(results);
@@ -207,6 +225,36 @@ function App() {
     console.log(err);
   }
 
+  useEffect(() => {
+    (async () => {
+      // first check for token
+      const _mode = window.localStorage.getItem('mode');
+      if (_mode) {
+        console.log('_mode', _mode);
+        setMode(_mode);
+      }
+
+      const _breadcrumbStr = window.localStorage.getItem('breadcrumb');
+      console.log(_breadcrumbStr);
+      let _breadcrumb;
+      if (_breadcrumbStr) {
+         _breadcrumb = JSON.parse(_breadcrumbStr);
+        if (Array.isArray(_breadcrumb) && _breadcrumb.length) {
+
+          setBreadcrumb(_breadcrumb);
+        }
+      }
+
+      const token = window.localStorage.getItem('appToken');
+      if (token && token !== '') {
+        console.log('logged in:', token);
+        console.log('has breadcrumb', _breadcrumb);
+        setLoggedIn(true);
+        await load(token, _breadcrumb);
+      }
+    })();
+  }, []);
+
   return (
     <div className="App">
       {isLoggedIn ? (
@@ -215,7 +263,18 @@ function App() {
             <span>Loading</span>
           ) : (
             <Fragment>
-              <span>breadcrumb</span>
+              <div>
+                Breadcrumb {' '}
+                <ul>
+                {breadcrumb &&
+                  breadcrumb.map(item => (
+                    <li key={item+Math.random()}><a href={item} >
+                      {item}
+                    </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
               {showCreateButton ? (
                 <Fragment>
