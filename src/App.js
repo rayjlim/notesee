@@ -22,17 +22,15 @@ function App() {
 
   const checkLogin = async function (
     formUser = '',
-    formPass = '',
-    login = false
+    formPass = ''
   ) {
     const prefix = Constants.REST_ENDPOINT;
     const formData = new URLSearchParams();
 
     formData.append('username', formUser);
     formData.append('password', formPass);
-    if (login) {
-      formData.append('login', login);
-    }
+      formData.append('login', true);
+  
     try {
       const response = await fetch(prefix + '/inbox.md', {
         method: 'POST',
@@ -61,7 +59,7 @@ function App() {
   const doLogin = async function () {
     console.log(user);
     console.log(password);
-    const token = await checkLogin(user, password, true);
+    const token = await checkLogin(user, password);
     setUser('');
     setPassword('');
     console.log(token);
@@ -161,16 +159,16 @@ function App() {
       // handle history
 
       const response = await fetch(prefix + pathname, {
-        method: 'GET', // *GET, POST, PUT, DELETE, etc.
-        mode: 'cors', // no-cors, *cors, same-origin
-        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: 'same-origin', // include, *same-origin, omit
+        method: 'GET', 
+        mode: 'cors', 
+        cache: 'no-cache',
+        credentials: 'same-origin',
         headers: {
           'Content-Type': 'application/json',
           'x-app-token': token,
         },
-        redirect: 'follow', // manual, *follow, error
-        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        redirect: 'follow',
+        referrerPolicy: 'no-referrer'
       });
 
       if (response.ok) {
@@ -226,7 +224,6 @@ function App() {
 
   useEffect(() => {
     (async () => {
-      // first check for token
       const _mode = window.localStorage.getItem('mode');
       if (_mode) {
         console.log('_mode', _mode);
