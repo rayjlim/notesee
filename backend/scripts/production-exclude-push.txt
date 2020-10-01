@@ -1,0 +1,5 @@
+composer.json
+composer.lock
+*.txt
+**/library/
+production-exclude-push.txt
