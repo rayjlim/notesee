@@ -105,7 +105,7 @@ class Wiki
 
         if (ENABLE_EDITING) {
             $extension = substr($fullPath, strrpos($fullPath, '.') + 1, 20);
-            if (false === $extension || false === $this->_getRenderer($extension)) {
+            if (false === $extension) {
                 $not_found();
             } elseif (!file_exists($fullPath)) {
                 // Pass this to the render view, cleverly disguised as just
@@ -153,7 +153,7 @@ class Wiki
 
         $source = file_get_contents($path);
         $extension = pathinfo($path, PATHINFO_EXTENSION);
-        $renderer = $this->_getRenderer($extension);
+        // $renderer = $this->_getRenderer($extension);
         $page_data = $this->_default_page_data;
         // var_dump($source);
         // Extract the JSON header, if the feature is enabled:
@@ -165,13 +165,13 @@ class Wiki
         // We need to know the source file in case editing is enabled:
         $page_data['file'] = $page;
 
-        $html = false;
-        if ($renderer && $renderer == 'HTML') {
-            $html = $renderer($source);
-        }
-        if ($renderer && $renderer == 'Markdown') {
-            $html = \Wikitten\MarkdownExtra::defaultTransform($source);
-        }
+        $html = $source;
+        // if ($renderer && $renderer == 'HTML') {
+        //     $html = $renderer($source);
+        // }
+        // if ($renderer && $renderer == 'Markdown') {
+        //     $html = \Wikitten\MarkdownExtra::defaultTransform($source);
+        // }
 
         if (empty(trim($html))) {
             $html = "<h1>This page is empty</h1>\n";
@@ -296,6 +296,7 @@ class Wiki
                 echo $content;
             }
         } else {
+            echo '\n\n'.$content.'\n\n';
             throw new Exception("View $view not found");
         }
     }

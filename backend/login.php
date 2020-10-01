@@ -32,12 +32,14 @@ class Login
         
         // print_r(apache_request_headers());
         $headers = getallheaders();
-        if(!isset ($headers['X_APP_TOKEN']) )  {
+        $header_key = 'x-app-token';
+
+        if(!isset ($headers[$header_key]) )  {
             return null; 
         }
-        $headerStringValue = $headers['X_APP_TOKEN'];
+        $headerStringValue = $headers[$header_key];
 
-        echo 'headerStringValue: '.$headerStringValue;
+        // echo 'headerStringValue: '.$headerStringValue;
         $token = base64_encode( ACCESS_USER.ACCESS_PASSWORD );
         // echo 'header: '.$headerStringValue.", token: ".$token;
         return  ($headerStringValue === $token);
@@ -97,6 +99,7 @@ class Login
      */
     public function dispatch()
     {
+
         // Stop if user is aready logged in (exception from negative first)
         if ($this->isLogged()) {
             return true;

@@ -5,7 +5,7 @@ import Tree from './components/Tree';
 import Constants from './constants';
 import marked from 'marked';
 
-const BREADCRUMB_MAX = 10; 
+const BREADCRUMB_MAX = 10;
 
 function App() {
   const [markdown, setMarkdown] = useState(``);
@@ -20,17 +20,14 @@ function App() {
   const [showCreateButton, setShowCreateButton] = useState(false);
   const [breadcrumb, setBreadcrumb] = useState([]);
 
-  const checkLogin = async function (
-    formUser = '',
-    formPass = ''
-  ) {
+  const checkLogin = async function (formUser = '', formPass = '') {
     const prefix = Constants.REST_ENDPOINT;
     const formData = new URLSearchParams();
 
     formData.append('username', formUser);
     formData.append('password', formPass);
-      formData.append('login', true);
-  
+    formData.append('login', true);
+
     try {
       const response = await fetch(prefix + '/inbox.md', {
         method: 'POST',
@@ -146,8 +143,8 @@ function App() {
       setBreadcrumb(newbreadcrumb);
     } else {
       console.log('add current', pathname);
-      if(_breadcrumb.length > BREADCRUMB_MAX){
-        _breadcrumb = _breadcrumb.slice(1,_breadcrumb.length - 1);
+      if (_breadcrumb.length > BREADCRUMB_MAX) {
+        _breadcrumb = _breadcrumb.slice(1, _breadcrumb.length - 1);
       }
       newbreadcrumb = [..._breadcrumb, pathname];
       window.localStorage.setItem('breadcrumb', JSON.stringify(newbreadcrumb));
@@ -159,8 +156,8 @@ function App() {
       // handle history
 
       const response = await fetch(prefix + pathname, {
-        method: 'GET', 
-        mode: 'cors', 
+        method: 'GET',
+        mode: 'cors',
         cache: 'no-cache',
         credentials: 'same-origin',
         headers: {
@@ -168,7 +165,7 @@ function App() {
           'x-app-token': token,
         },
         redirect: 'follow',
-        referrerPolicy: 'no-referrer'
+        referrerPolicy: 'no-referrer',
       });
 
       if (response.ok) {
