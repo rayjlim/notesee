@@ -17,8 +17,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
     exit(0);
 }
-
+require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/default.php';
+
+\R::setup('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASSWORD);
+\R::freeze(true);
 
 $request_uri = parse_url($_SERVER['REQUEST_URI']);
 $request_uri = explode("/", $request_uri['path']);

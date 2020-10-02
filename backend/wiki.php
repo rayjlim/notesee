@@ -55,10 +55,11 @@ class Wiki
         if (!$this->_pathIsSafe($fullPath)) {
             $not_found();
         }
-
+        echo $fullPath;
         // Handle directories by showing a neat listing of its
         // contents
         if (is_dir($path)) {
+            echo "is dir";
             if (!file_exists($path)) {
                 $not_found();
             }
@@ -104,6 +105,7 @@ class Wiki
         }
 
         if (ENABLE_EDITING) {
+            echo 'enable editing; check extension';
             $extension = substr($fullPath, strrpos($fullPath, '.') + 1, 20);
             if (false === $extension) {
                 $not_found();
@@ -133,7 +135,7 @@ class Wiki
         } else {
             $not_found();
         }
-
+        echo "137 - passed the edit check";
         $finfo = finfo_open(FILEINFO_MIME);
         $mime_type = trim(finfo_file($finfo, $path));
 
@@ -150,6 +152,14 @@ class Wiki
             fpassthru($file);
             exit();
         }
+
+        $ORM = new \Notesee\DocsRedbeanDAO();
+
+        echo "Page: ". $page;
+        $entrys = $ORM->getByPath($page);
+
+        echo $entrys[0]['content'];
+        exit();
 
         $source = file_get_contents($path);
         $extension = pathinfo($path, PATHINFO_EXTENSION);
@@ -483,56 +493,6 @@ class Wiki
         }else{
             // Delete file and redirect too (but it will return 404)
             unlink($path);
-        }
-
-        exit();
-    }
-
-    /**
-     * Handle createion of PasteBin pastes
-     * @return string JSON response
-     */
-    public function createPasteBinAction()
-    {
-        if (!$this->_usePasteBin()) {
-            $this->_404();
-        }
-
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            if (isset($_POST['ref'])) {
-                $file = base64_decode($_POST['ref']);
-                $path = realpath(LIBRARY . DIRECTORY_SEPARATOR . $file);
-
-                if (!$this->_pathIsSafe($path)) {
-                    $this->_404();
-                } else {
-                    $content = file_get_contents($path);
-                    $name = pathinfo($path, PATHINFO_BASENAME);
-
-                    require_once PLUGINS . DIRECTORY_SEPARATOR . 'PasteBin.php';
-
-                    $response = array();
-
-                    $pastebin = new PasteBin(PASTEBIN_API_KEY);
-
-                    /**
-                     * @todo Add/improve autodetection of file format
-                     */
-
-                    $url = $pastebin->createPaste($content, PasteBin::PASTE_PRIVACY_PUBLIC, $name, PasteBin::PASTE_EXPIRE_1W);
-                    if ($url) {
-                        $response['status'] = 'ok';
-                        $response['url'] = $url;
-                    } else {
-                        $response['status'] = 'fail';
-                        $response['error'] = $pastebin->getError();
-                    }
-
-                    header('Content-Type: application/json');
-                    echo json_encode($response);
-                    exit();
-                }
-            }
         }
 
         exit();

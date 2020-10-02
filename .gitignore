@@ -30,3 +30,4 @@ backend/config.php
 backend/scripts/env_vars.sh
 backend/library/*
 frontend/src/constants.js
+backend/vendor/*
