@@ -32,10 +32,6 @@ if (!defined('USE_PAGE_METADATA')) {
     define('USE_PAGE_METADATA', true);
 }
 
-if (!defined('ENABLE_EDITING')) {
-    define('ENABLE_EDITING', false);
-}
-
 if (!defined('ENABLE_PASTEBIN')) {
     define('ENABLE_PASTEBIN', false);
 }

@@ -64,21 +64,21 @@
     <div id="pastebin-notification" class="alert" style="display:none;"></div>
     <?php endif; ?>
     <div id="source">
-        <?php if (ENABLE_EDITING): ?>
+        
             <div class="alert alert-info">
                 <i class="glyphicon glyphicon-pencil"></i> <strong>Editing is enabled</strong>. Use the "Save changes" button below the editor to commit modifications to this file.
             </div>
-        <?php endif ?>
+        
 
         <form method="POST" action="<?php echo BASE_URL . "/?a=edit" ?>">
             <input type="hidden" name="ref" value="<?php echo base64_encode($page['file']) ?>">
             <textarea id="editor" name="source" class="form-control" rows="<?php echo substr_count($source, "\n") + 1; ?>"><?php echo $source; ?></textarea>
 
-            <?php if (ENABLE_EDITING): ?>
+            
                 <div class="form-actions">
                     <input type="submit" class="btn btn-warning btn-sm" id="submit-edits" value="Save Changes">
                 </div>
-            <?php endif ?>
+            
         </form>
     </div>
 
@@ -126,9 +126,9 @@
             theme: 'default',
             <?php endif; ?>
             mode: mode
-            <?php if (!ENABLE_EDITING): ?>
+            
             ,readOnly: true
-            <?php endif ?>
+            
         });
 
         $('#toggle').click(function (event) {

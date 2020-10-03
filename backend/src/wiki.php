@@ -104,37 +104,35 @@ class Wiki
             return;
         }
 
-        if (ENABLE_EDITING) {
-            echo 'enable editing; check extension';
-            $extension = substr($fullPath, strrpos($fullPath, '.') + 1, 20);
-            if (false === $extension) {
-                $not_found();
-            } elseif (!file_exists($fullPath)) {
-                // Pass this to the render view, cleverly disguised as just
-                // another page, so we can make use of the tree, breadcrumb,
-                // etc.
-                $_page              = htmlspecialchars($page, ENT_QUOTES);
-                $page_data          = $this->_default_page_data;
-                $page_data['title'] = 'Page not found: ' . $_page;
 
-                return $this->_view('render', array(
-                    'parts'     => $parts,
-                    'page'      => $page_data,
-                    'html'      =>
-                          "<h3>Page '$_page' not found</h3>"
-                        . "<br/>"
-                        . "<form method='GET'>"
-                        . "<input type='hidden' name='a' value='create'>"
-                        . "<input type='submit' class='btn btn-primary' value='Create this page' />"
-                        . "</form>"
-                    ,
-                    'is_dir'    => false,
-                    'source' => ''
-                ));
-            }
-        } else {
+        echo ' check extension';
+        $extension = substr($fullPath, strrpos($fullPath, '.') + 1, 20);
+        if (false === $extension) {
             $not_found();
+        } elseif (!file_exists($fullPath)) {
+            // Pass this to the render view, cleverly disguised as just
+            // another page, so we can make use of the tree, breadcrumb,
+            // etc.
+            $_page              = htmlspecialchars($page, ENT_QUOTES);
+            $page_data          = $this->_default_page_data;
+            $page_data['title'] = 'Page not found: ' . $_page;
+
+            return $this->_view('render', array(
+                'parts'     => $parts,
+                'page'      => $page_data,
+                'html'      =>
+                        "<h3>Page '$_page' not found</h3>"
+                    . "<br/>"
+                    . "<form method='GET'>"
+                    . "<input type='hidden' name='a' value='create'>"
+                    . "<input type='submit' class='btn btn-primary' value='Create this page' />"
+                    . "</form>"
+                ,
+                'is_dir'    => false,
+                'source' => ''
+            ));
         }
+
         echo "137 - passed the edit check";
         $finfo = finfo_open(FILEINFO_MIME);
         $mime_type = trim(finfo_file($finfo, $path));
@@ -395,12 +393,11 @@ class Wiki
         header('HTTP/1.0 404 Not Found', true);
         $page_data = $this->_default_page_data;
         $page_data['title'] = 'Not Found';
-
-        $this->_view('uhoh', array(
+        $output = array(
             'error' => $message,
-            'parts' => array('Uh-oh'),
             'page' => $page_data
-        ));
+        );
+        print_r($output);
 
         exit;
     }
@@ -411,12 +408,11 @@ class Wiki
         $page_data = $this->_default_page_data;
         $page_data['title'] = $message;
 
-        // $this->_view('uhoh', array(
-        //     'error' => $message,
-        //     'parts' => array('Uh-oh'),
-        //     'page' => $page_data
-        // ));
-        var_dump($page_data);
+        $output =  array(
+            'error' => $message,
+            'page' => $page_data
+        );
+        print_r($output);
         exit;
     }
 
@@ -446,8 +442,6 @@ class Wiki
 
     /**
      * /?a=edit
-     * If ENABLE_EDITING is true, handles file editing through
-     * the web interface.
      */
     public function editAction()
     {
@@ -456,10 +450,8 @@ class Wiki
         // we don't get the right request method && params
         // NOTE: $_POST['source'] may be empty if the user just deletes
         // everything, but it should always be set.
-        // echo ENABLE_EDITING.($_SERVER['REQUEST_METHOD'] != 'POST').empty($_POST['ref']).(!isset($_POST['source']));
-        if (!ENABLE_EDITING ){
-            return $this->_ErrorCode(403, 'Editing Not Enabled');
-        }
+        // echo ($_SERVER['REQUEST_METHOD'] != 'POST').empty($_POST['ref']).(!isset($_POST['source']));
+
         if ($_SERVER['REQUEST_METHOD'] != 'POST'
             || empty($_POST['ref']) || !isset($_POST['source'])
         ) {
@@ -520,8 +512,7 @@ class Wiki
         $filepath   = LIBRARY ."/".$page;
         $content    = "# " . htmlspecialchars($page, ENT_QUOTES, 'UTF-8');
 
-        // if feature not enabled, go to 404
-        if (!ENABLE_EDITING || file_exists($filepath)) {
+        if ( file_exists($filepath)) {
             $this->_404();
         }
         // Create subdirectory recursively, if neccessary

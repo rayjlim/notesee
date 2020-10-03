@@ -72,9 +72,8 @@ class Login
      */
     private function doLogout()
     {
-        // $_SESSION['ACCESS_USER'] = '';
-        // $_SESSION['ACCESS_PASSWORD'] = '';
-
+        // TODO: log activity; mark database
+        
         return true;
     }
 
