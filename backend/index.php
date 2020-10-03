@@ -18,7 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit(0);
 }
 require_once __DIR__ . '/vendor/autoload.php';
-require_once __DIR__ . '/default.php';
 
 \R::setup('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASSWORD);
 \R::freeze(true);
@@ -45,12 +44,10 @@ define('BASE_URL', "http" . ($https ? "s" : "") . "://" . $_SERVER['HTTP_HOST'] 
 
 unset($config_file, $request_uri, $script_name, $app_dir, $https);
 
+// echo APP_DIR; /projects/notesee/backend
+// echo BASE_URL;
+// http://localhost/projects/notesee/backend/opt/lampp/htdocs/projects/notesee/backend/library/index.md
 
-if (defined('ACCESS_USER') && defined('ACCESS_PASSWORD')) {
-    require_once __DIR__ . DIRECTORY_SEPARATOR . 'login.php';
-    Login::instance()->dispatch();
-}
-
-require_once __DIR__ . DIRECTORY_SEPARATOR . 'wiki.php';
+Login::instance()->dispatch();
 
 Wiki::instance()->dispatch();

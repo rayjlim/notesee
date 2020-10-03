@@ -15,6 +15,9 @@
         },
         "classmap": [
             "src"
+        ],
+        "files": [
+            "src/default.php"
         ]
     }
 }

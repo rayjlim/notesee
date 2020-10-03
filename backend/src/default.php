@@ -1,10 +1,10 @@
 <?php
-
 define('APP_STARTED', true);
 
 // Conditionally load configuration from a config.php file in
 // the site root, if it exists.
-if (is_file($config_file = __DIR__ . DIRECTORY_SEPARATOR . 'config.php')) {
+
+if (is_file($config_file = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config.php')) {
     require_once $config_file;
 }
 
