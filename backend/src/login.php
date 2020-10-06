@@ -29,7 +29,6 @@ class Login
      */
     private function isLogged()
     {
-        
         // print_r(apache_request_headers());
         $headers = getallheaders();
         $header_key = 'x-app-token';
@@ -98,7 +97,9 @@ class Login
      */
     public function dispatch()
     {
-
+        if (!defined('ACCESS_USER')) {
+            return true;
+        }
         // Stop if user is aready logged in (exception from negative first)
         if ($this->isLogged()) {
             return true;

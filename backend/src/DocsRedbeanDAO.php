@@ -49,17 +49,16 @@ class DocsRedbeanDAO
      *
      * @return LogEntry
      */
-    public function update($goal, $date, $count, $comment, $id)
+    public function update($path, $content)
     {
-        $log = \R::load(DOCS, $id);
+        $doc  = \R::findOne(DOCS, ' path = ? ', [ $path] );
+
+        // var_dump( $found);
+        // $doc = $found[0];
         // echo ' rb: '. $value;
-        $log->goal = $goal;
-        $log->points = 0;
-        $log->count = $count;
-        $log->comment = $comment;
-        $log->date = $date;
-        \R::store($log);
-        return $log;
+        $doc->content = str_replace("\n", "\\n", $content);
+        \R::store($doc);
+        return $doc;
     }
     /**
      * Delete a Record
@@ -85,6 +84,7 @@ class DocsRedbeanDAO
         $log = \R::load(DOCS, $id);
         return $log;
     }
+
 
     /**
      * Get a Record by Date Range

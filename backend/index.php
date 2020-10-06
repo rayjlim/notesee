@@ -47,7 +47,6 @@ unset($config_file, $request_uri, $script_name, $app_dir, $https);
 // APP_DIR ex. /projects/notesee/backend
 // BASE_URL ex.
 // http://localhost/notesee/backend
-// /opt/lampp/htdocs/projects/notesee/backend/library/index.md
 
 Login::instance()->dispatch();
 

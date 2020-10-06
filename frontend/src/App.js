@@ -116,6 +116,7 @@ function App() {
   };
 
   const load = async function (token, _breadcrumb = []) {
+    console.log('load');
     let pathname = window.location.pathname;
     console.log(pathname);
     const prefix = Constants.REST_ENDPOINT;
@@ -169,13 +170,14 @@ function App() {
       });
 
       if (response.ok) {
+        console.log ('load response ok')
         document.title = `Notesee - ${pathname.substring(
           1,
           pathname.length - 3
         )}`;
         const results = await response.json();
 
-        console.log(results);
+        console.log('results', results);
         const resultTree = JSON.parse(results.tree);
         console.log(resultTree);
         setTree(resultTree);
@@ -294,9 +296,15 @@ function App() {
                   />
                 </Fragment>
               )}
-              <div style={{ textAlign: 'left' }}>
-                <Tree items={tree} />
-              </div>
+              <div>{tree.length}</div>
+              {/* { tree.length > 1 ? 
+                  ( <div style={{ textAlign: 'left' }}>
+                  <Tree items={tree} />
+                </div>) : 
+                <div>No tree entries</div>
+
+              } */}
+             
             </Fragment>
           )}
           <button onClick={e => doLogout()}>Logout</button>

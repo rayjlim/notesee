@@ -41,182 +41,6 @@ class Wiki
         return $renderer;
     }
 
-    protected function _render($page)
-    {
-        $fullPath = LIBRARY . DIRECTORY_SEPARATOR . $page;
-        $path = realpath(LIBRARY . DIRECTORY_SEPARATOR . $page);
-        $parts = explode('/', $page);
-
-        $not_found = function () use ($page) {
-            $page = htmlspecialchars($page, ENT_QUOTES);
-            // throw new Exception("Page '$page' was not found");
-        };
-
-        if (!$this->_pathIsSafe($fullPath)) {
-            $not_found();
-        }
-        echo $fullPath;
-        // Handle directories by showing a neat listing of its
-        // contents
-        if (is_dir($path)) {
-            echo "is dir";
-            if (!file_exists($path)) {
-                $not_found();
-            }
-
-            if (file_exists($path . DIRECTORY_SEPARATOR . 'index.md')) {
-                return $this->_render('index.md');
-            }
-
-            // Get a printable version of the actual folder name:
-            $dir_name = htmlspecialchars(end($parts), ENT_QUOTES, 'UTF-8');
-
-            // Get a printable version of the rest of the path,
-            // so that we can display it with a different appearance:
-            $rest_parts = array_slice($parts, 0, count($parts) - 1);
-            $rest_parts = htmlspecialchars(join("/", $rest_parts), ENT_QUOTES, 'UTF-8');
-
-            // Pass this to the render view, cleverly disguised as just
-            // another page, so we can make use of the tree, breadcrumb,
-            // etc.
-            $page_data = $this->_default_page_data;
-            $page_data['title'] = 'Listing: ' . $dir_name;
-
-            $files = scandir($path);
-            $list = "<h2>I'm just an empty folder</h2>\n";
-            if (2 < count($files)) {
-                $list = "<h2>I'm a folder and I have</h2><ul>\n";
-                foreach ($files as $file) {
-                    if (preg_match('/^\..*$/', $file)) {
-                        continue;
-                    }
-                    $list .= "<li><a href=\"". $_SERVER['REQUEST_URI'] ."/${file}\">${file}</a></li>\n";
-                }
-                $list .= "</ul>\n";
-            }
-
-            $this->_view('render', array(
-                'parts' => $parts,
-                'page' => $page_data,
-                'html' => $list,
-                'is_dir' => true
-            ));
-            return;
-        }
-
-
-        echo ' check extension';
-        $extension = substr($fullPath, strrpos($fullPath, '.') + 1, 20);
-        if (false === $extension) {
-            $not_found();
-        } elseif (!file_exists($fullPath)) {
-            // Pass this to the render view, cleverly disguised as just
-            // another page, so we can make use of the tree, breadcrumb,
-            // etc.
-            $_page              = htmlspecialchars($page, ENT_QUOTES);
-            $page_data          = $this->_default_page_data;
-            $page_data['title'] = 'Page not found: ' . $_page;
-
-            return $this->_view('render', array(
-                'parts'     => $parts,
-                'page'      => $page_data,
-                'html'      =>
-                        "<h3>Page '$_page' not found</h3>"
-                    . "<br/>"
-                    . "<form method='GET'>"
-                    . "<input type='hidden' name='a' value='create'>"
-                    . "<input type='submit' class='btn btn-primary' value='Create this page' />"
-                    . "</form>"
-                ,
-                'is_dir'    => false,
-                'source' => ''
-            ));
-        }
-
-        echo "137 - passed the edit check";
-        $finfo = finfo_open(FILEINFO_MIME);
-        $mime_type = trim(finfo_file($finfo, $path));
-
-        if (substr($mime_type, 0, strlen('text/plain')) != 'text/plain'
-            && substr($mime_type, 0, strlen('inode/x-empty')) != 'inode/x-empty'
-        ) {
-            echo ('pass through: '.$mime_type);
-            // not an ASCII file, send it directly to the browser
-            $file = fopen($path, 'rb');
-
-            header("Content-Type: $mime_type");
-            header("Content-Length: " . filesize($path));
-
-            fpassthru($file);
-            exit();
-        }
-
-        $ORM = new \Notesee\DocsRedbeanDAO();
-
-        echo "Page: ". $page;
-        $entrys = $ORM->getByPath($page);
-
-        echo $entrys[0]['content'];
-        exit();
-
-        $source = file_get_contents($path);
-        $extension = pathinfo($path, PATHINFO_EXTENSION);
-        // $renderer = $this->_getRenderer($extension);
-        $page_data = $this->_default_page_data;
-        // var_dump($source);
-        // Extract the JSON header, if the feature is enabled:
-        if (USE_PAGE_METADATA) {
-            list($source, $meta_data) = $this->_extractJsonFrontMatter($source);
-            $page_data = array_merge($page_data, $meta_data);
-        }
-
-        // We need to know the source file in case editing is enabled:
-        $page_data['file'] = $page;
-
-        $html = $source;
-        // if ($renderer && $renderer == 'HTML') {
-        //     $html = $renderer($source);
-        // }
-        // if ($renderer && $renderer == 'Markdown') {
-        //     $html = \Wikitten\MarkdownExtra::defaultTransform($source);
-        // }
-
-        if (empty(trim($html))) {
-            $html = "<h1>This page is empty</h1>\n";
-            $source = $parts[0];
-        }
-
-        $this->_view('render', array(
-            'html' => $html,
-            'source' => $source,
-            'extension' => $extension,
-            'parts' => $parts,
-            'page' => $page_data,
-            'is_dir' => false,
-            'use_pastebin' => $this->_usePasteBin()
-        ));
-    }
-
-    protected function _usePasteBin()
-    {
-        return defined('ENABLE_PASTEBIN') && ENABLE_PASTEBIN && defined('PASTEBIN_API_KEY') && PASTEBIN_API_KEY;
-    }
-
-    /**
-     * Given a file path, verifies if the file is safe to touch,
-     * given permissions, if it's within the library, etc.
-     *
-     * @param  string $path
-     * @return bool
-     */
-    protected function _pathIsSafe($path)
-    {
-        if ($path && strpos($path, LIBRARY) === 0) {
-            return true;
-        }
-
-        return false;
-    }
 
     /**
      * Given a string with a page's source, attempts to locate a
@@ -445,63 +269,52 @@ class Wiki
      */
     public function editAction()
     {
-        // echo "editAction";
-        // Bail out early if editing isn't even enabled, or
-        // we don't get the right request method && params
-        // NOTE: $_POST['source'] may be empty if the user just deletes
-        // everything, but it should always be set.
-        // echo ($_SERVER['REQUEST_METHOD'] != 'POST').empty($_POST['ref']).(!isset($_POST['source']));
-
+        // echo 'edit action';
+        $ORM = new \Notesee\DocsRedbeanDAO();
+        
+        // Bail out early if we don't get the right request method && params
         if ($_SERVER['REQUEST_METHOD'] != 'POST'
             || empty($_POST['ref']) || !isset($_POST['source'])
         ) {
             $this->_404();
         }
-        // echo "saving";
-        $ref = $_POST['ref'];
-        $source = $_POST['source'];
+
+        $ref = $_POST['ref'];        // path in the library
+        $source = $_POST['source'];  // markdown content
+
         $file = base64_decode($ref);
-        $path = realpath(LIBRARY . DIRECTORY_SEPARATOR . $file);
-        // echo $ref.":".$source.":".$path;
+        // $path = realpath(LIBRARY . DIRECTORY_SEPARATOR . $file);
+
         // Check if the file is safe to work with, otherwise just
         // give back a generic 404 aswell, so we don't allow blind
         // scanning of files:
         // @todo: we CAN give back a more informative error message
         // for files that aren't writable...
-        if (!$this->_pathIsSafe($path) && !is_writable($path)) {
-            $this->_404();
-        }
+
 
         // Check if empty
         if(trim($source)){
             // Save the changes, and redirect back to the same page
-            try {
-                file_put_contents($path, $source);
-            }catch(Exception $err){
-                echo 'error when saving'.$err;
-            }
+            // echo $file;
+            // echo $source;
+            $entrys = $ORM->update($file, $source);
+
+            // try {
+            //     file_put_contents($path, $source);
+            // }catch(Exception $err){
+            //     echo 'error when saving'.$err;
+            // }
 
             echo '{"action":"edit", "status":"success"}';
         }else{
             // Delete file and redirect too (but it will return 404)
-            unlink($path);
+            // unlink($path);
         }
 
         exit();
     }
 
-    /**
-     * Singleton
-     * @return Wiki
-     */
-    public static function instance()
-    {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
-        }
-        return $instance;
-    }
+
 
     public function createAction()
     {
@@ -531,5 +344,178 @@ class Wiki
         } else {
             $this->_404();
         }
+    }
+
+
+
+
+    /**
+     * Singleton
+     * @return Wiki
+     */
+    public static function instance()
+    {
+        static $instance;
+        if (!($instance instanceof self)) {
+            $instance = new self();
+        }
+        return $instance;
+    }
+
+
+
+    protected function _render($page)
+    {
+        $ORM = new \Notesee\DocsRedbeanDAO();
+
+
+                            $fullPath = LIBRARY . DIRECTORY_SEPARATOR . $page;
+        //  $fullPath ex.
+        // /opt/lampp/htdocs/projects/notesee/backend/library/index.md
+                             
+        $parts = explode('/', $page);
+
+        $not_found = function () use ($page) {
+            $page = htmlspecialchars($page, ENT_QUOTES);
+            // throw new Exception("Page '$page' was not found");
+        };
+
+        // Handle directories by showing a neat listing of its
+        // contents
+        // if (is_dir($path)) {
+        //     echo "is dir";
+        //     if (!file_exists($path)) {
+        //         $not_found();
+        //     }
+
+        //     if (file_exists($path . DIRECTORY_SEPARATOR . 'index.md')) {
+        //         return $this->_render('index.md');
+        //     }
+
+        //     // Get a printable version of the actual folder name:
+        //     $dir_name = htmlspecialchars(end($parts), ENT_QUOTES, 'UTF-8');
+
+        //     // Get a printable version of the rest of the path,
+        //     // so that we can display it with a different appearance:
+        //     $rest_parts = array_slice($parts, 0, count($parts) - 1);
+        //     $rest_parts = htmlspecialchars(join("/", $rest_parts), ENT_QUOTES, 'UTF-8');
+
+        //     // Pass this to the render view, cleverly disguised as just
+        //     // another page, so we can make use of the tree, breadcrumb,
+        //     // etc.
+        //     $page_data = $this->_default_page_data;
+        //     $page_data['title'] = 'Listing: ' . $dir_name;
+
+        //     $files = scandir($path);
+        //     $list = "<h2>I'm just an empty folder</h2>\n";
+        //     if (2 < count($files)) {
+        //         $list = "<h2>I'm a folder and I have</h2><ul>\n";
+        //         foreach ($files as $file) {
+        //             if (preg_match('/^\..*$/', $file)) {
+        //                 continue;
+        //             }
+        //             $list .= "<li><a href=\"". $_SERVER['REQUEST_URI'] ."/${file}\">${file}</a></li>\n";
+        //         }
+        //         $list .= "</ul>\n";
+        //     }
+
+        //     $this->_view('render', array(
+        //         'parts' => $parts,
+        //         'page' => $page_data,
+        //         'html' => $list,
+        //         'is_dir' => true
+        //     ));
+        //     return;
+        // }
+
+        
+        
+        $extension = substr($page, strrpos($page, '.') + 1, 20);
+        // echo ' check extension'. $extension;
+        if (false === $extension) {
+            // $not_found();
+            throw new Exception('No Extension');
+        }
+
+        if ( $extension != 'md') {
+            $path = realpath(LIBRARY . DIRECTORY_SEPARATOR . $page);
+            $finfo = finfo_open(FILEINFO_MIME);
+            $mime_type = trim(finfo_file($finfo, $path));
+
+
+            echo ('pass through: '.$mime_type);
+            // not an ASCII file, send it directly to the browser
+            $file = fopen($path, 'rb');
+
+            header("Content-Type: $mime_type");
+            header("Content-Length: " . filesize($path));
+
+            fpassthru($file);
+            exit();
+        }
+
+
+        // echo "Page: ". $page;
+        $entrys = $ORM->getByPath($page);
+
+
+        if(count($entrys) == 0){
+            //not found
+            $_page              = htmlspecialchars($page, ENT_QUOTES);
+            $page_data          = $this->_default_page_data;
+
+            echo $page.' : page not found'.$parts;
+            exit();
+        }
+
+
+        $content = <<<JSON
+        {"page":{
+            "title":false,
+            "description":"Wikitten is a small, fast, PHP wiki.",
+            "tags":["wikitten","wiki"],
+            "page":"",
+            "file":"index.md"
+          },
+          "parts":["index.md"],
+          "tree": "[]",
+          "source": 
+        
+        JSON;
+
+        echo $content . "\"".$entrys[0]['content']."\"}";
+
+
+
+
+
+        exit();
+
+        // $source = file_get_contents($path);
+        // $extension = pathinfo($path, PATHINFO_EXTENSION);
+
+ 
+
+        // $html = $source;
+        // // if ($renderer && $renderer == 'HTML') {
+        // //     $html = $renderer($source);
+        // // }
+        // // if ($renderer && $renderer == 'Markdown') {
+        // //     $html = \Wikitten\MarkdownExtra::defaultTransform($source);
+        // // }
+
+        // if (empty(trim($html))) {
+        //     $html = "<h1>This page is empty</h1>\n";
+        //     $source = $parts[0];
+        // }
+
+        // $this->_view('render', array(
+        //     'html' => $html,
+        //     'source' => $source,
+        //     'extension' => $extension,
+        //     'parts' => $parts,
+        //     'page' => $page_data,
+        //     'is_dir' => false,
+        // ));
     }
 }
