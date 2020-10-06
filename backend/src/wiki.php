@@ -5,13 +5,7 @@ if (!defined('APP_STARTED')) {
 
 class Wiki
 {
-    protected $_renderers = array(
-        'md' => 'Markdown',
-        'markdown' => 'Markdown',
-        'mdown' => 'Markdown',
-        'htm' => 'HTML',
-        'html' => 'HTML'
-    );
+
     protected $_ignore = "/^\..*|^CVS$/"; // Match dotfiles and CVS
     protected $_force_unignore = false; // always show these files (false to disable)
 
@@ -24,22 +18,7 @@ class Wiki
         'page' => ''
     );
 
-    /**
-     * @param string $extension
-     * @return string|callable
-     */
-    protected function _getRenderer($extension)
-    {
-        if (!isset($this->_renderers[$extension])) {
-            return false;
-        }
 
-        $renderer = $this->_renderers[$extension];
-
-        require_once __DIR__ . DIRECTORY_SEPARATOR . 'renderers' . DIRECTORY_SEPARATOR . "$renderer.php";
-
-        return $renderer;
-    }
 
 
     /**
@@ -162,9 +141,6 @@ class Wiki
 
     public function dispatch()
     {
-        if (!function_exists("finfo_open")) {
-            die("<p>Please enable the PHP Extension <code style='background-color: #eee; border: 1px solid #ccc; padding: 3px; border-radius: 3px; line-height: 1;'>FileInfo.dll</code> by uncommenting or adding the following line:</p><pre style='background-color: #eee; border: 1px solid #ccc; padding: 5px; border-radius: 3px;'><code><span style='color: #999;'>;</span>extension=php_fileinfo.dll <span style='color: #999; margin-left: 25px;'># You can just uncomment by removing the semicolon (;) in the front.</span></code></pre>");
-        }
         $action = $this->_getAction();
         $actionMethod = "{$action}Action";
 
@@ -245,17 +221,17 @@ class Wiki
         $request = parse_url($_SERVER['REQUEST_URI']);
         $page = str_replace("###" . APP_DIR . "/", "", "###" . urldecode($request['path']));
 
-        if (!$page) {
-            if (file_exists(LIBRARY . DIRECTORY_SEPARATOR . DEFAULT_FILE)) {
-                $this->_render(DEFAULT_FILE);
-                return;
-            }
+        // if (!$page) {
+        //     if (file_exists(LIBRARY . DIRECTORY_SEPARATOR . DEFAULT_FILE)) {
+        //         $this->_render(DEFAULT_FILE);
+        //         return;
+        //     }
 
-            $this->_view('index', array(
-                'page' => $this->_default_page_data
-            ));
-            return;
-        }
+        //     $this->_view('index', array(
+        //         'page' => $this->_default_page_data
+        //     ));
+        //     return;
+        // }
 
         try {
             $this->_render($page);
@@ -276,14 +252,14 @@ class Wiki
         if ($_SERVER['REQUEST_METHOD'] != 'POST'
             || empty($_POST['ref']) || !isset($_POST['source'])
         ) {
-            $this->_404();
+            
+            throw new Exception("Invalid/Missing parameters");
         }
 
         $ref = $_POST['ref'];        // path in the library
         $source = $_POST['source'];  // markdown content
 
         $file = base64_decode($ref);
-        // $path = realpath(LIBRARY . DIRECTORY_SEPARATOR . $file);
 
         // Check if the file is safe to work with, otherwise just
         // give back a generic 404 aswell, so we don't allow blind
@@ -294,56 +270,42 @@ class Wiki
 
         // Check if empty
         if(trim($source)){
-            // Save the changes, and redirect back to the same page
-            // echo $file;
-            // echo $source;
-            $entrys = $ORM->update($file, $source);
+            // TODO: error handling
+            // TODO: Update Tree cache
+            $entry = $ORM->update($file, $source);
+            $entry->action = 'edit';
+            $entry->status = 'success';
+            $this->_json($entry);
 
-            // try {
-            //     file_put_contents($path, $source);
-            // }catch(Exception $err){
-            //     echo 'error when saving'.$err;
-            // }
-
-            echo '{"action":"edit", "status":"success"}';
         }else{
+            echo 'Content was empty, Delete Document?';
             // Delete file and redirect too (but it will return 404)
             // unlink($path);
         }
-
-        exit();
     }
 
-
-
+    /**
+     * /?a=create
+     */
     public function createAction()
     {
- 
+        $ORM = new \Notesee\DocsRedbeanDAO();
         $request    = parse_url($_SERVER['REQUEST_URI']);
         $page       = str_replace("###" . APP_DIR . "/", "", "###" . urldecode($request['path']));
-        // echo urldecode($request['path']). '--'.APP_DIR;
-        $filepath   = LIBRARY ."/".$page;
+
         $content    = "# " . htmlspecialchars($page, ENT_QUOTES, 'UTF-8');
 
-        if ( file_exists($filepath)) {
-            $this->_404();
+        $entrys = $ORM->getByPath($page);
+
+        if(count($entrys)){
+            throw new Error('record exists');
         }
-        // Create subdirectory recursively, if neccessary
-        if (!file_exists(dirname($filepath))) {
-            mkdir(dirname($filepath), 0755, true);
-        }
-
-        // Save default content, and redirect back to the new page
-
-        file_put_contents($filepath, $content);
-
-        if (file_exists($filepath)) {
-            echo '{"status":"success", "path":"'.$filepath.'"}';
-
-            exit();
-        } else {
-            $this->_404();
-        }
+        // TODO: error handling
+        // TODO: Update Tree cache
+        $entry = $ORM->insert($page, $content);
+        $entry->action = 'create';
+        $entry->status = 'success';
+        $this->_json($entry);      
     }
 
 
@@ -362,23 +324,15 @@ class Wiki
         return $instance;
     }
 
-
-
     protected function _render($page)
     {
         $ORM = new \Notesee\DocsRedbeanDAO();
+        // $parts = explode('/', $page);
 
-
-                            $fullPath = LIBRARY . DIRECTORY_SEPARATOR . $page;
-        //  $fullPath ex.
-        // /opt/lampp/htdocs/projects/notesee/backend/library/index.md
-                             
-        $parts = explode('/', $page);
-
-        $not_found = function () use ($page) {
-            $page = htmlspecialchars($page, ENT_QUOTES);
-            // throw new Exception("Page '$page' was not found");
-        };
+        // $not_found = function () use ($page) {
+        //     $page = htmlspecialchars($page, ENT_QUOTES);
+        //     // throw new Exception("Page '$page' was not found");
+        // };
 
         // Handle directories by showing a neat listing of its
         // contents
@@ -454,68 +408,21 @@ class Wiki
             exit();
         }
 
-
         // echo "Page: ". $page;
         $entrys = $ORM->getByPath($page);
 
-
-        if(count($entrys) == 0){
-            //not found
-            $_page              = htmlspecialchars($page, ENT_QUOTES);
-            $page_data          = $this->_default_page_data;
-
-            echo $page.' : page not found'.$parts;
-            exit();
+        $source="";
+        if(!count($entrys) == 0){
+            $source = $entrys[0]['content'];
         }
 
-
-        $content = <<<JSON
-        {"page":{
-            "title":false,
-            "description":"Wikitten is a small, fast, PHP wiki.",
-            "tags":["wikitten","wiki"],
-            "page":"",
-            "file":"index.md"
-          },
-          "parts":["index.md"],
-          "tree": "[]",
-          "source": 
+        $pageData = new stdClass();
+        $pageData->page = $this->_default_page_data;
+        $pageData->parts = ["index.md"];
+        $pageData->tree = "[]";
+        $pageData->source = str_replace("\\n", "\n", $source);;
         
-        JSON;
+        $this->_json($pageData);
 
-        echo $content . "\"".$entrys[0]['content']."\"}";
-
-
-
-
-
-        exit();
-
-        // $source = file_get_contents($path);
-        // $extension = pathinfo($path, PATHINFO_EXTENSION);
-
- 
-
-        // $html = $source;
-        // // if ($renderer && $renderer == 'HTML') {
-        // //     $html = $renderer($source);
-        // // }
-        // // if ($renderer && $renderer == 'Markdown') {
-        // //     $html = \Wikitten\MarkdownExtra::defaultTransform($source);
-        // // }
-
-        // if (empty(trim($html))) {
-        //     $html = "<h1>This page is empty</h1>\n";
-        //     $source = $parts[0];
-        // }
-
-        // $this->_view('render', array(
-        //     'html' => $html,
-        //     'source' => $source,
-        //     'extension' => $extension,
-        //     'parts' => $parts,
-        //     'page' => $page_data,
-        //     'is_dir' => false,
-        // ));
     }
 }

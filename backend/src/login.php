@@ -31,7 +31,7 @@ class Login
     {
         // print_r(apache_request_headers());
         $headers = getallheaders();
-        $header_key = 'x-app-token';
+        $header_key = HEADER_APP_TOKEN;
 
         if(!isset ($headers[$header_key]) )  {
             return null; 
