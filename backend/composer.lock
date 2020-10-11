@@ -1,0 +1,66 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "55030f99d0c04feaa1e3825d5cba6201",
+    "packages": [
+        {
+            "name": "yeriomin/redbean-single-file",
+            "version": "4.3.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/yeriomin/redbean-single-file.git",
+                "reference": "b9fa7a7ff4b2877c59df60b419e6fd52ccde38a4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/yeriomin/redbean-single-file/zipball/b9fa7a7ff4b2877c59df60b419e6fd52ccde38a4",
+                "reference": "b9fa7a7ff4b2877c59df60b419e6fd52ccde38a4",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "rb.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Gabor de Mooij",
+                    "email": "gabordemooij@gmail.com",
+                    "homepage": "http://www.redbeanphp.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "RedBeanPHP is an easy-to-use, on-the-fly ORM for PHP.",
+            "homepage": "https://github.com/yeriomin/redbean-single-file",
+            "keywords": [
+                "CUBRID",
+                "InnoDB",
+                "mariadb",
+                "mysql",
+                "postgresql",
+                "sqlite3"
+            ],
+            "time": "2017-05-06T17:53:19+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
+}

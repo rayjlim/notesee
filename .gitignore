@@ -1,7 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
+frontend/node_modules
 /.pnp
 .pnp.js
 
@@ -24,3 +24,10 @@ yarn-error.log*
 scripts/env_vars.sh
 src/constants.js
 config/*
+
+frontend/build/*
+backend/config.php
+backend/scripts/env_vars.sh
+backend/library/*
+frontend/src/constants.js
+backend/vendor/*

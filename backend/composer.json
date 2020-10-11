@@ -1,0 +1,23 @@
+{
+    "name": "lilplaytime/notesee-api",
+    "authors": [
+        {
+            "name": "ray",
+            "email": "rayjlim1@gmail.com"
+        }
+    ],
+    "require": {
+        "yeriomin/redbean-single-file": "^4.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        },
+        "classmap": [
+            "src"
+        ],
+        "files": [
+            "src/default.php"
+        ]
+    }
+}
