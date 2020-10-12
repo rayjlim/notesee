@@ -224,14 +224,13 @@ class Wiki
         if ($_SERVER['REQUEST_METHOD'] != 'POST'
             || empty($_POST['ref']) || !isset($_POST['source'])
         ) {
-            
             throw new Exception("Invalid/Missing parameters");
         }
 
         $ref = $_POST['ref'];        // path in the library
         $source = $_POST['source'];  // markdown content
 
-        $file = base64_decode($ref);
+        $path = base64_decode($ref);
 
         // Check if the file is safe to work with, otherwise just
         // give back a generic 404 aswell, so we don't allow blind
@@ -243,7 +242,49 @@ class Wiki
         if(trim($source)){
             // TODO: error handling
             // TODO: Update Tree cache
-            $entry = $ORM->update($file, $source);
+            $entry = $ORM->update($path, $source);
+            
+            // get backlinks
+            $links = $this->getTargetLinks($source);
+            // echo 'source links';
+            
+    // get prefix            
+            $prefix =  substr($path, 0,strrpos($path, '/'));
+            $prefix = strlen($prefix) ? $prefix.'/' : $prefix;
+
+            $prefixedLinks = [];
+           
+                foreach ($links[2] as $link) {
+                    array_push($prefixedLinks, $prefix.$link);        
+                }
+            
+            // print_r($prefixedLinks);
+            // get existing links for source $files
+            $existing = $ORM->getForwardlinks($path);
+            // echo 'existing';
+            // print_r($existing);
+
+            $resultToAdd = array_unique (array_diff($prefixedLinks, $existing));
+            foreach ($resultToAdd as $item) {
+                 $ORM->addMapping($path, $item);
+                
+            }
+            $resultToRemove = array_diff($existing, $prefixedLinks);
+            foreach ($resultToRemove as $item) {
+                $ORM->deleteMapping($path, $item);
+                      
+            }
+            // echo 'to add';
+            // print_r($resultToAdd);
+            // echo 'to remove';
+            // print_r($resultToRemove);
+            //compare targetlinks with existing links
+                //if matcch remove from both lists
+            // with remaining
+                // remove, the existing list
+                // add the target links
+
+
             $entry->action = 'edit';
             $entry->status = 'success';
             $this->_json($entry);
@@ -377,8 +418,13 @@ class Wiki
         $pageData->source = str_replace("\\n", "\n", $source);;
         
         $this->_json($pageData);
-
     }
+
+    protected function getTargetLinks($source){
+        preg_match_all('/\[([^]]*)\] *\(([^)]*)\)/', $source, $matches);
+        return $matches;
+    }
+
 
     /**
      * Singleton

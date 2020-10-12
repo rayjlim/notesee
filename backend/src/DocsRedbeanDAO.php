@@ -112,10 +112,30 @@ class DocsRedbeanDAO
 
     
     
-    public function getBacklinks($target)
+    public function getBacklinks($path)
     {
-        $found = \R::getCol('SELECT source from ' . MAPPING . ' where target = \''.$target.'\'');
+        $found = \R::getCol('SELECT source from ' . MAPPING . ' where target = \''.$path.'\'');
         return $found;
+    }
+
+    public function getForwardlinks($path)
+    {
+        $found = \R::getCol('SELECT target from ' . MAPPING . ' where source = \''.$path.'\'');
+        return $found;
+    }
+    public function addMapping($source, $target)
+    {
+        $mapping = \R::getRedBean()->dispense(MAPPING);
+        $mapping->source = $source;
+        $mapping->target = $target;
+        $id = \R::store($mapping);
+        return $id;
+    }
+
+    public function deleteMapping($source, $target)
+    {
+        $mapping  = \R::findOne(MAPPING, ' source = ? AND target = ?', [ $source, $target] );
+        \R::trash($mapping);
     }
     
 }
