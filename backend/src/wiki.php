@@ -114,9 +114,14 @@ class Wiki
         $ORM = new \Notesee\DocsRedbeanDAO();
         $paths = $ORM->getPaths();
         return $paths;
-
     }
 
+    protected function _getBacklinks($path)
+    {
+        $ORM = new \Notesee\DocsRedbeanDAO();
+        $links = $ORM->getBacklinks($path);
+        return $links;
+    }
     public function dispatch()
     {
         $action = $this->_getAction();
@@ -332,8 +337,6 @@ class Wiki
         //     return;
         // }
 
-        
-        
         $extension = substr($page, strrpos($page, '.') + 1, 20);
         // echo ' check extension'. $extension;
         if (false === $extension) {
@@ -368,8 +371,9 @@ class Wiki
 
         $pageData = new stdClass();
         $pageData->page = $this->_default_page_data;
-        $pageData->parts = ["index.md"];
         $pageData->tree = $this->_getTree();
+        $pageData->backlinks = $this->_getBacklinks($page);
+        
         $pageData->source = str_replace("\\n", "\n", $source);;
         
         $this->_json($pageData);

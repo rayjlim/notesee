@@ -3,6 +3,7 @@
 namespace Notesee;
 
 define('DOCS', 'ns_documents');
+define('MAPPING', 'ns_maps');
 /**
  * DocsRedbeanDAO
  *
@@ -83,7 +84,7 @@ class DocsRedbeanDAO
      */
     public function getByPath($path)
     {
-        $logs = \R::findAll(
+        $found = \R::findAll(
             DOCS,
             ' path = ?',
             [$path]
@@ -93,22 +94,28 @@ class DocsRedbeanDAO
                 function ($item) {
                     return $item->export();
                 },
-                $logs
+                $found
             )
         );
         return $sequencedArray;
     }
     /**
-     * Get a Document by Path
-     * 
-     * @param $path logical folder location
+     * Get All Paths
      *
-     * @return Array Log entries
+     * @return Array[Strings] Paths
      */
     public function getPaths()
     {
-        $logs = \R::getCol('SELECT path from '.DOCS);
-        return $logs;
+        $found = \R::getCol('SELECT path from '.DOCS);
+        return $found;
+    }
+
+    
+    
+    public function getBacklinks($target)
+    {
+        $found = \R::getCol('SELECT source from ' . MAPPING . ' where target = \''.$target.'\'');
+        return $found;
     }
     
 }
