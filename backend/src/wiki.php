@@ -6,20 +6,17 @@ if (!defined('APP_STARTED')) {
 class Wiki
 {
 
-    protected $_ignore = "/^\..*|^CVS$/"; // Match dotfiles and CVS
+    protected $_ignore = "/^\..*|^CVS|.html|.jpg$/"; // Match dotfiles and CVS
     protected $_force_unignore = false; // always show these files (false to disable)
 
     protected $_action;
 
     protected $_default_page_data = array(
         'title' => false, // will use APP_NAME by default
-        'description' => 'Wikitten is a small, fast, PHP wiki.',
-        'tags' => array('wikitten', 'wiki'),
+        'description' => 'Notesee wiki.',
+        'tags' => array('Notesee', 'wiki'),
         'page' => ''
     );
-
-
-
 
     /**
      * Given a string with a page's source, attempts to locate a
@@ -112,31 +109,12 @@ class Wiki
         }
     }
 
-    protected function _getTree($dir = LIBRARY)
+    protected function _getTree($dir = LIBRARY,$prefix="")
     {
-        $return = array('directories' => array(), 'files' => array());
+        $ORM = new \Notesee\DocsRedbeanDAO();
+        $paths = $ORM->getPaths();
+        return $paths;
 
-        $items = scandir($dir);
-        foreach ($items as $item) {
-            if (preg_match($this->_ignore, $item)) {
-                if ($this->_force_unignore === false || !preg_match($this->_force_unignore, $item)) {
-                    continue;
-                }
-            }
-
-            $path = $dir . DIRECTORY_SEPARATOR . $item;
-            if (is_dir($path)) {
-                $return['directories'][$item] = $this->_getTree($path);
-                continue;
-            }
-
-            $return['files'][$item] = $item;
-        }
-
-        uksort($return['directories'], "strnatcasecmp");
-        uksort($return['files'], "strnatcasecmp");
-
-        return $return['directories'] + $return['files'];
     }
 
     public function dispatch()
@@ -221,17 +199,7 @@ class Wiki
         $request = parse_url($_SERVER['REQUEST_URI']);
         $page = str_replace("###" . APP_DIR . "/", "", "###" . urldecode($request['path']));
 
-        // if (!$page) {
-        //     if (file_exists(LIBRARY . DIRECTORY_SEPARATOR . DEFAULT_FILE)) {
-        //         $this->_render(DEFAULT_FILE);
-        //         return;
-        //     }
-
-        //     $this->_view('index', array(
-        //         'page' => $this->_default_page_data
-        //     ));
-        //     return;
-        // }
+        // TODO: check and handle if $page is not valid
 
         try {
             $this->_render($page);
@@ -245,7 +213,6 @@ class Wiki
      */
     public function editAction()
     {
-        // echo 'edit action';
         $ORM = new \Notesee\DocsRedbeanDAO();
         
         // Bail out early if we don't get the right request method && params
@@ -266,7 +233,6 @@ class Wiki
         // scanning of files:
         // @todo: we CAN give back a more informative error message
         // for files that aren't writable...
-
 
         // Check if empty
         if(trim($source)){
@@ -306,22 +272,6 @@ class Wiki
         $entry->action = 'create';
         $entry->status = 'success';
         $this->_json($entry);      
-    }
-
-
-
-
-    /**
-     * Singleton
-     * @return Wiki
-     */
-    public static function instance()
-    {
-        static $instance;
-        if (!($instance instanceof self)) {
-            $instance = new self();
-        }
-        return $instance;
     }
 
     protected function _render($page)
@@ -419,10 +369,23 @@ class Wiki
         $pageData = new stdClass();
         $pageData->page = $this->_default_page_data;
         $pageData->parts = ["index.md"];
-        $pageData->tree = "[]";
+        $pageData->tree = $this->_getTree();
         $pageData->source = str_replace("\\n", "\n", $source);;
         
         $this->_json($pageData);
 
+    }
+
+    /**
+     * Singleton
+     * @return Wiki
+     */
+    public static function instance()
+    {
+        static $instance;
+        if (!($instance instanceof self)) {
+            $instance = new self();
+        }
+        return $instance;
     }
 }

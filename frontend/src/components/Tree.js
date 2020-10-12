@@ -7,19 +7,17 @@ function Tree({ items, depth = 0 }) {
   }
 
   return items.map(item => {
-    if (!item.name) {
-      return false;
-    }
-    const link = `${item.parent}${item.name}`;
+    // if (!item.name) {
+    //   return false;
+    // }
+    // const link = `${item.parent}${item.name}`;
     return (
       <Fragment key={item.name}>
         {/* Multiply the depth by a constant to create consistent spacing */}
         <div className="folder-container">
           {!item.children ? (
              <Fragment><span role="img" aria-label="file">📄</span>
-             <a href={link}>
-              {item.name}
-              {item.active ? '<---- 🔖' : ''}
+             <a href={`/${item}`}>{`/${item}`}             {item.active ? '<---- 🔖' : ''}
             </a>
             </Fragment>
           ) : (

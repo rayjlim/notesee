@@ -98,4 +98,17 @@ class DocsRedbeanDAO
         );
         return $sequencedArray;
     }
+    /**
+     * Get a Document by Path
+     * 
+     * @param $path logical folder location
+     *
+     * @return Array Log entries
+     */
+    public function getPaths()
+    {
+        $logs = \R::getCol('SELECT path from '.DOCS);
+        return $logs;
+    }
+    
 }

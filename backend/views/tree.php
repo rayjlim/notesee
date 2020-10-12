@@ -30,8 +30,6 @@ function tree($array, $parent, $parts = array(), $step = 0)
     return $t;
 }
 
-// echo tree($this->_getTree(), BASE_URL, isset($parts) ? $parts : array()); 
-// echo BASE_URL;
 return tree($this->_getTree(), "", isset($parts) ? $parts : array());
 
 ?>

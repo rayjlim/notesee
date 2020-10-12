@@ -178,7 +178,7 @@ function App() {
         const results = await response.json();
 
         console.log('results', results);
-        const resultTree = JSON.parse(results.tree);
+        const resultTree = results.tree;
         console.log(resultTree);
         setTree(resultTree);
         if (results.source === '') {
@@ -233,6 +233,7 @@ function App() {
       console.log(_breadcrumbStr);
       let _breadcrumb;
       if (_breadcrumbStr) {
+        console.log('has breadcrumb', _breadcrumb);
         _breadcrumb = JSON.parse(_breadcrumbStr);
         if (Array.isArray(_breadcrumb) && _breadcrumb.length) {
           setBreadcrumb(_breadcrumb);
@@ -242,7 +243,7 @@ function App() {
       const token = window.localStorage.getItem('appToken');
       if (token && token !== '') {
         console.log('logged in:', token);
-        console.log('has breadcrumb', _breadcrumb);
+
         setLoggedIn(true);
         await load(token, _breadcrumb);
       }
@@ -296,14 +297,13 @@ function App() {
                   />
                 </Fragment>
               )}
-              <div>{tree.length}</div>
-              {/* { tree.length > 1 ? 
+              { tree.length > 1 ? 
                   ( <div style={{ textAlign: 'left' }}>
                   <Tree items={tree} />
                 </div>) : 
                 <div>No tree entries</div>
 
-              } */}
+              }
              
             </Fragment>
           )}
