@@ -4,21 +4,29 @@ import MdEditor from './components/MdEditor';
 import Tree from './components/Tree';
 import Constants from './constants';
 import marked from 'marked';
+import {Controlled as CodeMirror} from 'react-codemirror2'
 
 const BREADCRUMB_MAX = 10;
 
 function App() {
+
   const [markdown, setMarkdown] = useState(``);
   const [path, setPath] = useState('');
-  const [loading, setLoading] = useState(true);
   const [tree, setTree] = useState({});
 
   const [isLoggedIn, setLoggedIn] = useState(false);
+
   const [user, setUser] = useState('');
   const [password, setPassword] = useState('');
+
   const [mode, setMode] = useState('read');
-  const [showCreateButton, setShowCreateButton] = useState(false);
   const [breadcrumb, setBreadcrumb] = useState([]);
+  const [visual, setVisual] = useState({
+    loading: true,
+    showCreateButton: false,
+    showBreadcrumb: false,
+    showTree: false
+  });
 
   const checkLogin = async function (formUser = '', formPass = '') {
     const prefix = Constants.REST_ENDPOINT;
@@ -103,7 +111,7 @@ function App() {
 
         console.log(results);
         if (results.status === 'success') {
-          setShowCreateButton(false);
+          setVisual({...visual, showCreateButton: false});
         } else {
           alert('Server Error on create');
         }
@@ -179,10 +187,10 @@ function App() {
 
         console.log('results', results);
         const resultTree = results.tree;
-        console.log(resultTree);
+        // console.log(resultTree);
         setTree(resultTree);
         if (results.source === '') {
-          setShowCreateButton(true);
+           setVisual({...visual, showCreateButton: true});
           const title = pathname
             .substring(1, pathname.length - 3)
             .replace(/-/g, ' ')
@@ -194,8 +202,7 @@ function App() {
         }
         setMarkdown(results.source);
         setPath(pathname.substring(1));
-
-        setLoading(false);
+        setVisual({...visual, loading: false})
       } else {
         console.log('Network response was not ok.');
       }
@@ -254,14 +261,16 @@ function App() {
     <div className="App">
       {isLoggedIn ? (
         <Fragment>
-          {loading ? (
+          {visual.loading ? (
             <span>Loading</span>
           ) : (
             <Fragment>
               <div>
                 Breadcrumb{' '}
+                <button onClick={e=> setVisual({...visual, showBreadcrumb: !visual.showBreadcrumb})}>Toggle Show Breadcrumb</button>
+            
                 <ul>
-                  {breadcrumb &&
+                  { visual.showBreadcrumb && breadcrumb &&
                     breadcrumb.map(item => (
                       <li key={item + Math.random()}>
                         <a href={item}>{item}</a>
@@ -270,7 +279,7 @@ function App() {
                 </ul>
               </div>
 
-              {showCreateButton ? (
+              {visual.showCreateButton ? (
                 <Fragment>
                   <button onClick={e => createPage()}>Create {path}</button>
                 </Fragment>
@@ -282,6 +291,27 @@ function App() {
               {mode === 'edit' ? (
                 <Fragment>
                   Editor Mode
+
+                  {/* <CodeMirror
+  value={markdown}
+  options={{
+    mode: 'markdown',
+    lineNumbers: true,
+    theme: "default",
+    extraKeys: {"Enter": "newlineAndIndentContinueMarkdownList"},
+
+    scrollbarStyle: null,
+    lineWrapping: true,
+  }}
+  onBeforeChange={(editor, data, value) => {
+    console.log(editor, data, value);
+  }}
+  onUpdate={(editor, data, value) => {
+    console.log('cm change', value)
+    // setMarkdown(value);
+  }}
+/> */}
+
                   <MdEditor
                     content={markdown}
                     path={path}
@@ -297,11 +327,13 @@ function App() {
                   />
                 </Fragment>
               )}
-              { tree.length > 1 ? 
+
+              <button onClick={e=> setVisual({...visual, showTree: !visual.showTree})}>Toggle Show Tree</button>
+              { visual.showTree && tree.length > 1 ? 
                   ( <div style={{ textAlign: 'left' }}>
                   <Tree items={tree} />
                 </div>) : 
-                <div>No tree entries</div>
+                <div>Tree - Hidden</div>
 
               }
              
