@@ -190,7 +190,7 @@ function App() {
         const results = await response.json();
 
         console.log('results', results);
-
+        let showCreateButton = false;
         if (results.source === '') {
           setVisual({ ...visual, showCreateButton: true });
           const title = pathname
@@ -201,6 +201,7 @@ function App() {
             .map(word => word.charAt(0).toUpperCase() + word.substring(1))
             .join(' ');
           results.source = `# ${title}`;
+          showCreateButton = true;
         }
         console.log('results', results);
 
@@ -211,7 +212,8 @@ function App() {
           markdown: results.source,
           path: pathname.substring(1),
         });
-        setVisual({ ...visual, loading: false });
+        setVisual({...visual, loading: false,  showCreateButton})
+
       } else {
         console.log('Network response was not ok.');
       }
