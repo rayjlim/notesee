@@ -207,123 +207,8 @@ class Wiki
         // TODO: check and handle if $page is not valid
 
         try {
-            $this->_render($page);
-        } catch (Exception $e) {
-            $this->_404($e->getMessage());
-        }
-    }
-
-    /**
-     * /?a=edit
-     */
-    public function editAction()
-    {
-        $ORM = new \Notesee\DocsRedbeanDAO();
-        
-        // Bail out early if we don't get the right request method && params
-        if ($_SERVER['REQUEST_METHOD'] != 'POST'
-            || empty($_POST['ref']) || !isset($_POST['source'])
-        ) {
-            throw new Exception("Invalid/Missing parameters");
-        }
-
-        $ref = $_POST['ref'];        // path in the library
-        $source = $_POST['source'];  // markdown content
-
-        $path = base64_decode($ref);
-
-        // Check if the file is safe to work with, otherwise just
-        // give back a generic 404 aswell, so we don't allow blind
-        // scanning of files:
-        // @todo: we CAN give back a more informative error message
-        // for files that aren't writable...
-
-        // Check if empty
-        if(trim($source)){
-            // TODO: error handling
-            // TODO: Update Tree cache
-            $entry = $ORM->update($path, $source);
-            
-            // get backlinks
-            $links = $this->getTargetLinks($source);
-            // echo 'source links';
-            
-    // get prefix            
-            $prefix =  substr($path, 0,strrpos($path, '/'));
-            $prefix = strlen($prefix) ? $prefix.'/' : $prefix;
-
-            $prefixedLinks = [];
-           
-                foreach ($links[2] as $link) {
-                    $targetValue = ($link[0] == '/') ? ltrim($link, '/') : $prefix.$link;
-                    array_push($prefixedLinks, $targetValue);        
-                }
-            
-            // print_r($prefixedLinks);
-            // get existing links for source $files
-            $existing = $ORM->getForwardlinks($path);
-            // echo 'existing';
-            // print_r($existing);
-
-            $resultToAdd = array_unique (array_diff($prefixedLinks, $existing));
-            foreach ($resultToAdd as $item) {
-                 $ORM->addMapping($path, $item);
-                
-            }
-            $resultToRemove = array_diff($existing, $prefixedLinks);
-            foreach ($resultToRemove as $item) {
-                $ORM->deleteMapping($path, $item);
-                      
-            }
-            // echo 'to add';
-            // print_r($resultToAdd);
-            // echo 'to remove';
-            // print_r($resultToRemove);
-            //compare targetlinks with existing links
-                //if matcch remove from both lists
-            // with remaining
-                // remove, the existing list
-                // add the target links
-
-
-            $entry->action = 'edit';
-            $entry->status = 'success';
-            $this->_json($entry);
-
-        }else{
-            echo 'Content was empty, Delete Document?';
-            // Delete file and redirect too (but it will return 404)
-            // unlink($path);
-        }
-    }
-
-    /**
-     * /?a=create
-     */
-    public function createAction()
-    {
-        $ORM = new \Notesee\DocsRedbeanDAO();
-        $request    = parse_url($_SERVER['REQUEST_URI']);
-        $page       = str_replace("###" . APP_DIR . "/", "", "###" . urldecode($request['path']));
-
-        $content    = "# " . htmlspecialchars($page, ENT_QUOTES, 'UTF-8');
-
-        $entrys = $ORM->getByPath($page);
-
-        if(count($entrys)){
-            throw new Error('record exists');
-        }
-        // TODO: error handling
-        // TODO: Update Tree cache
-        $entry = $ORM->insert($page, $content);
-        $entry->action = 'create';
-        $entry->status = 'success';
-        $this->_json($entry);      
-    }
-
-    protected function _render($page)
-    {
-        $ORM = new \Notesee\DocsRedbeanDAO();
+ 
+            $ORM = new \Notesee\DocsRedbeanDAO();
         // $parts = explode('/', $page);
 
         // $not_found = function () use ($page) {
@@ -419,6 +304,130 @@ class Wiki
         $pageData->source = str_replace("\\n", "\n", $source);;
         
         $this->_json($pageData);
+
+        } catch (Exception $e) {
+            $this->_404($e->getMessage());
+        }
+    }
+
+    /**
+     * /?a=edit
+     */
+    public function editAction()
+    {
+        $ORM = new \Notesee\DocsRedbeanDAO();
+        
+        // Bail out early if we don't get the right request method && params
+        if ($_SERVER['REQUEST_METHOD'] != 'POST'
+            || empty($_POST['ref']) || !isset($_POST['source'])
+        ) {
+            throw new Exception("Invalid/Missing parameters");
+        }
+
+        $ref = $_POST['ref'];        // path in the library
+        $source = $_POST['source'];  // markdown content
+
+        $path = base64_decode($ref);
+
+        // Check if the file is safe to work with, otherwise just
+        // give back a generic 404 aswell, so we don't allow blind
+        // scanning of files:
+        // @todo: we CAN give back a more informative error message
+        // for files that aren't writable...
+
+        // Check if empty
+        if(trim($source)){
+            // TODO: error handling
+            // TODO: Update Tree cache
+            $entry = $ORM->update($path, $source);
+            
+            // get backlinks
+            $links = $this->getTargetLinks($source);
+            // echo 'source links';
+            
+    // get prefix            
+            $prefix =  substr($path, 0,strrpos($path, '/'));
+            $prefix = strlen($prefix) ? $prefix.'/' : $prefix;
+
+            $prefixedLinks = [];
+           
+            foreach ($links[2] as $link) {
+                if (
+                    strpos($link, "http://") === false && strpos($link, "https://") === false && strpos($link, "#") === false) {
+                    $targetValue = ($link[0] == '/') ? ltrim($link, '/') : $prefix.$link;
+                    array_push($prefixedLinks, $targetValue);
+                }        
+            }
+            
+            // print_r($prefixedLinks);
+            // get existing links for source $files
+            $existing = $ORM->getForwardlinks($path);
+            // echo 'existing';
+            // print_r($existing);
+
+            $resultToAdd = array_unique (array_diff($prefixedLinks, $existing));
+            foreach ($resultToAdd as $item) {
+                 $ORM->addMapping($path, $item);
+                
+            }
+            $resultToRemove = array_diff($existing, $prefixedLinks);
+            foreach ($resultToRemove as $item) {
+                $ORM->deleteMapping($path, $item);
+                      
+            }
+            // echo 'to add';
+            // print_r($resultToAdd);
+            // echo 'to remove';
+            // print_r($resultToRemove);
+            //compare targetlinks with existing links
+                //if matcch remove from both lists
+            // with remaining
+                // remove, the existing list
+                // add the target links
+
+
+            $entry->action = 'edit';
+            $entry->status = 'success';
+            $this->_json($entry);
+
+        }else{
+            echo 'Content was empty, Delete Document?';
+            // Delete file and redirect too (but it will return 404)
+            // unlink($path);
+        }
+    }
+
+    /**
+     * /?a=create
+     */
+    public function createAction()
+    {
+        $ORM = new \Notesee\DocsRedbeanDAO();
+        $request    = parse_url($_SERVER['REQUEST_URI']);
+        $page       = str_replace("###" . APP_DIR . "/", "", "###" . urldecode($request['path']));
+
+        $content    = "# " . htmlspecialchars($page, ENT_QUOTES, 'UTF-8');
+
+        $entrys = $ORM->getByPath($page);
+
+        if(count($entrys)){
+            throw new Error('record exists');
+        }
+        // TODO: error handling
+        // TODO: Update Tree cache
+        $entry = $ORM->insert($page, $content);
+        $entry->action = 'create';
+        $entry->status = 'success';
+        $this->_json($entry);      
+    }
+
+
+    public function networkAction()
+    {
+        $ORM = new \Notesee\DocsRedbeanDAO();
+        $entrys = $ORM->getMaps();
+        $this->_json($entrys);
+        // echo "network info";
     }
 
     protected function getTargetLinks($source){
