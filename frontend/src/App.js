@@ -8,10 +8,8 @@ import marked from 'marked';
 const BREADCRUMB_MAX = 10;
 
 function App() {
-  const [markdown, setMarkdown] = useState(``);
-  const [path, setPath] = useState('');
+  const [documentInfo, setDocInfo] = useState({path:'',markdown:'', tree:[]});
   const [loading, setLoading] = useState(true);
-  const [tree, setTree] = useState({});
 
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState('');
@@ -76,7 +74,7 @@ function App() {
   };
 
   const updateMarkdown = content => {
-    setMarkdown(content);
+    setDocInfo({...documentInfo, mardown: content})
   };
 
   const createPage = async () => {
@@ -177,10 +175,6 @@ function App() {
         )}`;
         const results = await response.json();
 
-        console.log('results', results);
-        const resultTree = results.tree;
-        console.log(resultTree);
-        setTree(resultTree);
         if (results.source === '') {
           setShowCreateButton(true);
           const title = pathname
@@ -192,9 +186,13 @@ function App() {
             .join(' ');
           results.source = `# ${title}`;
         }
-        setMarkdown(results.source);
-        setPath(pathname.substring(1));
+        console.log('results', results);
 
+        setDocInfo({...documentInfo, 
+          backlinks: results.backlinks,
+          tree: results.tree, 
+          markdown: results.source, 
+          path: pathname.substring(1)});
         setLoading(false);
       } else {
         console.log('Network response was not ok.');
@@ -216,7 +214,7 @@ function App() {
 
   let output = '';
   try {
-    output = marked(markdown);
+    output = marked(documentInfo.markdown);
   } catch (err) {
     console.log(err);
   }
@@ -248,6 +246,7 @@ function App() {
         await load(token, _breadcrumb);
       }
     })();
+ // eslint-disable-next-line 
   }, []);
 
   return (
@@ -269,10 +268,20 @@ function App() {
                     ))}
                 </ul>
               </div>
-
+              <div>
+                Backlinks{' '}
+                <ul>
+                  {documentInfo.backlinks &&
+                    documentInfo.backlinks.map(item => (
+                      <li key={item + Math.random()}>
+                        <a href={`/${item}`}>{item}</a>
+                      </li>
+                    ))}
+                </ul>
+              </div>
               {showCreateButton ? (
                 <Fragment>
-                  <button onClick={e => createPage()}>Create {path}</button>
+                  <button onClick={e => createPage()}>Create {documentInfo.path}</button>
                 </Fragment>
               ) : (
                 <Fragment />
@@ -283,8 +292,8 @@ function App() {
                 <Fragment>
                   Editor Mode
                   <MdEditor
-                    content={markdown}
-                    path={path}
+                    content={documentInfo.markdown}
+                    path={documentInfo.path}
                     onSave={updateMarkdown}
                   />
                 </Fragment>
@@ -297,9 +306,9 @@ function App() {
                   />
                 </Fragment>
               )}
-              { tree.length > 1 ? 
+              { documentInfo.tree.length > 1 ? 
                   ( <div style={{ textAlign: 'left' }}>
-                  <Tree items={tree} />
+                  <Tree items={documentInfo.tree} />
                 </div>) : 
                 <div>No tree entries</div>
 
