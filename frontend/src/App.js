@@ -1,15 +1,21 @@
 import React, { useState, useEffect, Fragment } from 'react';
+import marked from 'marked';
 import './App.css';
 import MdEditor from './components/MdEditor';
+import NetworkGraph from './components/NetworkGraph';
 import Tree from './components/Tree';
 import Constants from './constants';
-import marked from 'marked';
-import {Controlled as CodeMirror} from 'react-codemirror2'
+
+// import {Controlled as CodeMirror} from 'react-codemirror2'
 
 const BREADCRUMB_MAX = 10;
 
 function App() {
-  const [documentInfo, setDocInfo] = useState({path:'',markdown:'', tree:[]});
+  const [documentInfo, setDocInfo] = useState({
+    path: '',
+    markdown: '',
+    tree: [],
+  });
 
   const [isLoggedIn, setLoggedIn] = useState(false);
 
@@ -22,7 +28,7 @@ function App() {
     loading: true,
     showCreateButton: false,
     showBreadcrumb: false,
-    showTree: false
+    showTree: false,
   });
 
   const checkLogin = async function (formUser = '', formPass = '') {
@@ -81,7 +87,7 @@ function App() {
   };
 
   const updateMarkdown = content => {
-    setDocInfo({...documentInfo, mardown: content})
+    setDocInfo({ ...documentInfo, mardown: content });
   };
 
   const createPage = async () => {
@@ -108,7 +114,7 @@ function App() {
 
         console.log(results);
         if (results.status === 'success') {
-          setVisual({...visual, showCreateButton: false});
+          setVisual({ ...visual, showCreateButton: false });
         } else {
           alert('Server Error on create');
         }
@@ -128,6 +134,7 @@ function App() {
     if (pathname === '/') {
       pathname = '/index.md';
     }
+    // else if /__network_map__/ then draw vis
 
     // breadcrumb
 
@@ -175,7 +182,7 @@ function App() {
       });
 
       if (response.ok) {
-        console.log ('load response ok')
+        console.log('load response ok');
         document.title = `Notesee - ${pathname.substring(
           1,
           pathname.length - 3
@@ -184,9 +191,8 @@ function App() {
 
         console.log('results', results);
 
-
         if (results.source === '') {
-           setVisual({...visual, showCreateButton: true});
+          setVisual({ ...visual, showCreateButton: true });
           const title = pathname
             .substring(1, pathname.length - 3)
             .replace(/-/g, ' ')
@@ -198,13 +204,14 @@ function App() {
         }
         console.log('results', results);
 
-        setDocInfo({...documentInfo, 
+        setDocInfo({
+          ...documentInfo,
           backlinks: results.backlinks,
-          tree: results.tree, 
-          markdown: results.source, 
-          path: pathname.substring(1)});
-        setVisual({...visual, loading: false})
-
+          tree: results.tree,
+          markdown: results.source,
+          path: pathname.substring(1),
+        });
+        setVisual({ ...visual, loading: false });
       } else {
         console.log('Network response was not ok.');
       }
@@ -257,7 +264,7 @@ function App() {
         await load(token, _breadcrumb);
       }
     })();
- // eslint-disable-next-line 
+    // eslint-disable-next-line
   }, []);
 
   return (
@@ -270,10 +277,19 @@ function App() {
             <Fragment>
               <div>
                 Breadcrumb{' '}
-                <button onClick={e=> setVisual({...visual, showBreadcrumb: !visual.showBreadcrumb})}>Toggle Show Breadcrumb</button>
-            
+                <button
+                  onClick={e =>
+                    setVisual({
+                      ...visual,
+                      showBreadcrumb: !visual.showBreadcrumb,
+                    })
+                  }
+                >
+                  Toggle Show Breadcrumb
+                </button>
                 <ul>
-                  { visual.showBreadcrumb && breadcrumb &&
+                  {visual.showBreadcrumb &&
+                    breadcrumb &&
                     breadcrumb.map(item => (
                       <li key={item + Math.random()}>
                         <a href={item}>{item}</a>
@@ -294,7 +310,9 @@ function App() {
               </div>
               {visual.showCreateButton ? (
                 <Fragment>
-                  <button onClick={e => createPage()}>Create {documentInfo.path}</button>
+                  <button onClick={e => createPage()}>
+                    Create {documentInfo.path}
+                  </button>
                 </Fragment>
               ) : (
                 <Fragment />
@@ -304,7 +322,6 @@ function App() {
               {mode === 'edit' ? (
                 <Fragment>
                   Editor Mode
-
                   {/* <CodeMirror
   value={markdown}
   options={{
@@ -324,7 +341,6 @@ function App() {
     // setMarkdown(value);
   }}
 /> */}
-
                   <MdEditor
                     content={documentInfo.markdown}
                     path={documentInfo.path}
@@ -341,16 +357,21 @@ function App() {
                 </Fragment>
               )}
 
-              <button onClick={e=> setVisual({...visual, showTree: !visual.showTree})}>Toggle Show Tree</button>
-              { visual.showTree && documentInfo.tree.length > 1 ? 
-
-                  ( <div style={{ textAlign: 'left' }}>
+              <button
+                onClick={e =>
+                  setVisual({ ...visual, showTree: !visual.showTree })
+                }
+              >
+                Toggle Show Tree
+              </button>
+              {visual.showTree && documentInfo.tree.length > 1 ? (
+                <div style={{ textAlign: 'left' }}>
                   <Tree items={documentInfo.tree} />
-                </div>) : 
+                </div>
+              ) : (
                 <div>Tree - Hidden</div>
-
-              }
-             
+              )}
+              <NetworkGraph nodes={documentInfo.tree} />
             </Fragment>
           )}
           <button onClick={e => doLogout()}>Logout</button>

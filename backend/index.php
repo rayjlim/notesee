@@ -44,9 +44,8 @@ define('BASE_URL', "http" . ($https ? "s" : "") . "://" . $_SERVER['HTTP_HOST'] 
 
 unset($config_file, $request_uri, $script_name, $app_dir, $https);
 
-// APP_DIR ex. /projects/notesee/backend
-// BASE_URL ex.
-// http://localhost/notesee/backend
+// APP_DIR  ex. /projects/notesee/backend
+// BASE_URL ex. http://localhost/notesee/backend
 
 Login::instance()->dispatch();
 

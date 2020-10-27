@@ -110,7 +110,18 @@ class DocsRedbeanDAO
         return $found;
     }
 
-    
+    public function getMaps(){
+        $found = \R::findAll(            MAPPING        );
+        $sequencedArray = array_values(
+            array_map(
+                function ($item) {
+                    return $item->export();
+                },
+                $found
+            )
+        );
+        return $sequencedArray; 
+    }
     
     public function getBacklinks($path)
     {
