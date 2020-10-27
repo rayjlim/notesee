@@ -106,7 +106,7 @@ class DocsRedbeanDAO
      */
     public function getPaths()
     {
-        $found = \R::getCol('SELECT path from '.DOCS);
+        $found = \R::getCol('SELECT path from '.DOCS.' order by path');
         return $found;
     }
 
