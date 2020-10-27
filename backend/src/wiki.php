@@ -255,7 +255,8 @@ class Wiki
             $prefixedLinks = [];
            
                 foreach ($links[2] as $link) {
-                    array_push($prefixedLinks, $prefix.$link);        
+                    $targetValue = ($link[0] == '/') ? ltrim($link, '/') : $prefix.$link;
+                    array_push($prefixedLinks, $targetValue);        
                 }
             
             // print_r($prefixedLinks);
