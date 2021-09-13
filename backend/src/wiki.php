@@ -421,13 +421,27 @@ class Wiki
         $this->_json($entry);      
     }
 
-
     public function networkAction()
     {
         $ORM = new \Notesee\DocsRedbeanDAO();
         $entrys = $ORM->getMaps();
         $this->_json($entrys);
         // echo "network info";
+    }
+
+    public function searchAction()
+    {
+        $ORM = new \Notesee\DocsRedbeanDAO();
+        $text = $_REQUEST['text'];
+        $entrys = $ORM->contentsContains($text);
+
+        $reduced_columns = array_map(function ($n){
+            return ($n->path);
+        }, $entrys);
+        // print_r($b);
+
+        $this->_json($reduced_columns);
+        // echo "search info = ".$text;
     }
 
     protected function getTargetLinks($source){
