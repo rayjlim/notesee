@@ -4,7 +4,7 @@ import './App.css';
 import MdEditor from './components/MdEditor';
 import NetworkGraph from './components/NetworkGraph';
 import Tree from './components/Tree';
-import SearchText from './components/SearchText';
+import SearchTextForm from './components/SearchTextForm';
 import Constants from './constants';
 
 // import {Controlled as CodeMirror} from 'react-codemirror2'
@@ -371,7 +371,7 @@ function App() {
               </button>
               {visual.showSearch  ? (
                 <div style={{ textAlign: 'left' }}>
-                  <SearchText />
+                  <SearchTextForm />
                 </div>
               ) : (
                 <div>Search Form</div>
