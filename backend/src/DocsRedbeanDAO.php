@@ -148,5 +148,12 @@ class DocsRedbeanDAO
         $mapping  = \R::findOne(MAPPING, ' source = ? AND target = ?', [ $source, $target] );
         \R::trash($mapping);
     }
+
+    // SEARCH
+    public function contentsContains($text)
+    {
+        $found = \R::find(DOCS, ' content LIKE ? ', [ '%'.$text.'%' ] );
+        return $found;
+    }
     
 }

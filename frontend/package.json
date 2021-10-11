@@ -3,12 +3,13 @@
   "version": "0.1.7",
   "private": true,
   "dependencies": {
+    "caniuse-lite": "^1.0.30001265",
     "codemirror": "^5.58.1",
     "marked": "^1.1.1",
     "react": "^16.13.1",
     "react-codemirror2": "^7.2.1",
     "react-dom": "^16.13.1",
-    "react-editor-md": "github:rayjlim/react-editor-md",
+    "react-editor-md": "^1.0.28",
     "react-scripts": "3.4.3",
     "react-vis-network-graph": "^3.0.1"
   },

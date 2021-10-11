@@ -4,6 +4,7 @@ import './App.css';
 import MdEditor from './components/MdEditor';
 import NetworkGraph from './components/NetworkGraph';
 import Tree from './components/Tree';
+import SearchTextForm from './components/SearchTextForm';
 import Constants from './constants';
 
 // import {Controlled as CodeMirror} from 'react-codemirror2'
@@ -29,6 +30,7 @@ function App() {
     showCreateButton: false,
     showBreadcrumb: false,
     showTree: false,
+    showSearch: false,
   });
 
   const checkLogin = async function (formUser = '', formPass = '') {
@@ -359,6 +361,21 @@ function App() {
                 </Fragment>
               )}
 
+
+              <button
+                onClick={e =>
+                  setVisual({ ...visual, showSearch: !visual.showSearch })
+                }
+              >
+                Search Form
+              </button>
+              {visual.showSearch  ? (
+                <div style={{ textAlign: 'left' }}>
+                  <SearchTextForm />
+                </div>
+              ) : (
+                <div>Search Form</div>
+              )}
               <button
                 onClick={e =>
                   setVisual({ ...visual, showTree: !visual.showTree })
@@ -373,7 +390,20 @@ function App() {
               ) : (
                 <div>Tree - Hidden</div>
               )}
-              <NetworkGraph nodes={documentInfo.tree} />
+              <button
+                onClick={e =>
+                  setVisual({ ...visual, showGraph: !visual.showGraph })
+                }
+              >
+                Toggle Show Graph
+              </button>
+              {visual.showGraph && documentInfo.tree.length > 1 ? (
+                <NetworkGraph nodes={documentInfo.tree} />
+              ) : (
+                <div>Graph - Hidden</div>
+              )}
+
+              
             </Fragment>
           )}
           <button onClick={e => doLogout()}>Logout</button>

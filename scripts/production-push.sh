@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. ./scripts/env_vars.sh
+. ./env_vars.sh
 
 if [ -z "$FTP_HOST" ]; then
     echo "Missing env_vars"
@@ -18,26 +18,26 @@ while getopts rbf option; do
 done
 
 if [ -z $SKIP_BUILD_BE ]; then
-  mkdir -p $PREP_DIR-api
-  cd backend
+  mkdir -p ../../$PREP_DIR-api
+  cd ../backend
   rsync -ravz --exclude-from '../scripts/be_production-exclude.txt' --delete . ../$PREP_DIR-api
   rsync -avz  ../scripts/be_production-exclude-push.txt ../$PREP_DIR-api/be_production-exclude-push.txt
   rsync -avz  config/config.php.production ../$PREP_DIR-api/config.php
   pwd
   cd ../$PREP_DIR-api
+  /usr/local/bin/composer update
   /usr/local/bin/composer install  --no-dev
   chmod 755 *.php
-
-  cd ../notesee
   
-  echo "build ready"
+  echo "Backend build ready"
+  cd ../notesee
 else
   echo "Skip Backend Build"
+  cd ../
 fi
 
-
 if [ -z "$SKIP_BUILD_FE" ]; then
-  mkdir -p $PREP_DIR-ui
+  mkdir -p ../$PREP_DIR-ui
   cd frontend
   npm run build
   buildresult=$?
@@ -49,7 +49,7 @@ if [ -z "$SKIP_BUILD_FE" ]; then
   rsync -ravz build/* ../$PREP_DIR-ui/
   cd ..
 else
-  echo "Skip Build"
+  echo "Skip Frontend Build"
 fi
 
 echo "start upload"
