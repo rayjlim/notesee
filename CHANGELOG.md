@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.8](https://github.com/rayjlim/notesee/compare/v0.1.7...v0.1.8) (2021-10-12)
+
+
+### Features
+
+* ✨ Search content area ([317ea66](https://github.com/rayjlim/notesee/commit/317ea661e7b61279d3ca683561e436182aee37df))
+* working search form ([766b64e](https://github.com/rayjlim/notesee/commit/766b64eeda57ba6cfd49a3032bd782763307d71b))
+
 ### [0.1.7](https://github.com/rayjlim/notesee/compare/v0.1.6...v0.1.7) (2020-10-27)
 
 ### [0.1.6](https://github.com/rayjlim/notesee/compare/v0.1.5...v0.1.6) (2020-10-27)
