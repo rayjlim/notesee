@@ -30,7 +30,7 @@ function App() {
     showCreateButton: false,
     showBreadcrumb: false,
     showTree: false,
-    showSearch: false,
+    showSearch: true,
   });
 
   const checkLogin = async function (formUser = '', formPass = '') {
@@ -214,8 +214,7 @@ function App() {
           markdown: results.source,
           path: pathname.substring(1),
         });
-        setVisual({...visual, loading: false,  showCreateButton})
-
+        setVisual({ ...visual, loading: false, showCreateButton });
       } else {
         console.log('Network response was not ok.');
       }
@@ -279,39 +278,20 @@ function App() {
             <span>Loading</span>
           ) : (
             <Fragment>
-              <div>
-                Breadcrumb{' '}
-                <button
-                  onClick={e =>
-                    setVisual({
-                      ...visual,
-                      showBreadcrumb: !visual.showBreadcrumb,
-                    })
-                  }
-                >
-                  Toggle Show Breadcrumb
-                </button>
-                <ul>
-                  {visual.showBreadcrumb &&
-                    breadcrumb &&
-                    breadcrumb.map(item => (
-                      <li key={item + Math.random()}>
-                        <a href={item}>{item}</a>
-                      </li>
-                    ))}
-                </ul>
-              </div>
-              <div>
-                Backlinks{' '}
-                <ul>
-                  {documentInfo.backlinks &&
-                    documentInfo.backlinks.map(item => (
-                      <li key={item + Math.random()}>
-                        <a href={`/${item}`}>{item}</a>
-                      </li>
-                    ))}
-                </ul>
-              </div>
+              <button
+                onClick={e =>
+                  setVisual({ ...visual, showSearch: !visual.showSearch })
+                }
+              >
+                Search Form
+              </button>
+              {visual.showSearch ? (
+                <div style={{ textAlign: 'left' }}>
+                  <SearchTextForm />
+                </div>
+              ) : (
+                <div>Search Form</div>
+              )}
               {visual.showCreateButton ? (
                 <Fragment>
                   <button onClick={e => createPage()}>
@@ -361,21 +341,39 @@ function App() {
                 </Fragment>
               )}
 
-
-              <button
-                onClick={e =>
-                  setVisual({ ...visual, showSearch: !visual.showSearch })
-                }
-              >
-                Search Form
-              </button>
-              {visual.showSearch  ? (
-                <div style={{ textAlign: 'left' }}>
-                  <SearchTextForm />
-                </div>
-              ) : (
-                <div>Search Form</div>
-              )}
+              <div>
+                Breadcrumb{' '}
+                <button
+                  onClick={e =>
+                    setVisual({
+                      ...visual,
+                      showBreadcrumb: !visual.showBreadcrumb,
+                    })
+                  }
+                >
+                  Toggle Show Breadcrumb
+                </button>
+                <ul>
+                  {visual.showBreadcrumb &&
+                    breadcrumb &&
+                    breadcrumb.map(item => (
+                      <li key={item + Math.random()}>
+                        <a href={item}>{item}</a>
+                      </li>
+                    ))}
+                </ul>
+              </div>
+              <div>
+                Backlinks{' '}
+                <ul>
+                  {documentInfo.backlinks &&
+                    documentInfo.backlinks.map(item => (
+                      <li key={item + Math.random()}>
+                        <a href={`/${item}`}>{item}</a>
+                      </li>
+                    ))}
+                </ul>
+              </div>
               <button
                 onClick={e =>
                   setVisual({ ...visual, showTree: !visual.showTree })
@@ -402,8 +400,6 @@ function App() {
               ) : (
                 <div>Graph - Hidden</div>
               )}
-
-              
             </Fragment>
           )}
           <button onClick={e => doLogout()}>Logout</button>
