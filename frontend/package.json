@@ -1,6 +1,6 @@
 {
   "name": "@lilplaytime/notesee",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "private": true,
   "dependencies": {
     "caniuse-lite": "^1.0.30001265",

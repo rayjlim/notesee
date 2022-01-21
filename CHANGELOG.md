@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.9](https://github.com/rayjlim/notesee/compare/v0.1.8...v0.1.9) (2022-01-21)
+
 ### [0.1.8](https://github.com/rayjlim/notesee/compare/v0.1.7...v0.1.8) (2021-10-12)
 
 
@@ -65,3 +67,24 @@ All notable changes to this project will be documented in this file. See [standa
 ### Features
 
 * 🚚 migrate to new repo ([b05eb10](https://github.com/rayjlim/notesee/commit/b05eb10459dd500cbaa9bc05fc6a491c23c02298))
+- idea: impl login
+- idea: impl security token from ui to api; backend check for token; store token in localstorage
+- task: remove refs to other js
+- feat: tree view
+- bug: not handling backend error on save (file permissions)
+- idea: check if not saved before navigate away
+- need create a page (from a 404 request)
+- remove proxy from development
+- style background color when `has changes`
+- bold folders in tree view (icon)
+- put title in the tab title
+- scale down menu bar items
+- extract wrap editor.md to my own component because I had to manually customize it to add onload
+- Put history in cookie. if click on breadcrumb
+- of if current page is second to last on stack then went back.
+- limit breadcrumb to 10
+- bug: backlinks parsing, needs to ignore `#` suffix and links that start with `http`
+- try copy / paste of block with wiki links --> **breaks parser**
+- show/hide breadcrumb
+- show/hide tree
+- delete doc
