@@ -202,7 +202,7 @@ class Wiki
     public function indexAction()
     {
         $request = parse_url($_SERVER['REQUEST_URI']);
-        $page = str_replace("###" . APP_DIR . "/", "", "###" . urldecode($request['path']));
+        $pagePath = str_replace("###" . APP_DIR . "/", "", "###" . urldecode($request['path']));
 
         // TODO: check and handle if $page is not valid
 
@@ -264,7 +264,7 @@ class Wiki
         //     return;
         // }
 
-        $extension = substr($page, strrpos($page, '.') + 1, 20);
+        $extension = substr($pagePath, strrpos($pagePath, '.') + 1, 20);
         // echo ' check extension'. $extension;
         if (false === $extension) {
             // $not_found();
@@ -272,7 +272,7 @@ class Wiki
         }
 
         if ( $extension != 'md') {
-            $path = realpath(LIBRARY . DIRECTORY_SEPARATOR . $page);
+            $path = realpath(LIBRARY . DIRECTORY_SEPARATOR . $pagePath);
             $finfo = finfo_open(FILEINFO_MIME);
             $mime_type = trim(finfo_file($finfo, $path));
 
@@ -289,7 +289,7 @@ class Wiki
         }
 
         // echo "Page: ". $page;
-        $entrys = $ORM->getByPath($page);
+        $entrys = $ORM->getByPath($pagePath);
 
         $source="";
         if(!count($entrys) == 0){
@@ -297,9 +297,10 @@ class Wiki
         }
 
         $pageData = new stdClass();
+        $pageData->path = $pagePath;
         $pageData->page = $this->_default_page_data;
         $pageData->tree = $this->_getTree();
-        $pageData->backlinks = $this->_getBacklinks($page);
+        $pageData->backlinks = $this->_getBacklinks($pagePath);
         
         $pageData->source = str_replace("\\n", "\n", $source);;
         
@@ -444,11 +445,22 @@ class Wiki
         // echo "search info = ".$text;
     }
 
+
+    public function deleteAction()
+    {
+        $ORM = new \Notesee\DocsRedbeanDAO();
+        $path = $_REQUEST['path'];
+        $status = true;
+        // echo "Delete". $path;
+        $status = $ORM->deleteByPath($path);
+
+        $this->_json($status);
+    }
+
     protected function getTargetLinks($source){
         preg_match_all('/\[([^]]*)\] *\(([^)]*)\)/', $source, $matches);
         return $matches;
     }
-
 
     /**
      * Singleton

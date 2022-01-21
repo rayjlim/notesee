@@ -34,6 +34,7 @@ class DocsRedbeanDAO
         $doc->id = $id;
         return $doc;
     }
+
     /**
      * Update a Record
      * 
@@ -47,31 +48,6 @@ class DocsRedbeanDAO
         $doc  = \R::findOne(DOCS, ' path = ? ', [ $path] );
         $doc->content = str_replace("\n", "\\n", $content);
         \R::store($doc);
-        return $doc;
-    }
-    /**
-     * Delete a Record
-     * 
-     * @param $id Record Id
-     *
-     * @return LogEntry
-     */
-    public function delete($id)
-    {
-        $log = \R::load(DOCS, $id);
-        \R::trash($log);
-    }
-
-    /**
-     * Get a Record by Id
-     * 
-     * @param $id Record Id
-     *
-     * @return LogEntry
-     */
-    public function getById($id)
-    {
-        $doc = \R::load(DOCS, $id);
         return $doc;
     }
 
@@ -99,6 +75,21 @@ class DocsRedbeanDAO
         );
         return $sequencedArray;
     }
+
+    /**
+     * Delete a Document by Path
+     * 
+     * @param $path logical folder location
+     *
+     * @return Boolean was successful
+     */
+    public function deleteByPath($path)
+    {
+        $doc  = \R::findOne(DOCS, ' path = ? ', [ $path] );
+        \R::trash( $doc );
+        return true;
+    }
+
     /**
      * Get All Paths
      *
