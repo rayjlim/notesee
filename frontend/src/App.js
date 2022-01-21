@@ -5,6 +5,7 @@ import MdEditor from './components/MdEditor';
 import NetworkGraph from './components/NetworkGraph';
 import Tree from './components/Tree';
 import SearchTextForm from './components/SearchTextForm';
+import DeleteBtn from './components/DeleteBtn';
 import Constants from './constants';
 
 // import {Controlled as CodeMirror} from 'react-codemirror2'
@@ -31,6 +32,7 @@ function App() {
     showBreadcrumb: false,
     showTree: false,
     showSearch: true,
+    showDelete: false,
   });
 
   const checkLogin = async function (formUser = '', formPass = '') {
@@ -400,6 +402,15 @@ function App() {
               ) : (
                 <div>Graph - Hidden</div>
               )}
+
+              <button
+                onClick={e =>
+                  setVisual({ ...visual, showDelete: !visual.showDelete })
+                }
+              >
+                Toggle Delete {documentInfo.path}
+              </button>
+              {visual.showDelete ? <DeleteBtn path={documentInfo.path}/> : <div>_</div>}
             </Fragment>
           )}
           <button onClick={e => doLogout()}>Logout</button>

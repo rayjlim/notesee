@@ -14,9 +14,9 @@ function SearchTextForm(props) {
       useRef can store basically any value in its .current property
     */
     searchInput.current.value = '';
+    setResults({});
     searchInput.current.focus();
   }
-
   function sendSearchText() {
     (async () => {
       console.log('send search for: ' + query);
@@ -52,15 +52,7 @@ function SearchTextForm(props) {
       }
     })();
   }
-  function handleClearSearch() {
-    /* 
-      .current references the input element upon mount
-      useRef can store basically any value in its .current property
-    */
-    searchInput.current.value = '';
-    setResults({});
-    searchInput.current.focus();
-  }
+
   return (
     <Fragment>
       Search:{' '}

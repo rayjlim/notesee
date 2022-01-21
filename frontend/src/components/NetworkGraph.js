@@ -14,7 +14,7 @@ function NetworkGraph(props) {
     nodes: props.nodes.map((item, idx) => {
       const output = item
         .substring(0, item.length - 3)
-        .replace(/^.+\/([^\/]*)$/, '$1');
+        .replace(/^.+\/([^/]*)$/, '$1');
       return { id: item, label: output, title: item };
     }),
     edges: [],
@@ -33,7 +33,7 @@ function NetworkGraph(props) {
 
   const events = {
     select: function (event) {
-      var { nodes, edges } = event;
+      var { nodes } = event;
       if (nodes ) {
         alert(`going to ${nodes}`)
         var r = true;

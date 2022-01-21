@@ -30,15 +30,15 @@ if [ -z $SKIP_BUILD_BE ]; then
   chmod 755 *.php
   
   echo "Backend build ready"
-  cd ../notesee
+  cd ../scripts
 else
   echo "Skip Backend Build"
-  cd ../
+  cd ../scripts
 fi
 
 if [ -z "$SKIP_BUILD_FE" ]; then
   mkdir -p ../$PREP_DIR-ui
-  cd frontend
+  cd ../frontend
   npm run build
   buildresult=$?
   if [ $buildresult != 0 ]; then
@@ -70,7 +70,7 @@ rsync -rave  'ssh -oHostKeyAlgorithms=+ssh-dss' \
   --exclude-from 'be_production-exclude-push.txt' \
   --delete . $FTP_USER@$FTP_HOST:$FTP_TARGETFOLDER_API/
 
-cd ./$PREP_DIR-ui
+cd ../$PREP_DIR-ui
 pwd
 echo $FTP_TARGETFOLDER_UI
 rsync -rave  'ssh -oHostKeyAlgorithms=+ssh-dss' \
