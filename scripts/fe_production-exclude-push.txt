@@ -1,2 +1,0 @@
-*.txt
-production-exclude-push.txt

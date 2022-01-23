@@ -1,5 +1,4 @@
-
-**/_config/
+**/config/
 **/tests/
 **/.git/
 **/.vscode/

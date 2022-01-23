@@ -35,4 +35,3 @@ backend/vendor/*
 /notesee-api/*
 /notesee-ui/*
 frontend/.env
-frontend/.env.local
