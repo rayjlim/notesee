@@ -8,3 +8,7 @@ Documents are written in markdown.
 ## Development notes
 
 To release a new version `npx standard-version`
+
+### Setup Frontend
+
+Create `/frontend/.env` (use .env.example for reference) change example value for production value.
