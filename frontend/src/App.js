@@ -7,8 +7,6 @@ import SlideDrawer from './components/SlideDrawer.js';
 import Backdrop from './components/Backdrop.js';
 import Constants from './constants';
 
-// import {Controlled as CodeMirror} from 'react-codemirror2'
-
 const BREADCRUMB_MAX = 10;
 
 function App() {
@@ -28,7 +26,7 @@ function App() {
   const [visual, setVisual] = useState({
     loading: true,
     showCreateButton: false,
-    showBreadcrumb: false
+    showBreadcrumb: false,
   });
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -275,7 +273,7 @@ function App() {
 
   let backdrop;
   if (drawerOpen) {
-    backdrop = <Backdrop close={e=> drawerToggleClickHandler()}/>;
+    backdrop = <Backdrop close={e => drawerToggleClickHandler()} />;
   }
 
   return (
@@ -287,19 +285,21 @@ function App() {
           ) : (
             <Fragment>
               <div>
-                <div className='childDiv'>
-                  <SlideDrawer show={drawerOpen} documentInfo={documentInfo}/>
+                <div className="childDiv">
+                  <SlideDrawer show={drawerOpen} documentInfo={documentInfo} />
                   {backdrop}
-                  <button onClick={e=> drawerToggleClickHandler()}>Side Bar</button>
+                  <button onClick={e => drawerToggleClickHandler()}>
+                    Side Bar
+                  </button>
                 </div>
-                <div className='childDiv'>
-                  <button onClick={e => doLogout()} >Logout</button>
+                <div className="childDiv">
+                  <button onClick={e => doLogout()}>Logout</button>
                 </div>
               </div>
-             
+
               {visual.showCreateButton ? (
                 <Fragment>
-                  <button onClick={e => createPage()} className='create-btn'>
+                  <button onClick={e => createPage()} className="create-btn">
                     Create {documentInfo.path}
                   </button>
                 </Fragment>
@@ -307,71 +307,54 @@ function App() {
                 <Fragment />
               )}
 
-              <button onClick={e => switchMode()}>Switch Mode</button>
+              <button onClick={e => switchMode()}>
+                Switch Mode
+                {mode === 'edit' ? (
+                  <Fragment> : Editor</Fragment>
+                ) : (
+                  <Fragment>: Read</Fragment>
+                )}
+              </button>
               {mode === 'edit' ? (
-                <Fragment>
-                  Editor Mode
-                  {/* <CodeMirror
-  value={markdown}
-  options={{
-    mode: 'markdown',
-    lineNumbers: true,
-    theme: "default",
-    extraKeys: {"Enter": "newlineAndIndentContinueMarkdownList"},
-
-    scrollbarStyle: null,
-    lineWrapping: true,
-  }}
-  onBeforeChange={(editor, data, value) => {
-    console.log(editor, data, value);
-  }}
-  onUpdate={(editor, data, value) => {
-    console.log('cm change', value)
-    // setMarkdown(value);
-  }}
-/> */}
-                  <MdEditor
-                    content={documentInfo.markdown}
-                    path={documentInfo.path}
-                    onSave={updateMarkdown}
-                  />
-                </Fragment>
+                <MdEditor
+                  content={documentInfo.markdown}
+                  path={documentInfo.path}
+                  onSave={updateMarkdown}
+                />
               ) : (
-                <Fragment>
-                  Read Mode
-                  <div
-                    style={{ textAlign: 'left', padding: '.5em' }}
-                    dangerouslySetInnerHTML={{ __html: output }}
-                  />
-                </Fragment>
+                <div
+                  style={{ textAlign: 'left', padding: '.5em' }}
+                  dangerouslySetInnerHTML={{ __html: output }}
+                />
               )}
             </Fragment>
           )}
           <div className="breadcrumb">
-                <button
-                  onClick={e =>
-                    setVisual({
-                      ...visual,
-                      showBreadcrumb: !visual.showBreadcrumb,
-                    })
-                  }
-                >
-                 {visual.showBreadcrumb ? (
-                <Fragment >Hide</Fragment>
+            <button
+              onClick={e =>
+                setVisual({
+                  ...visual,
+                  showBreadcrumb: !visual.showBreadcrumb,
+                })
+              }
+            >
+              {visual.showBreadcrumb ? (
+                <Fragment>Hide</Fragment>
               ) : (
-                <Fragment >Show</Fragment>
-              )} Breadcrumb
-                </button>
-                <ul className='breadcrumb'>
-                  {visual.showBreadcrumb &&
-                    breadcrumb &&
-                    breadcrumb.map(item => (
-                      <li key={item + Math.random()}>
-                        <a href={item}>{item}</a>
-                      </li>
-                    ))}
-                </ul>
-              </div>
+                <Fragment>Show</Fragment>
+              )}{' '}
+              Breadcrumb
+            </button>
+            <ul className="breadcrumb">
+              {visual.showBreadcrumb &&
+                breadcrumb &&
+                breadcrumb.map(item => (
+                  <li key={item + Math.random()}>
+                    <a href={item}>{item}</a>
+                  </li>
+                ))}
+            </ul>
+          </div>
         </Fragment>
       ) : (
         <Fragment>

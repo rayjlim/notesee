@@ -15,3 +15,5 @@ if (!defined('APP_NAME')) {
 if (!defined('DEFAULT_FILE')) {
     define('DEFAULT_FILE', 'index.md');
 }
+
+define('LIBRARY', '');
