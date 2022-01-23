@@ -286,36 +286,17 @@ function App() {
             <span>Loading</span>
           ) : (
             <Fragment>
-              <SlideDrawer show={drawerOpen} documentInfo={documentInfo}/>
-              {backdrop}
-              <button onClick={e=> drawerToggleClickHandler()}>Side Bar</button>
-
               <div>
-                <button
-                  onClick={e =>
-                    setVisual({
-                      ...visual,
-                      showBreadcrumb: !visual.showBreadcrumb,
-                    })
-                  }
-                >
-                 {visual.showBreadcrumb ? (
-                <Fragment >Hide</Fragment>
-              ) : (
-                <Fragment >Show</Fragment>
-              )} Breadcrumb
-                </button>
-                <ul className='breadcrumb'>
-                  {visual.showBreadcrumb &&
-                    breadcrumb &&
-                    breadcrumb.map(item => (
-                      <li key={item + Math.random()}>
-                        <a href={item}>{item}</a>
-                      </li>
-                    ))}
-                </ul>
+                <div className='childDiv'>
+                  <SlideDrawer show={drawerOpen} documentInfo={documentInfo}/>
+                  {backdrop}
+                  <button onClick={e=> drawerToggleClickHandler()}>Side Bar</button>
+                </div>
+                <div className='childDiv'>
+                  <button onClick={e => doLogout()} >Logout</button>
+                </div>
               </div>
-
+             
               {visual.showCreateButton ? (
                 <Fragment>
                   <button onClick={e => createPage()} className='create-btn'>
@@ -366,7 +347,31 @@ function App() {
               )}
             </Fragment>
           )}
-          <button onClick={e => doLogout()}>Logout</button>
+          <div className="breadcrumb">
+                <button
+                  onClick={e =>
+                    setVisual({
+                      ...visual,
+                      showBreadcrumb: !visual.showBreadcrumb,
+                    })
+                  }
+                >
+                 {visual.showBreadcrumb ? (
+                <Fragment >Hide</Fragment>
+              ) : (
+                <Fragment >Show</Fragment>
+              )} Breadcrumb
+                </button>
+                <ul className='breadcrumb'>
+                  {visual.showBreadcrumb &&
+                    breadcrumb &&
+                    breadcrumb.map(item => (
+                      <li key={item + Math.random()}>
+                        <a href={item}>{item}</a>
+                      </li>
+                    ))}
+                </ul>
+              </div>
         </Fragment>
       ) : (
         <Fragment>

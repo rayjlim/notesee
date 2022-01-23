@@ -45,3 +45,8 @@
 .create-btn {
   background-color: crimson;
 }
+.childDiv{
+  text-align: right;
+  display:inline-block;
+  width:50%;
+}
