@@ -6,6 +6,8 @@ import NetworkGraph from './components/NetworkGraph';
 import Tree from './components/Tree';
 import SearchTextForm from './components/SearchTextForm';
 import DeleteBtn from './components/DeleteBtn';
+import SlideDrawer from './components/SlideDrawer.js';
+import Backdrop from './components/Backdrop.js';
 import Constants from './constants';
 
 // import {Controlled as CodeMirror} from 'react-codemirror2'
@@ -34,6 +36,7 @@ function App() {
     showSearch: true,
     showDelete: false,
   });
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const checkLogin = async function (formUser = '', formPass = '') {
     const prefix = Constants.REST_ENDPOINT;
@@ -272,6 +275,15 @@ function App() {
     // eslint-disable-next-line
   }, []);
 
+  const drawerToggleClickHandler = () => {
+    setDrawerOpen(!drawerOpen);
+  };
+
+  let backdrop;
+  if (drawerOpen) {
+    backdrop = <Backdrop close={e=> drawerToggleClickHandler()}/>;
+  }
+
   return (
     <div className="App">
       {isLoggedIn ? (
@@ -280,6 +292,9 @@ function App() {
             <span>Loading</span>
           ) : (
             <Fragment>
+              <SlideDrawer show={drawerOpen} />
+              {backdrop}
+              <button onClick={e=> drawerToggleClickHandler()}>Click me!</button>
               <button
                 onClick={e =>
                   setVisual({ ...visual, showSearch: !visual.showSearch })
@@ -410,7 +425,11 @@ function App() {
               >
                 Toggle Delete {documentInfo.path}
               </button>
-              {visual.showDelete ? <DeleteBtn path={documentInfo.path}/> : <div>_</div>}
+              {visual.showDelete ? (
+                <DeleteBtn path={documentInfo.path} />
+              ) : (
+                <div>_</div>
+              )}
             </Fragment>
           )}
           <button onClick={e => doLogout()}>Logout</button>
