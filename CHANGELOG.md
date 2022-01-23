@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.10](https://github.com/rayjlim/notesee/compare/v0.1.9...v0.1.10) (2022-01-23)
+
+
+### Features
+
+*  ✨ basic sliding window ([c2fa019](https://github.com/rayjlim/notesee/commit/c2fa019eb120d799d412e5b53d5103cc1a6ef298))
+* migrate visuals to sidebar ([18b84f3](https://github.com/rayjlim/notesee/commit/18b84f3f910e442eee3eacdf71d298d150f85618))
+
 ### [0.1.9](https://github.com/rayjlim/notesee/compare/v0.1.8...v0.1.9) (2022-01-21)
 
 ### [0.1.8](https://github.com/rayjlim/notesee/compare/v0.1.7...v0.1.8) (2021-10-12)
