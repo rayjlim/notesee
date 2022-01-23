@@ -2,10 +2,7 @@ import React, { useState, useEffect, Fragment } from 'react';
 import marked from 'marked';
 import './App.css';
 import MdEditor from './components/MdEditor';
-import NetworkGraph from './components/NetworkGraph';
-import Tree from './components/Tree';
-import SearchTextForm from './components/SearchTextForm';
-import DeleteBtn from './components/DeleteBtn';
+
 import SlideDrawer from './components/SlideDrawer.js';
 import Backdrop from './components/Backdrop.js';
 import Constants from './constants';
@@ -31,10 +28,7 @@ function App() {
   const [visual, setVisual] = useState({
     loading: true,
     showCreateButton: false,
-    showBreadcrumb: false,
-    showTree: false,
-    showSearch: true,
-    showDelete: false,
+    showBreadcrumb: false
   });
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -292,26 +286,39 @@ function App() {
             <span>Loading</span>
           ) : (
             <Fragment>
-              <SlideDrawer show={drawerOpen} />
+              <SlideDrawer show={drawerOpen} documentInfo={documentInfo}/>
               {backdrop}
-              <button onClick={e=> drawerToggleClickHandler()}>Click me!</button>
-              <button
-                onClick={e =>
-                  setVisual({ ...visual, showSearch: !visual.showSearch })
-                }
-              >
-                Search Form
-              </button>
-              {visual.showSearch ? (
-                <div style={{ textAlign: 'left' }}>
-                  <SearchTextForm />
-                </div>
+              <button onClick={e=> drawerToggleClickHandler()}>Side Bar</button>
+
+              <div>
+                <button
+                  onClick={e =>
+                    setVisual({
+                      ...visual,
+                      showBreadcrumb: !visual.showBreadcrumb,
+                    })
+                  }
+                >
+                 {visual.showBreadcrumb ? (
+                <Fragment >Hide</Fragment>
               ) : (
-                <div>Search Form</div>
-              )}
+                <Fragment >Show</Fragment>
+              )} Breadcrumb
+                </button>
+                <ul className='breadcrumb'>
+                  {visual.showBreadcrumb &&
+                    breadcrumb &&
+                    breadcrumb.map(item => (
+                      <li key={item + Math.random()}>
+                        <a href={item}>{item}</a>
+                      </li>
+                    ))}
+                </ul>
+              </div>
+
               {visual.showCreateButton ? (
                 <Fragment>
-                  <button onClick={e => createPage()}>
+                  <button onClick={e => createPage()} className='create-btn'>
                     Create {documentInfo.path}
                   </button>
                 </Fragment>
@@ -356,79 +363,6 @@ function App() {
                     dangerouslySetInnerHTML={{ __html: output }}
                   />
                 </Fragment>
-              )}
-
-              <div>
-                Breadcrumb{' '}
-                <button
-                  onClick={e =>
-                    setVisual({
-                      ...visual,
-                      showBreadcrumb: !visual.showBreadcrumb,
-                    })
-                  }
-                >
-                  Toggle Show Breadcrumb
-                </button>
-                <ul>
-                  {visual.showBreadcrumb &&
-                    breadcrumb &&
-                    breadcrumb.map(item => (
-                      <li key={item + Math.random()}>
-                        <a href={item}>{item}</a>
-                      </li>
-                    ))}
-                </ul>
-              </div>
-              <div>
-                Backlinks{' '}
-                <ul>
-                  {documentInfo.backlinks &&
-                    documentInfo.backlinks.map(item => (
-                      <li key={item + Math.random()}>
-                        <a href={`/${item}`}>{item}</a>
-                      </li>
-                    ))}
-                </ul>
-              </div>
-              <button
-                onClick={e =>
-                  setVisual({ ...visual, showTree: !visual.showTree })
-                }
-              >
-                Toggle Show Tree
-              </button>
-              {visual.showTree && documentInfo.tree.length > 1 ? (
-                <div style={{ textAlign: 'left' }}>
-                  <Tree items={documentInfo.tree} />
-                </div>
-              ) : (
-                <div>Tree - Hidden</div>
-              )}
-              <button
-                onClick={e =>
-                  setVisual({ ...visual, showGraph: !visual.showGraph })
-                }
-              >
-                Toggle Show Graph
-              </button>
-              {visual.showGraph && documentInfo.tree.length > 1 ? (
-                <NetworkGraph nodes={documentInfo.tree} />
-              ) : (
-                <div>Graph - Hidden</div>
-              )}
-
-              <button
-                onClick={e =>
-                  setVisual({ ...visual, showDelete: !visual.showDelete })
-                }
-              >
-                Toggle Delete {documentInfo.path}
-              </button>
-              {visual.showDelete ? (
-                <DeleteBtn path={documentInfo.path} />
-              ) : (
-                <div>_</div>
               )}
             </Fragment>
           )}
