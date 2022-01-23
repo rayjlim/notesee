@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.11](https://github.com/rayjlim/notesee/compare/v0.1.10...v0.1.11) (2022-01-23)
+
+
+### Features
+
+* ♻️ change hardcoded api endpoint to env var ([1480ae5](https://github.com/rayjlim/notesee/commit/1480ae5c342c6a990d4cfd749d747a7c4f5530b3))
+
+
+### Bug Fixes
+
+* 🔥 prune deploy vars and unused files ([e6b2363](https://github.com/rayjlim/notesee/commit/e6b2363110c89e291882856834de45d4060ff544))
+* 🔥 remove codemirror explicit include ([e7ba6f2](https://github.com/rayjlim/notesee/commit/e7ba6f2a5bdeb64db7f96705d6f6578572b46b9a))
+
 ### [0.1.10](https://github.com/rayjlim/notesee/compare/v0.1.9...v0.1.10) (2022-01-23)
 
 
