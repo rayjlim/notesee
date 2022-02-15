@@ -22,14 +22,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 scripts/env_vars.sh
-src/constants.js
-config/*
 
 frontend/build/*
 backend/config.php
-backend/scripts/env_vars.sh
-backend/library/*
-frontend/src/constants.js
 backend/vendor/*
 
 /notesee-api/*
