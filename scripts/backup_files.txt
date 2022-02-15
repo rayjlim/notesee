@@ -1,0 +1,5 @@
+./scripts/.env
+./frontend/.env
+./backend/.env
+./backend/.env.production
+./backend/config/.htaccess
