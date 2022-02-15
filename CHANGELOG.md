@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.12](https://github.com/rayjlim/notesee/compare/v0.1.11...v0.1.12) (2022-02-15)
+
+
+### Bug Fixes
+
+* 🚑 audit force update ([fd81f7b](https://github.com/rayjlim/notesee/commit/fd81f7bdeecf68e7faa7b551dab2adbd7d26570c))
+
 ### [0.1.11](https://github.com/rayjlim/notesee/compare/v0.1.10...v0.1.11) (2022-01-23)
 
 
