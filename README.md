@@ -9,6 +9,8 @@ Documents are written in markdown.
 
 To release a new version `npx standard-version`
 
+Issues managed at [Github](https://github.com/rayjlim/notesee/issues)
+
 ### Setup Frontend
 
 Create `/frontend/.env` (use .env.example for reference) change example value for production value.

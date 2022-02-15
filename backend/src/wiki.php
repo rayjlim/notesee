@@ -12,7 +12,7 @@ class Wiki
     protected $_action;
 
     protected $_default_page_data = array(
-        'title' => false, // will use APP_NAME by default
+        'title' => false,
         'description' => 'Notesee wiki.',
         'tags' => array('Notesee', 'wiki'),
         'page' => ''
@@ -104,12 +104,12 @@ class Wiki
                 echo $content;
             }
         } else {
-            echo '\n\n'.$content.'\n\n';
+            echo '\n\n' . $content . '\n\n';
             throw new Exception("View $view not found");
         }
     }
 
-    protected function _getTree($dir = LIBRARY,$prefix="")
+    protected function _getTree()
     {
         $ORM = new \Notesee\DocsRedbeanDAO();
         $paths = $ORM->getPaths();
@@ -151,7 +151,7 @@ class Wiki
     protected function _json($data = array())
     {
         header("Content-type: text/x-json");
-        echo(is_string($data) ? $data : json_encode($data));
+        echo (is_string($data) ? $data : json_encode($data));
         exit();
     }
 
@@ -187,7 +187,7 @@ class Wiki
 
     protected function _ErrorCode($code, $message = 'Page not found.')
     {
-        header('HTTP/1.0 '.$code.' '.$message, true);
+        header('HTTP/1.0 ' . $code . ' ' . $message, true);
         $page_data = $this->_default_page_data;
         $page_data['title'] = $message;
 
@@ -203,109 +203,110 @@ class Wiki
     {
         $request = parse_url($_SERVER['REQUEST_URI']);
         $pagePath = str_replace("###" . APP_DIR . "/", "", "###" . urldecode($request['path']));
-
+        if(str_ends_with($pagePath, '/')){
+            $pagePath .= $_ENV['DEFAULT_FILE'];
+        }
         // TODO: check and handle if $page is not valid
 
         try {
- 
+
             $ORM = new \Notesee\DocsRedbeanDAO();
-        // $parts = explode('/', $page);
+            // $parts = explode('/', $page);
 
-        // $not_found = function () use ($page) {
-        //     $page = htmlspecialchars($page, ENT_QUOTES);
-        //     // throw new Exception("Page '$page' was not found");
-        // };
+            // $not_found = function () use ($page) {
+            //     $page = htmlspecialchars($page, ENT_QUOTES);
+            //     // throw new Exception("Page '$page' was not found");
+            // };
 
-        // Handle directories by showing a neat listing of its
-        // contents
-        // if (is_dir($path)) {
-        //     echo "is dir";
-        //     if (!file_exists($path)) {
-        //         $not_found();
-        //     }
+            // Handle directories by showing a neat listing of its
+            // contents
+            // if (is_dir($path)) {
+            //     echo "is dir";
+            //     if (!file_exists($path)) {
+            //         $not_found();
+            //     }
 
-        //     if (file_exists($path . DIRECTORY_SEPARATOR . 'index.md')) {
-        //         return $this->_render('index.md');
-        //     }
+            //     if (file_exists($path . DIRECTORY_SEPARATOR . 'index.md')) {
+            //         return $this->_render('index.md');
+            //     }
 
-        //     // Get a printable version of the actual folder name:
-        //     $dir_name = htmlspecialchars(end($parts), ENT_QUOTES, 'UTF-8');
+            //     // Get a printable version of the actual folder name:
+            //     $dir_name = htmlspecialchars(end($parts), ENT_QUOTES, 'UTF-8');
 
-        //     // Get a printable version of the rest of the path,
-        //     // so that we can display it with a different appearance:
-        //     $rest_parts = array_slice($parts, 0, count($parts) - 1);
-        //     $rest_parts = htmlspecialchars(join("/", $rest_parts), ENT_QUOTES, 'UTF-8');
+            //     // Get a printable version of the rest of the path,
+            //     // so that we can display it with a different appearance:
+            //     $rest_parts = array_slice($parts, 0, count($parts) - 1);
+            //     $rest_parts = htmlspecialchars(join("/", $rest_parts), ENT_QUOTES, 'UTF-8');
 
-        //     // Pass this to the render view, cleverly disguised as just
-        //     // another page, so we can make use of the tree, breadcrumb,
-        //     // etc.
-        //     $page_data = $this->_default_page_data;
-        //     $page_data['title'] = 'Listing: ' . $dir_name;
+            //     // Pass this to the render view, cleverly disguised as just
+            //     // another page, so we can make use of the tree, breadcrumb,
+            //     // etc.
+            //     $page_data = $this->_default_page_data;
+            //     $page_data['title'] = 'Listing: ' . $dir_name;
 
-        //     $files = scandir($path);
-        //     $list = "<h2>I'm just an empty folder</h2>\n";
-        //     if (2 < count($files)) {
-        //         $list = "<h2>I'm a folder and I have</h2><ul>\n";
-        //         foreach ($files as $file) {
-        //             if (preg_match('/^\..*$/', $file)) {
-        //                 continue;
-        //             }
-        //             $list .= "<li><a href=\"". $_SERVER['REQUEST_URI'] ."/${file}\">${file}</a></li>\n";
-        //         }
-        //         $list .= "</ul>\n";
-        //     }
+            //     $files = scandir($path);
+            //     $list = "<h2>I'm just an empty folder</h2>\n";
+            //     if (2 < count($files)) {
+            //         $list = "<h2>I'm a folder and I have</h2><ul>\n";
+            //         foreach ($files as $file) {
+            //             if (preg_match('/^\..*$/', $file)) {
+            //                 continue;
+            //             }
+            //             $list .= "<li><a href=\"". $_SERVER['REQUEST_URI'] ."/${file}\">${file}</a></li>\n";
+            //         }
+            //         $list .= "</ul>\n";
+            //     }
 
-        //     $this->_view('render', array(
-        //         'parts' => $parts,
-        //         'page' => $page_data,
-        //         'html' => $list,
-        //         'is_dir' => true
-        //     ));
-        //     return;
-        // }
+            //     $this->_view('render', array(
+            //         'parts' => $parts,
+            //         'page' => $page_data,
+            //         'html' => $list,
+            //         'is_dir' => true
+            //     ));
+            //     return;
+            // }
 
-        $extension = substr($pagePath, strrpos($pagePath, '.') + 1, 20);
-        // echo ' check extension'. $extension;
-        if (false === $extension) {
-            // $not_found();
-            throw new Exception('No Extension');
-        }
+            $extension = substr($pagePath, strrpos($pagePath, '.') + 1, 20);
+            // echo ' check extension'. $extension;
+            if (false === $extension) {
+                // $not_found();
+                throw new Exception('No Extension');
+            }
 
-        if ( $extension != 'md') {
-            $path = realpath(LIBRARY . DIRECTORY_SEPARATOR . $pagePath);
-            $finfo = finfo_open(FILEINFO_MIME);
-            $mime_type = trim(finfo_file($finfo, $path));
+            if ($extension != 'md') {
+                $path = realpath(LIBRARY . DIRECTORY_SEPARATOR . $pagePath);
+                $finfo = finfo_open(FILEINFO_MIME);
+                $mime_type = trim(finfo_file($finfo, $path));
 
 
-            echo ('pass through: '.$mime_type);
-            // not an ASCII file, send it directly to the browser
-            $file = fopen($path, 'rb');
+                echo ('pass through: ' . $mime_type);
+                // not an ASCII file, send it directly to the browser
+                $file = fopen($path, 'rb');
 
-            header("Content-Type: $mime_type");
-            header("Content-Length: " . filesize($path));
+                header("Content-Type: $mime_type");
+                header("Content-Length: " . filesize($path));
 
-            fpassthru($file);
-            exit();
-        }
+                fpassthru($file);
+                exit();
+            }
 
-        // echo "Page: ". $page;
-        $entrys = $ORM->getByPath($pagePath);
+            // echo "Page: ". $page;
+            $entrys = $ORM->getByPath($pagePath);
 
-        $source="";
-        if(!count($entrys) == 0){
-            $source = $entrys[0]['content'];
-        }
+            $source = "";
+            if (!count($entrys) == 0) {
+                $source = $entrys[0]['content'];
+            }
 
-        $pageData = new stdClass();
-        $pageData->path = $pagePath;
-        $pageData->page = $this->_default_page_data;
-        $pageData->tree = $this->_getTree();
-        $pageData->backlinks = $this->_getBacklinks($pagePath);
-        
-        $pageData->source = str_replace("\\n", "\n", $source);;
-        
-        $this->_json($pageData);
+            $pageData = new stdClass();
+            $pageData->path = $pagePath;
+            $pageData->page = $this->_default_page_data;
+            $pageData->tree = $this->_getTree();
+            $pageData->backlinks = $this->_getBacklinks($pagePath);
 
+            $pageData->source = str_replace("\\n", "\n", $source);;
+
+            $this->_json($pageData);
         } catch (Exception $e) {
             $this->_404($e->getMessage());
         }
@@ -317,9 +318,10 @@ class Wiki
     public function editAction()
     {
         $ORM = new \Notesee\DocsRedbeanDAO();
-        
+
         // Bail out early if we don't get the right request method && params
-        if ($_SERVER['REQUEST_METHOD'] != 'POST'
+        if (
+            $_SERVER['REQUEST_METHOD'] != 'POST'
             || empty($_POST['ref']) || !isset($_POST['source'])
         ) {
             throw new Exception("Invalid/Missing parameters");
@@ -337,61 +339,59 @@ class Wiki
         // for files that aren't writable...
 
         // Check if empty
-        if(trim($source)){
+        if (trim($source)) {
             // TODO: error handling
             // TODO: Update Tree cache
             $entry = $ORM->update($path, $source);
-            
+
             // get backlinks
             $links = $this->getTargetLinks($source);
             // echo 'source links';
-            
-    // get prefix            
-            $prefix =  substr($path, 0,strrpos($path, '/'));
-            $prefix = strlen($prefix) ? $prefix.'/' : $prefix;
+
+            // get prefix            
+            $prefix =  substr($path, 0, strrpos($path, '/'));
+            $prefix = strlen($prefix) ? $prefix . '/' : $prefix;
 
             $prefixedLinks = [];
-           
+
             foreach ($links[2] as $link) {
                 if (
-                    strpos($link, "http://") === false && strpos($link, "https://") === false && strpos($link, "#") === false) {
-                    $targetValue = ($link[0] == '/') ? ltrim($link, '/') : $prefix.$link;
+                    strpos($link, "http://") === false && strpos($link, "https://") === false && strpos($link, "#") === false
+                ) {
+                    $targetValue = ($link[0] == '/') ? ltrim($link, '/') : $prefix . $link;
                     array_push($prefixedLinks, $targetValue);
-                }        
+                }
             }
-            
+
             // print_r($prefixedLinks);
             // get existing links for source $files
             $existing = $ORM->getForwardlinks($path);
             // echo 'existing';
             // print_r($existing);
 
-            $resultToAdd = array_unique (array_diff($prefixedLinks, $existing));
+            $resultToAdd = array_unique(array_diff($prefixedLinks, $existing));
             foreach ($resultToAdd as $item) {
-                 $ORM->addMapping($path, $item);
-                
+                $ORM->addMapping($path, $item);
             }
             $resultToRemove = array_diff($existing, $prefixedLinks);
             foreach ($resultToRemove as $item) {
                 $ORM->deleteMapping($path, $item);
-                      
             }
             // echo 'to add';
             // print_r($resultToAdd);
             // echo 'to remove';
             // print_r($resultToRemove);
             //compare targetlinks with existing links
-                //if matcch remove from both lists
+            //if matcch remove from both lists
             // with remaining
-                // remove, the existing list
-                // add the target links
+            // remove, the existing list
+            // add the target links
 
 
             $entry->action = 'edit';
             $entry->status = 'success';
             $this->_json($entry);
-
-        }else{
+        } else {
             echo 'Content was empty, Delete Document?';
             // Delete file and redirect too (but it will return 404)
             // unlink($path);
@@ -411,7 +411,7 @@ class Wiki
 
         $entrys = $ORM->getByPath($page);
 
-        if(count($entrys)){
+        if (count($entrys)) {
             throw new Error('record exists');
         }
         // TODO: error handling
@@ -419,7 +419,7 @@ class Wiki
         $entry = $ORM->insert($page, $content);
         $entry->action = 'create';
         $entry->status = 'success';
-        $this->_json($entry);      
+        $this->_json($entry);
     }
 
     public function networkAction()
@@ -436,7 +436,7 @@ class Wiki
         $text = $_REQUEST['text'];
         $entrys = $ORM->contentsContains($text);
 
-        $reduced_columns = array_map(function ($n){
+        $reduced_columns = array_map(function ($n) {
             return ($n->path);
         }, $entrys);
         // print_r($b);
@@ -457,7 +457,8 @@ class Wiki
         $this->_json($status);
     }
 
-    protected function getTargetLinks($source){
+    protected function getTargetLinks($source)
+    {
         preg_match_all('/\[([^]]*)\] *\(([^)]*)\)/', $source, $matches);
         return $matches;
     }

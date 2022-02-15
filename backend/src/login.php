@@ -31,7 +31,7 @@ class Login
     {
         // print_r(apache_request_headers());
         $headers = getallheaders();
-        $header_key = HEADER_APP_TOKEN;
+        $header_key = $_ENV['HEADER_APP_TOKEN'];
 
         if(!isset ($headers[$header_key]) )  {
             return null; 
@@ -39,7 +39,7 @@ class Login
         $headerStringValue = $headers[$header_key];
 
         // echo 'headerStringValue: '.$headerStringValue;
-        $token = base64_encode( ACCESS_USER.ACCESS_PASSWORD );
+        $token = base64_encode( $_ENV['ACCESS_USER'].$_ENV['ACCESS_PASSWORD'] );
         // echo 'header: '.$headerStringValue.", token: ".$token;
         return  ($headerStringValue === $token);
     }
@@ -58,7 +58,7 @@ class Login
 
         // Check credentials
 
-        if ($username !== ACCESS_USER || $password !== ACCESS_PASSWORD) {
+        if ($username !== $_ENV['ACCESS_USER'] || $password !== $_ENV['ACCESS_PASSWORD']) {
             return false;
         }
         echo "{\"token\": \"".base64_encode( $username.$password )."\"}" ;
@@ -97,7 +97,7 @@ class Login
      */
     public function dispatch()
     {
-        if (!defined('ACCESS_USER')) {
+        if (!array_key_exists('ACCESS_USER', $_ENV)){
             return true;
         }
         // Stop if user is aready logged in (exception from negative first)

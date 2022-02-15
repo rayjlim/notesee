@@ -1,6 +1,7 @@
 // # SlideDrawer.js
 import React from 'react';
 import './SlideDrawer.css'
+import pkg from '../../package.json';
 import SearchTextForm from './SearchTextForm';
 import Tree from './Tree';
 import NetworkGraph from './NetworkGraph';
@@ -69,6 +70,7 @@ export default class SlideDrawer extends React.Component {
              <div>
                 <DeleteBtn path={this.props.documentInfo.path} />
              </div>
+             <div className="drawer-footer">Notesee App v{pkg.version}</div>
           </div>
 )
     }

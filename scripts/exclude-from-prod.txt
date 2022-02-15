@@ -1,4 +1,4 @@
 *.txt
 composer.json
 composer.lock
-be_production-exclude-push.txt
+exclude-from-push.txt

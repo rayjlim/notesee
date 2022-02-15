@@ -1,0 +1,12 @@
+**/config/
+**/tests/
+**/vendor/
+**/build/
+
+*.md
+.env*
+.htaccess
+
+.phpunit-watcher.yml
+cs-ruleset.xml
+phpcs.xml
