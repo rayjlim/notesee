@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import marked from 'marked';
+import {marked} from 'marked';
 import './App.css';
 import MdEditor from './components/MdEditor';
 

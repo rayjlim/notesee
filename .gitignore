@@ -24,9 +24,11 @@ yarn-error.log*
 scripts/env_vars.sh
 
 frontend/build/*
-backend/config.php
-backend/vendor/*
 
-/notesee-api/*
-/notesee-ui/*
+backend/vendor/*
+backend/build/*
 frontend/.env
+backend/.env
+backend/.env.production
+scripts/.env
+backend/config/.htaccess
