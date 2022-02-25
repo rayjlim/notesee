@@ -83,7 +83,7 @@ function SlideDrawer(props) {
       <button onClick={e => toggleShowGraph(!showGraph)}>
         Toggle Show Graph
       </button>
-      {showGraph ? <NetworkGraph nodes={tree} /> : <div>Graph - Hidden</div>}
+      {showGraph && tree.length ? <NetworkGraph nodes={tree} /> : <div>Graph - Hidden</div>}
       <hr />
       <div>
         <DeleteBtn path={props.documentInfo.path} />

@@ -11,7 +11,7 @@ function NetworkGraph(props) {
   const [graph, setGraph] = useState({
     // /network?a=network
     //   { id: 1, label: "Node 1", title: "node 1 tootip text" },
-    nodes: props.nodes.map((item, idx) => {
+    nodes: props.nodes.map(item => {
       const output = item
         .substring(0, item.length - 3)
         .replace(/^.+\/([^/]*)$/, '$1');
@@ -19,9 +19,8 @@ function NetworkGraph(props) {
     }),
     edges: [],
   });
-  const [isLoaded, setLoaded] = useState(false);
 
-  const options = {
+  const graphOptions = {
     layout: {
       hierarchical: false,
     },
@@ -47,8 +46,7 @@ function NetworkGraph(props) {
   useEffect(() => {
     (async () => {
       try {
-        const prefix = Constants.REST_ENDPOINT;
-        const response = await fetch(`${prefix}/network?a=network`, {
+        const response = await fetch(`${Constants.REST_ENDPOINT}/network?a=network`, {
           method: 'GET',
           mode: 'cors',
           cache: 'no-cache',
@@ -70,7 +68,6 @@ function NetworkGraph(props) {
           console.log('results', edgesResult);
 
           setGraph({ ...graph, edges: edgesResult });
-          setLoaded(true);
         } else {
           console.log('Network response was not ok.');
         }
@@ -83,8 +80,8 @@ function NetworkGraph(props) {
   console.log(graph);
   return (
     <Fragment>
-      {isLoaded ? (
-        <Graph graph={graph} options={options} events={events} />
+      {(graph.nodes.length && graph.edges.length) ? (
+        <Graph graph={graph} options={graphOptions} events={events} />
       ) : (
         <Fragment>Loading Graph</Fragment>
       )}
