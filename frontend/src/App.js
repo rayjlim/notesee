@@ -223,15 +223,6 @@ function App() {
     smartypants: false,
   });
 
-  let output = '';
-  if (mode === 'read') {
-    try {
-      // console.log('rendering marked'+ markdown)
-      output = marked(markdown);
-    } catch (err) {
-      console.log(err);
-    }
-  }
   useEffect(() => {
     (async () => {
       const _mode = window.localStorage.getItem('mode');
@@ -317,12 +308,21 @@ function App() {
                 )}
               </button>
               {mode === 'edit' ? (
-                <MdEditor content={markdown} path={path} onSave={setMarkdown} />
-              ) : (
-                <div
-                  style={{ textAlign: 'left', padding: '.5em' }}
-                  dangerouslySetInnerHTML={{ __html: output }}
+                <MdEditor
+                  content={markdown}
+                  path={path}
+                  onSave={setMarkdown}
+                  mode={mode}
                 />
+              ) : (
+                <Fragment>
+                  <MdEditor
+                    content={markdown}
+                    path={path}
+                    onSave={setMarkdown}
+                    mode={mode}
+                  />
+                </Fragment>
               )}
             </Fragment>
           )}

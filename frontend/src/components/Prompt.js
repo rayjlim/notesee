@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 
 class Prompt extends React.Component {
   componentDidMount() {
@@ -17,7 +17,7 @@ class Prompt extends React.Component {
   }
 
   render() {
-    return <div></div>;
+    return <Fragment></Fragment>;
   }
 }
 

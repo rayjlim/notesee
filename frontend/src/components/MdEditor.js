@@ -6,12 +6,9 @@ import Prompt from './Prompt';
 import './MdEditor.css';
 
 const MdEditor = props => {
-  
   const [markdown, setMarkdown] = useState(props.content);
   const [hasChanges, setHasChanges] = useState(false);
   const [showEditor, setShowEditor] = useState(true);
-  
-  
 
   const save = async function () {
     console.log(markdown);
@@ -43,7 +40,7 @@ const MdEditor = props => {
         console.log(results);
         if (results.status === 'success') {
           setHasChanges(false);
-          props.onSave(markdown);
+          // props.onSave(markdown);
         } else {
           alert('Server Error on Save');
         }
@@ -56,7 +53,7 @@ const MdEditor = props => {
   };
 
   const editorOnchange = editor => {
-    console.log('onchange2 =>');
+    console.log('editorOnchange');
     // console.log( editor.getMarkdown());
 
     const modified = editor.getMarkdown();
@@ -76,15 +73,12 @@ const MdEditor = props => {
       console.log(match.index + ' ' + regex.lastIndex);
 
       const matchLen = match['1'].length;
-      const replaced = modified.replace(
-        regex,
-        `[${title}](${filename}.md)`
-      );
+      const replaced = modified.replace(regex, `[${title}](${filename}.md)`);
 
       // set the text
       editor.clear();
       editor.insertValue(replaced);
-      
+
       //place the cursor
       console.log(newCursor.ch, matchLen);
       newCursor.ch = newCursor.ch + matchLen + 3;
@@ -95,11 +89,13 @@ const MdEditor = props => {
 
     setMarkdown(editor.getMarkdown());
     setHasChanges(true);
-    props.onSave(editor.getMarkdown())
+    props.onSave(editor.getMarkdown());
   };
 
-  function firstTemplate(){
-    const newContent = markdown + `\n
+  function firstTemplate() {
+    const newContent =
+      markdown +
+      `\n
 ## Summary\n
 - 
 
@@ -111,28 +107,44 @@ const MdEditor = props => {
     setMarkdown(newContent);
     props.onSave(newContent);
     setShowEditor(false);
-    setTimeout(()=>{ setShowEditor(true);}, 100);
+    setTimeout(() => {
+      setShowEditor(true);
+    }, 20);
   }
+
+  const editorOnload = editor => {
+    console.log('editor loaded: ' + props.mode);
+    if (props.mode !== 'edit') {
+      editor.previewing();
+      editor.unwatch();
+      editor.watch();
+      // editor.fullscreen();
+      console.log('preview');
+    }
+  };
+
+  console.log('mdeditor: render' + props.mode);
   return (
     <Fragment>
       <Prompt dataUnsaved={hasChanges} />
-      <div className={hasChanges? 'changed' : 'unchanged'}>
-      <button onClick={e => save()}>Save</button>
-      <span> {hasChanges ? 'has changes' : 'unchanged'}</span> 
-      <button onClick={e => firstTemplate()}>Dev Template</button>
-      { showEditor && 
-
-      <Editor
-        config={{
-          path: '/assets/',
-          delay: 0, 
-          markdown: markdown,
-          onchange: editorOnchange,
-          lang: langSetting,
-        }}
-      />
-    }
-      <button onClick={e => save()}>Save</button>
+      <div className={hasChanges ? 'changed' : 'unchanged'}>
+        <button onClick={e => save()}>Save</button>
+        <span> {hasChanges ? 'has changes' : 'unchanged'}</span>
+        <button onClick={e => firstTemplate()}>Dev Template</button>
+        <span>{props.mode !== 'edit' ? <span>preview</span> : <span>editable</span>}</span>
+        {showEditor &&
+          <Editor
+                config={{
+                  path: '/assets/',
+                  delay: 0,
+                  markdown: markdown,
+                  lang: langSetting,
+                  onload: editorOnload,
+                  onchange: editorOnchange,
+                }}
+              />
+          }
+        <button onClick={e => save()}>Save</button>
       </div>
     </Fragment>
   );
