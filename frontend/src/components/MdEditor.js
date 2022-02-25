@@ -9,6 +9,9 @@ const MdEditor = props => {
   
   const [markdown, setMarkdown] = useState(props.content);
   const [hasChanges, setHasChanges] = useState(false);
+  const [showEditor, setShowEditor] = useState(true);
+  
+  
 
   const save = async function () {
     console.log(markdown);
@@ -51,6 +54,7 @@ const MdEditor = props => {
       alert('Error: ' + error);
     }
   };
+
   const editorOnchange = editor => {
     console.log('onchange2 =>');
     // console.log( editor.getMarkdown());
@@ -94,22 +98,40 @@ const MdEditor = props => {
     props.onSave(editor.getMarkdown())
   };
 
+  function firstTemplate(){
+    const newContent = markdown + `\n
+## Summary\n
+- 
+
+## Achievements\n
+- 
+
+## Next day\n
+- \n`;
+    setMarkdown(newContent);
+    props.onSave(newContent);
+    setShowEditor(false);
+    setTimeout(()=>{ setShowEditor(true);}, 100);
+  }
   return (
     <Fragment>
       <Prompt dataUnsaved={hasChanges} />
       <div className={hasChanges? 'changed' : 'unchanged'}>
       <button onClick={e => save()}>Save</button>
-      <span>{hasChanges ? 'has changes' : 'unchanged'}</span>
+      <span> {hasChanges ? 'has changes' : 'unchanged'}</span> 
+      <button onClick={e => firstTemplate()}>Dev Template</button>
+      { showEditor && 
+
       <Editor
         config={{
-          // testEditor.getMarkdown().replace(/`/g, '\\`')
           path: '/assets/',
           delay: 0, 
-          markdown: props.content,
+          markdown: markdown,
           onchange: editorOnchange,
           lang: langSetting,
         }}
       />
+    }
       <button onClick={e => save()}>Save</button>
       </div>
     </Fragment>
