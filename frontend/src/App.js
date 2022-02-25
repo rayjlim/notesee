@@ -92,10 +92,10 @@ function App() {
   const createPage = async () => {
     let pathname = window.location.pathname;
     console.log('create page');
-    const prefix = Constants.REST_ENDPOINT;
+
     const token = window.localStorage.getItem('appToken');
     try {
-      const response = await fetch(`${prefix}${pathname}?a=create`, {
+      const response = await fetch(`${Constants.REST_ENDPOINT}${pathname}?a=create`, {
         method: 'GET', // *GET, POST, PUT, DELETE, etc.
         mode: 'cors', // no-cors, *cors, same-origin
         cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -129,7 +129,7 @@ function App() {
     console.log('load');
     let pathname = window.location.pathname;
     console.log(pathname);
-    const prefix = Constants.REST_ENDPOINT;
+
     if (pathname === '/') {
       pathname = '/index.md';
     }
@@ -167,7 +167,7 @@ function App() {
     try {
       // handle history
 
-      const response = await fetch(prefix + pathname, {
+      const response = await fetch(`${Constants.REST_ENDPOINT}${pathname}`, {
         method: 'GET',
         mode: 'cors',
         cache: 'no-cache',
@@ -207,7 +207,6 @@ function App() {
         setDocInfo({
           ...documentInfo,
           backlinks: results.backlinks,
-          tree: results.tree,
           markdown: results.source,
           path: pathname.substring(1),
         });
