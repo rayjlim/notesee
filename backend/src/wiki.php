@@ -3,6 +3,8 @@ if (!defined('APP_STARTED')) {
     die('Forbidden!');
 }
 
+define("LIBRARY", __DIR__ . "/library");
+
 class Wiki
 {
 
@@ -203,7 +205,7 @@ class Wiki
     {
         $request = parse_url($_SERVER['REQUEST_URI']);
         $pagePath = str_replace("###" . APP_DIR . "/", "", "###" . urldecode($request['path']));
-        if(str_ends_with($pagePath, '/')){
+        if (str_ends_with($pagePath, '/')) {
             $pagePath .= $_ENV['DEFAULT_FILE'];
         }
         // TODO: check and handle if $page is not valid
@@ -275,18 +277,19 @@ class Wiki
 
             if ($extension != 'md') {
                 $path = realpath(LIBRARY . DIRECTORY_SEPARATOR . $pagePath);
+                // echo "path: " .$path;
                 $finfo = finfo_open(FILEINFO_MIME);
-                $mime_type = trim(finfo_file($finfo, $path));
+                // $mime_type = trim(finfo_file($finfo, $path));
 
 
-                echo ('pass through: ' . $mime_type);
+                // echo ('pass through: ' . $mime_type);
                 // not an ASCII file, send it directly to the browser
-                $file = fopen($path, 'rb');
+                // $file = fopen($path, 'rb');
 
-                header("Content-Type: $mime_type");
-                header("Content-Length: " . filesize($path));
+                // header("Content-Type: $mime_type");
+                // header("Content-Length: " . filesize($path));
 
-                fpassthru($file);
+                // fpassthru($file);
                 exit();
             }
 
@@ -332,7 +335,7 @@ class Wiki
         $path = base64_decode($ref);
 
         // Check if the file is safe to work with, otherwise just
-        // give back a generic 404 aswell, so we don't allow blind
+        // give back a generic 404 as well, so we don't allow blind
         // scanning of files:
         // @todo: we CAN give back a more informative error message
         // for files that aren't writable...
@@ -340,12 +343,11 @@ class Wiki
         // Check if empty
         if (trim($source)) {
             // TODO: error handling
-            // TODO: Update Tree cache
+
             $entry = $ORM->update($path, $source);
 
             // get backlinks
             $links = $this->getTargetLinks($source);
-            // echo 'source links';
 
             // get prefix            
             $prefix =  substr($path, 0, strrpos($path, '/'));
@@ -362,11 +364,8 @@ class Wiki
                 }
             }
 
-            // print_r($prefixedLinks);
             // get existing links for source $files
             $existing = $ORM->getForwardlinks($path);
-            // echo 'existing';
-            // print_r($existing);
 
             $resultToAdd = array_unique(array_diff($prefixedLinks, $existing));
             foreach ($resultToAdd as $item) {
@@ -376,23 +375,12 @@ class Wiki
             foreach ($resultToRemove as $item) {
                 $ORM->deleteMapping($path, $item);
             }
-            // echo 'to add';
-            // print_r($resultToAdd);
-            // echo 'to remove';
-            // print_r($resultToRemove);
-            //compare targetlinks with existing links
-            //if matcch remove from both lists
-            // with remaining
-            // remove, the existing list
-            // add the target links
 
             $entry->action = 'edit';
             $entry->status = 'success';
             $this->_json($entry);
         } else {
             echo 'Content was empty, Delete Document?';
-            // Delete file and redirect too (but it will return 404)
-            // unlink($path);
         }
     }
 
@@ -445,10 +433,12 @@ class Wiki
 
     public function deleteAction()
     {
-        $ORM = new \Notesee\DocsRedbeanDAO();
         $path = $_REQUEST['path'];
         $status = false;
+        $ORM = new \Notesee\DocsRedbeanDAO();
+        $ORM->deleteSourceMapping($path);
         $status = $ORM->deleteByPath($path);
+
         if ($status) {
             header('HTTP/1.0 204 No Content');
         } else {
@@ -457,8 +447,8 @@ class Wiki
         }
     }
 
-    public function getTreeAction(){
-        
+    public function getTreeAction()
+    {
         $pageData = new stdClass();
         $pageData->tree = $this->_getTree();
         $this->_json($pageData);

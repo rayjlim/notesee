@@ -15,7 +15,7 @@ define('MAPPING', 'ns_maps');
  * @license  lilplaytime http://www.lilplaytime.com
  * @link     www.lilplaytime.com
  */
-class DocsRedbeanDAO 
+class DocsRedbeanDAO
 {
     /**
      * Insert a Record
@@ -45,7 +45,7 @@ class DocsRedbeanDAO
      */
     public function update($path, $content)
     {
-        $doc  = \R::findOne(DOCS, ' path = ? ', [ $path] );
+        $doc  = \R::findOne(DOCS, ' path = ? ', [$path]);
         $doc->content = str_replace("\n", "\\n", $content);
         \R::store($doc);
         return $doc;
@@ -85,8 +85,8 @@ class DocsRedbeanDAO
      */
     public function deleteByPath($path)
     {
-        $doc  = \R::findOne(DOCS, ' path = ? ', [ $path] );
-        \R::trash( $doc );
+        $doc  = \R::findOne(DOCS, ' path = ? ', [$path]);
+        \R::trash($doc);
         return true;
     }
 
@@ -97,12 +97,13 @@ class DocsRedbeanDAO
      */
     public function getPaths()
     {
-        $found = \R::getCol('SELECT path from '.DOCS.' order by path');
+        $found = \R::getCol('SELECT path from ' . DOCS . ' order by path');
         return $found;
     }
 
-    public function getMaps(){
-        $found = \R::findAll(            MAPPING        );
+    public function getMaps()
+    {
+        $found = \R::findAll(MAPPING);
         $sequencedArray = array_values(
             array_map(
                 function ($item) {
@@ -111,18 +112,18 @@ class DocsRedbeanDAO
                 $found
             )
         );
-        return $sequencedArray; 
+        return $sequencedArray;
     }
-    
+
     public function getBacklinks($path)
     {
-        $found = \R::getCol('SELECT source from ' . MAPPING . ' where target = \''.$path.'\'');
+        $found = \R::getCol('SELECT source from ' . MAPPING . ' where target = \'' . $path . '\'');
         return $found;
     }
 
     public function getForwardlinks($path)
     {
-        $found = \R::getCol('SELECT target from ' . MAPPING . ' where source = \''.$path.'\'');
+        $found = \R::getCol('SELECT target from ' . MAPPING . ' where source = \'' . $path . '\'');
         return $found;
     }
     public function addMapping($source, $target)
@@ -136,15 +137,22 @@ class DocsRedbeanDAO
 
     public function deleteMapping($source, $target)
     {
-        $mapping  = \R::findOne(MAPPING, ' source = ? AND target = ?', [ $source, $target] );
+        $mapping  = \R::findOne(MAPPING, ' source = ? AND target = ?', [$source, $target]);
         \R::trash($mapping);
     }
 
+    public function deleteSourceMapping($source)
+    {
+        $mappings  = \R::find(MAPPING, ' source = ? ', [$source]);
+        foreach ($mappings as $mapping) {
+            \R::trash($mapping);
+        }
+    }
+    
     // SEARCH
     public function contentsContains($text)
     {
-        $found = \R::find(DOCS, ' content LIKE ? ', [ '%'.$text.'%' ] );
+        $found = \R::find(DOCS, ' content LIKE ? ', ['%' . $text . '%']);
         return $found;
     }
-    
 }
