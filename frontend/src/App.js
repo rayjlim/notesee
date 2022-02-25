@@ -10,11 +10,9 @@ import Constants from './constants';
 const BREADCRUMB_MAX = 10;
 
 function App() {
-  const [documentInfo, setDocInfo] = useState({
-    path: '',
-    markdown: '',
-    tree: [],
-  });
+  const [markdown, setMarkdown] = useState('');
+  const [path, setPath] = useState('');
+  const [backlinks, setBacklinks] = useState([]);
 
   const [isLoggedIn, setLoggedIn] = useState(false);
 
@@ -83,10 +81,6 @@ function App() {
     console.log('switchMode', newMode);
     window.localStorage.setItem('mode', newMode);
     setMode(newMode);
-  };
-
-  const updateMarkdown = content => {
-    setDocInfo({ ...documentInfo, mardown: content });
   };
 
   const createPage = async () => {
@@ -204,12 +198,9 @@ function App() {
         }
         console.log('results', results);
 
-        setDocInfo({
-          ...documentInfo,
-          backlinks: results.backlinks,
-          markdown: results.source,
-          path: pathname.substring(1),
-        });
+        setMarkdown(results.source);
+        setPath(pathname.substring(1));
+        setBacklinks(results.backlinks);
         setVisual({ ...visual, loading: false, showCreateButton });
       } else {
         console.log('Network response was not ok.');
@@ -231,7 +222,8 @@ function App() {
 
   let output = '';
   try {
-    output = marked(documentInfo.markdown);
+    console.log('rendering marked'+ markdown)
+    output = marked(markdown);
   } catch (err) {
     console.log(err);
   }
@@ -275,6 +267,10 @@ function App() {
     backdrop = <Backdrop close={e => drawerToggleClickHandler()} />;
   }
 
+  const documentInfo = {
+    markdown, path, backlinks
+  }
+
   return (
     <div className="App">
       {isLoggedIn ? (
@@ -285,7 +281,7 @@ function App() {
             <Fragment>
               <div>
                 <div className="childDiv">
-                  <SlideDrawer show={drawerOpen} documentInfo={documentInfo} />
+                  <SlideDrawer show={drawerOpen} documentInfo={documentInfo } />
                   {backdrop}
                   <button onClick={e => drawerToggleClickHandler()}>
                     Side Bar
@@ -299,7 +295,7 @@ function App() {
               {visual.showCreateButton ? (
                 <Fragment>
                   <button onClick={e => createPage()} className="create-btn">
-                    Create {documentInfo.path}
+                    Create {path}
                   </button>
                 </Fragment>
               ) : (
@@ -316,9 +312,9 @@ function App() {
               </button>
               {mode === 'edit' ? (
                 <MdEditor
-                  content={documentInfo.markdown}
-                  path={documentInfo.path}
-                  onSave={updateMarkdown}
+                  content={markdown}
+                  path={path}
+                  onSave={setMarkdown}
                 />
               ) : (
                 <div
