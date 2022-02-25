@@ -26,10 +26,7 @@ function DeleteBtn(props) {
         );
 
         if (response.ok) {
-          const results = await response.json();
-
-          console.log('results', results);
-          alert(`deleted ${props.path}`);
+          alert(`Deleted ${props.path}`);
         } else {
           console.log('Network response was not ok.');
         }

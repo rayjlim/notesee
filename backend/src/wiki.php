@@ -450,11 +450,14 @@ class Wiki
     {
         $ORM = new \Notesee\DocsRedbeanDAO();
         $path = $_REQUEST['path'];
-        $status = true;
-        // echo "Delete". $path;
+        $status = false;
         $status = $ORM->deleteByPath($path);
-
-        $this->_json($status);
+        if ($status) {
+            header('HTTP/1.0 204 No Content');
+        } else {
+            header('HTTP/1.0 500 Server Error');
+            echo "Unable to Delete " . $path;
+        }
     }
 
     protected function getTargetLinks($source)
