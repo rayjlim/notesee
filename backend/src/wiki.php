@@ -301,7 +301,6 @@ class Wiki
             $pageData = new stdClass();
             $pageData->path = $pagePath;
             $pageData->page = $this->_default_page_data;
-            $pageData->tree = $this->_getTree();
             $pageData->backlinks = $this->_getBacklinks($pagePath);
 
             $pageData->source = str_replace("\\n", "\n", $source);;
@@ -387,7 +386,6 @@ class Wiki
             // remove, the existing list
             // add the target links
 
-
             $entry->action = 'edit';
             $entry->status = 'success';
             $this->_json($entry);
@@ -445,7 +443,6 @@ class Wiki
         // echo "search info = ".$text;
     }
 
-
     public function deleteAction()
     {
         $ORM = new \Notesee\DocsRedbeanDAO();
@@ -458,6 +455,13 @@ class Wiki
             header('HTTP/1.0 500 Server Error');
             echo "Unable to Delete " . $path;
         }
+    }
+
+    public function getTreeAction(){
+        
+        $pageData = new stdClass();
+        $pageData->tree = $this->_getTree();
+        $this->_json($pageData);
     }
 
     protected function getTargetLinks($source)
