@@ -56,9 +56,9 @@ const MdEditor = props => {
     // console.log( editor.getMarkdown());
 
     const modified = editor.getMarkdown();
-
+    console.log(editor);
     let newCursor = editor.getCursor();
-    console.log(newCursor);
+    // console.log(newCursor);
     const regex = /\[\[(.+?)\]\][ ]/g;
     let match = regex.exec(modified);
     console.log(match);
@@ -80,11 +80,13 @@ const MdEditor = props => {
       // set the text
       editor.clear();
       editor.insertValue(replaced);
-
+      
       //place the cursor
       console.log(newCursor.ch, matchLen);
       newCursor.ch = newCursor.ch + matchLen + 3;
       editor.setCursor(newCursor);
+      editor.unwatch();
+      editor.watch();
     }
 
     setMarkdown(editor.getMarkdown());
