@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import {marked} from 'marked';
+import { marked } from 'marked';
 import './App.css';
 import MdEditor from './components/MdEditor';
 
@@ -89,18 +89,21 @@ function App() {
 
     const token = window.localStorage.getItem('appToken');
     try {
-      const response = await fetch(`${Constants.REST_ENDPOINT}${pathname}?a=create`, {
-        method: 'GET', // *GET, POST, PUT, DELETE, etc.
-        mode: 'cors', // no-cors, *cors, same-origin
-        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: 'same-origin', // include, *same-origin, omit
-        headers: {
-          'Content-Type': 'application/json',
-          'x-app-token': token,
-        },
-        redirect: 'follow', // manual, *follow, error
-        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      });
+      const response = await fetch(
+        `${Constants.REST_ENDPOINT}${pathname}?a=create`,
+        {
+          method: 'GET', // *GET, POST, PUT, DELETE, etc.
+          mode: 'cors', // no-cors, *cors, same-origin
+          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: 'same-origin', // include, *same-origin, omit
+          headers: {
+            'Content-Type': 'application/json',
+            'x-app-token': token,
+          },
+          redirect: 'follow', // manual, *follow, error
+          referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        }
+      );
 
       if (response.ok) {
         const results = await response.json();
@@ -221,13 +224,14 @@ function App() {
   });
 
   let output = '';
-  try {
-    console.log('rendering marked'+ markdown)
-    output = marked(markdown);
-  } catch (err) {
-    console.log(err);
+  if (mode === 'read') {
+    try {
+      // console.log('rendering marked'+ markdown)
+      output = marked(markdown);
+    } catch (err) {
+      console.log(err);
+    }
   }
-
   useEffect(() => {
     (async () => {
       const _mode = window.localStorage.getItem('mode');
@@ -268,8 +272,10 @@ function App() {
   }
 
   const documentInfo = {
-    markdown, path, backlinks
-  }
+    markdown,
+    path,
+    backlinks,
+  };
 
   return (
     <div className="App">
@@ -281,7 +287,7 @@ function App() {
             <Fragment>
               <div>
                 <div className="childDiv">
-                  <SlideDrawer show={drawerOpen} documentInfo={documentInfo } />
+                  <SlideDrawer show={drawerOpen} documentInfo={documentInfo} />
                   {backdrop}
                   <button onClick={e => drawerToggleClickHandler()}>
                     Side Bar
@@ -311,11 +317,7 @@ function App() {
                 )}
               </button>
               {mode === 'edit' ? (
-                <MdEditor
-                  content={markdown}
-                  path={path}
-                  onSave={setMarkdown}
-                />
+                <MdEditor content={markdown} path={path} onSave={setMarkdown} />
               ) : (
                 <div
                   style={{ textAlign: 'left', padding: '.5em' }}
