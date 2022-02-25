@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.14](https://github.com/rayjlim/notesee/compare/v0.1.13...v0.1.14) (2022-02-25)
+
+
+### Bug Fixes
+
+* ♻️ delete action returns 204 [#53](https://github.com/rayjlim/notesee/issues/53) ([23bcc91](https://github.com/rayjlim/notesee/commit/23bcc9135b95f91064eabbc9c066531768dee679))
+* ⚡️ only pass tree on graph or tree usage [#43](https://github.com/rayjlim/notesee/issues/43) ([e4c12a6](https://github.com/rayjlim/notesee/commit/e4c12a6bfb1b443e50504c502835ad3575d01b03))
+* 🐛 remove mappings on delete ([fe79d14](https://github.com/rayjlim/notesee/commit/fe79d14a63b882effc81bee26ab4732f87461152))
+
 ### [0.1.13](https://github.com/rayjlim/notesee/compare/v0.1.12...v0.1.13) (2022-02-15)
 
 ### [0.1.12](https://github.com/rayjlim/notesee/compare/v0.1.11...v0.1.12) (2022-02-15)
