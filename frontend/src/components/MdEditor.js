@@ -67,7 +67,7 @@ const MdEditor = props => {
       console.log(match['1']);
 
       const title = match['1'].replace(/-/g, ' ');
-      const filename = match['1'].replace(/ /g, '-');
+      const filename = match['1'].replace(/ /g, '-').toLowerCase();
 
       console.log(match.index + ' ' + regex.lastIndex);
 
