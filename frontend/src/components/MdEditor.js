@@ -115,11 +115,18 @@ const MdEditor = props => {
   const editorOnload = editor => {
     console.log('editor loaded: ' + props.mode);
     if (props.mode !== 'edit') {
-      editor.previewing();
+      
       editor.unwatch();
       editor.watch();
+      editor.previewing();
       // editor.fullscreen();
       console.log('preview');
+    }else{
+      editor.previewing();
+      setTimeout(() => {
+        editor.previewing();
+      }, 20);
+      
     }
   };
 
