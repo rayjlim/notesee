@@ -13,10 +13,6 @@ frontend/node_modules
 
 # misc
 .DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
 
 npm-debug.log*
 yarn-debug.log*
@@ -27,8 +23,10 @@ frontend/build/*
 
 backend/vendor/*
 backend/build/*
+
 frontend/.env
 backend/.env
 backend/.env.production
-scripts/.env
 backend/config/.htaccess
+scripts/.env
+scripts/passfile.txt
