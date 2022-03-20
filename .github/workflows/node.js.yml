@@ -44,7 +44,8 @@ jobs:
 
     - name: Run test suite
       run: composer run-script test
-       
+      working-directory: ./backend
+      
     # - name: Use Node.js ${{ matrix.node-version }}
     #   uses: actions/setup-node@v2
     #   with:
