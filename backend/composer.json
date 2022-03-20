@@ -1,5 +1,6 @@
 {
     "name": "lilplaytime/notesee-api",
+    "description": "Note Taking Management app",
     "license": "MIT",
     "authors": [
         {
