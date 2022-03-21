@@ -4,6 +4,7 @@ if (!defined('APP_STARTED')) {
 }
 
 define("LIBRARY", __DIR__ . "/library");
+define("YEAR_MONTH_FORMAT", "Y-m");
 
 class Wiki
 {
@@ -454,10 +455,74 @@ class Wiki
         $this->_json($pageData);
     }
 
+    public function uploadImageAction(){
+        // DevHelp::debugMsg('upload' . __FILE__);
+
+        $filePath = $_POST["filePath"] . '/' ?? date(YEAR_MONTH_FORMAT);
+        $targetDir = $_ENV['UPLOAD_DIR'] . $filePath;
+        $urlFileName = strtolower(preg_replace('/\s+/', '_', trim(basename($_FILES["fileToUpload"]["name"]))));
+        $targetFileFullPath = $_ENV['UPLOAD_DIR'] . $filePath . $urlFileName;
+
+        $imageFileType = strtolower(pathinfo($targetFileFullPath, PATHINFO_EXTENSION));
+        $validFileExt = array("jpg", "png", "jpeg", "gif");
+        $createdDir = false;
+
+        try {
+            // TODO: Check if image file is a actual image or fake image
+            $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
+            if ($check == false) {
+                throw new Exception("File is not an image");
+            }
+
+            // Check if directory already exists
+            if (!file_exists($targetDir)) {
+                $createdDir = true;
+                mkdir($targetDir, 0755);
+            }
+
+            // Check if file already exists
+            if (file_exists($targetFileFullPath)) {
+                throw new Exception(" file already exists." . "![](../uploads/" . $filePath . $urlFileName . ")" . ' of ' . $_ENV['UPLOAD_SIZE_LIMIT']);
+            }
+
+            // Check file size
+            if ($_FILES["fileToUpload"]["size"] > $_ENV['UPLOAD_SIZE_LIMIT']) {
+                throw new Exception("Sorry, your file is too large." . $_FILES["fileToUpload"]["size"] . ' of ' . $_ENV['UPLOAD_SIZE_LIMIT']);
+            }
+            // Allow certain file formats
+            if (!in_array($imageFileType, $validFileExt)) {
+                throw new Exception("only JPG, JPEG, PNG & GIF files are allowed");
+            }
+
+            if (!move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $targetFileFullPath)) {
+                throw new Exception("Sorry, there was an error moving upload file");
+            }
+
+            // TODO: check image size, if greater than X, then resize
+
+            $data['fileName'] = $urlFileName;
+            $data['filePath'] = $filePath;
+            $data['createdDir'] = $createdDir;
+
+            echo json_encode($data);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo 'Caught exception: ', $e->getMessage(), $targetDir, '\n';
+            echo 'targetFileFullPath: ', $targetFileFullPath, '\n';
+        }
+        
+    }
+
     protected function getTargetLinks($source)
     {
         preg_match_all('/\[([^]]*)\] *\(([^)]*)\)/', $source, $matches);
         return $matches;
+    }
+
+    function addOne($number)
+    {
+
+        return $number + 1;
     }
 
     /**

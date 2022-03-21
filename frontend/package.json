@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "caniuse-lite": "^1.0.30001265",
+    "date-fns": "^2.28.0",
     "marked": "^4.0.10",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
@@ -19,7 +20,7 @@
   },
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "start": "REACT_APP_API_ENDPOINT=http://localhost/projects/notesee/backend PORT=3002 react-scripts start",
+    "start": "REACT_APP_API_ENDPOINT=http://localhost/projects/notesee/backend REACT_APP_IMG_PATH=http://localhost/projects/notesee/uploads PORT=3002 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

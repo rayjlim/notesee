@@ -7,6 +7,7 @@ import SearchTextForm from './SearchTextForm';
 import Tree from './Tree';
 import NetworkGraph from './NetworkGraph';
 import DeleteBtn from './DeleteBtn';
+import UploadForm from './UploadForm.jsx';
 
 function SlideDrawer(props) {
   const [showTree, toggleShowTree] = useState(false);
@@ -72,6 +73,7 @@ function SlideDrawer(props) {
             ))}
         </ul>
       </div>
+      <UploadForm />
       <button onClick={e => toggleShowTree(!showTree)}>Toggle Show Tree</button>
       {showTree ? (
         <div className="scroll">
