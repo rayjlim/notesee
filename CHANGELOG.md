@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.15](https://github.com/rayjlim/notesee/compare/v0.1.14...v0.1.15) (2022-03-21)
+
+
+### Features
+
+* ✅ setup unit testing (backend) ([4263c55](https://github.com/rayjlim/notesee/commit/4263c55e7e5eccb9cf91f9359dd170a08c0785c3))
+* ✨ [#44](https://github.com/rayjlim/notesee/issues/44) first parts of templates ([0163d58](https://github.com/rayjlim/notesee/commit/0163d58247a25f4b9b419a17ae95dd01b75f7a07))
+* ✨ image upload capability ([749568a](https://github.com/rayjlim/notesee/commit/749568ad465fd14213feeba43fe432f54c0c2c8c))
+
+
+### Bug Fixes
+
+* ♻️ refactor prefix usage ([aeb5e63](https://github.com/rayjlim/notesee/commit/aeb5e638b51e9aa7c9cd3348b15edfab3be08d51))
+* 🐛 [#45](https://github.com/rayjlim/notesee/issues/45) wiki links style to lowercase ([c96731c](https://github.com/rayjlim/notesee/commit/c96731ce6ff3fb0ea2c7a0d20a6d1ecea48b708f))
+* 🐛 [#45](https://github.com/rayjlim/notesee/issues/45) wiki links use lowercase ([6549d6d](https://github.com/rayjlim/notesee/commit/6549d6dc27bbca40f8ffb8912e8e9f5559b29fde))
+* 🐛 network graph data timing ([d5546f8](https://github.com/rayjlim/notesee/commit/d5546f878295f487bad77c0da0e443b8d2d2ea50))
+* 🔒️ encrypt secrets for easier maintenance ([a5da8ed](https://github.com/rayjlim/notesee/commit/a5da8eda56d609bd598308e5d13fa29f0e6ce216))
+* Use editor for preview too ([5081379](https://github.com/rayjlim/notesee/commit/50813790107d840c57b265585209fcb189dd3bc7))
+
 ### [0.1.15](https://github.com/rayjlim/notesee/compare/v0.1.14...v0.1.15) (2022-02-25)
 
 
