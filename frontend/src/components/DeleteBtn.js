@@ -8,9 +8,8 @@ function DeleteBtn(props) {
     (async () => {
       console.log('delete path: ' + props.path);
       try {
-        const prefix = Constants.REST_ENDPOINT;
         const response = await fetch(
-          `${prefix}/search?a=delete&path=${props.path}`,
+          `${Constants.REST_ENDPOINT}/search?a=delete&path=${props.path}`,
           {
             method: 'GET',
             mode: 'cors',

@@ -30,3 +30,4 @@ backend/.env.production
 backend/config/.htaccess
 scripts/.env
 scripts/passfile.txt
+uploads/*
