@@ -67,6 +67,10 @@ function App() {
     const token = await checkLogin(user, password);
     setUser('');
     setPassword('');
+    if(!token){
+      alert('invalid login')
+      return;
+    }
     console.log(token);
     await load(token);
   };
