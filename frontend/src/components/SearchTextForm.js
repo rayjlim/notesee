@@ -21,9 +21,9 @@ function SearchTextForm(props) {
     (async () => {
       console.log('send search for: ' + query);
       try {
-        const prefix = Constants.REST_ENDPOINT;
+        
         const response = await fetch(
-          `${prefix}/search?a=search&text=${query}`,
+          `${Constants.REST_ENDPOINT}/search?a=search&text=${query}`,
           {
             method: 'GET',
             mode: 'cors',
