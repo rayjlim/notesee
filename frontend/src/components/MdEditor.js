@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import Editor from 'react-editor-md';
 import langSetting from '../lang';
 import Constants from '../constants';
@@ -97,13 +97,11 @@ const MdEditor = props => {
       markdown +
       `\n
 ## Summary\n
-- 
-
+- a\n
 ## Achievements\n
-- 
-
+- b\n
 ## Next day\n
-- \n`;
+- c\n`;
     setMarkdown(newContent);
     props.onSave(newContent);
     setShowEditor(false);
@@ -115,43 +113,65 @@ const MdEditor = props => {
   const editorOnload = editor => {
     console.log('editor loaded: ' + props.mode);
     if (props.mode !== 'edit') {
-      
       editor.unwatch();
       editor.watch();
       editor.previewing();
       // editor.fullscreen();
       console.log('preview');
-    }else{
+    } else {
       editor.previewing();
       setTimeout(() => {
         editor.previewing();
       }, 20);
-      
     }
   };
 
-  console.log('mdeditor: render' + props.mode);
+  const handleKeyDown = function (e) {
+    console.log('mdeditor: handle key presss' + e.which + ':' + hasChanges);
+    if (e.altKey && e.which === 83) {
+      // S
+      console.log('S keybinding');
+      save();
+    } else if (e.ctrlKey && e.shiftKey && e.which === 49) {
+      // F
+      console.log('shift 1 - template keybinding');
+      firstTemplate();
+    }
+  };
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+  }, []);
+  const divStyle = {
+    width: '50%',
+    display: 'inline-block',
+  };
+  // console.log('mdeditor: render ' + props.mode);
   return (
     <Fragment>
       <Prompt dataUnsaved={hasChanges} />
       <div className={hasChanges ? 'changed' : 'unchanged'}>
-        <button onClick={e => save()}>Save</button>
-        <span> {hasChanges ? 'has changes' : 'unchanged'}</span>
-        <button onClick={e => firstTemplate()}>Dev Template</button>
-        <span>{props.mode !== 'edit' ? <span>preview</span> : <span>editable</span>}</span>
-        {showEditor &&
+        <div style={divStyle}>
+          <button onClick={e => save()}>Save</button>
+          <span> {hasChanges ? 'has changes' : 'unchanged'}</span>
+        </div>
+        <div style={divStyle}>
+          {props.mode !== 'edit' ? <span>preview</span> : <span>editable</span>}
+        </div>
+
+        {showEditor && (
           <Editor
-                config={{
-                  path: '/assets/',
-                  delay: 0,
-                  markdown: markdown,
-                  lang: langSetting,
-                  onload: editorOnload,
-                  onchange: editorOnchange,
-                }}
-              />
-          }
+            config={{
+              path: '/assets/',
+              delay: 0,
+              markdown: markdown,
+              lang: langSetting,
+              onload: editorOnload,
+              onchange: editorOnchange,
+            }}
+          />
+        )}
         <button onClick={e => save()}>Save</button>
+        <button onClick={e => firstTemplate()}>Dev Template</button>
       </div>
     </Fragment>
   );
