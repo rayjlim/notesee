@@ -151,7 +151,7 @@ const MdEditor = props => {
       <Prompt dataUnsaved={hasChanges} />
       <div className={hasChanges ? 'changed' : 'unchanged'}>
         <div style={divStyle}>
-          <button onClick={e => save()}>Save</button>
+          <button onClick={e => save()} title="Alt/Opt + S">Save</button>
           <span> {hasChanges ? 'has changes' : 'unchanged'}</span>
         </div>
         <div style={divStyle}>
@@ -170,8 +170,8 @@ const MdEditor = props => {
             }}
           />
         )}
-        <button onClick={e => save()}>Save</button>
-        <button onClick={e => firstTemplate()}>Dev Template</button>
+        <button onClick={e => save()} title="Alt/Opt + S">Save</button>
+        <button onClick={e => firstTemplate()} title="Ctrl + Shift + 1">Dev Template</button>
       </div>
     </Fragment>
   );

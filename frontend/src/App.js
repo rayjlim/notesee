@@ -273,10 +273,16 @@ function App() {
   };
 
   const handleKeyDown = function (e) {
-    if (e.altKey & (e.which === 66)) {
+    if (e.altKey && e.which === 66) {
       console.log('B keybinding');
       drawerToggleClickHandler();
-    } else if (e.altKey && e.shiftKey && e.which === 70) {
+    } 
+    else if (e.altKey && e.which === 77) {
+      // F will toggle favorite
+      console.log('M keybinding');
+      switchMode();
+    }
+    else if (e.altKey && e.shiftKey && e.which === 70) {
       // F will toggle favorite
       console.log('shift F keybinding');
     }
@@ -298,7 +304,7 @@ function App() {
                 <div className="childDiv">
                   <SlideDrawer show={drawerOpen} documentInfo={documentInfo} />
                   {backdrop}
-                  <button onClick={e => drawerToggleClickHandler()}>
+                  <button onClick={e => drawerToggleClickHandler()}  title="Alt/Opt + B">
                     Side Bar
                   </button>
                 </div>
@@ -317,7 +323,7 @@ function App() {
                 <Fragment />
               )}
 
-              <button onClick={e => switchMode()}>
+              <button onClick={e => switchMode()} title="Alt/Opt + M">
                 Switch Mode
                 {mode === 'edit' ? (
                   <Fragment> : Editor</Fragment>
