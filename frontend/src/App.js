@@ -276,11 +276,21 @@ function App() {
     if (e.altKey && e.which === 66) {
       console.log('B keybinding');
       drawerToggleClickHandler();
+<<<<<<< HEAD
     } else if (e.altKey && e.which === 77) {
       // F will toggle favorite
       console.log('M keybinding');
       switchMode();
     } else if (e.altKey && e.shiftKey && e.which === 70) {
+=======
+    } 
+    else if (e.altKey && e.which === 77) {
+      // F will toggle favorite
+      console.log('M keybinding');
+      switchMode();
+    }
+    else if (e.altKey && e.shiftKey && e.which === 70) {
+>>>>>>> 5d5532a2a999a13ee56145f82554d7f956fa8403
       // F will toggle favorite
       console.log('shift F keybinding');
     }
@@ -302,10 +312,14 @@ function App() {
                 <div className="childDiv">
                   <SlideDrawer show={drawerOpen} documentInfo={documentInfo} />
                   {backdrop}
+<<<<<<< HEAD
                   <button
                     onClick={e => drawerToggleClickHandler()}
                     title="Alt/Opt + B"
                   >
+=======
+                  <button onClick={e => drawerToggleClickHandler()}  title="Alt/Opt + B">
+>>>>>>> 5d5532a2a999a13ee56145f82554d7f956fa8403
                     Side Bar
                   </button>
                 </div>
