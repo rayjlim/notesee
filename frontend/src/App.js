@@ -274,13 +274,14 @@ function App() {
 
   const handleKeyDown = function (e) {
     if (e.altKey && e.which === 66) {
-      console.log('B keybinding');
-      drawerToggleClickHandler();
-    } else if (e.altKey && e.which === 77) {
-      // F will toggle favorite
+      console.log('B keybinding - Side bar');
+      drawerToggleClickHandler();}
+    else if (e.altKey && e.which === 77) {
       console.log('M keybinding');
       switchMode();
-    } else if (e.altKey && e.shiftKey && e.which === 70) {
+    }
+    else if (e.altKey && e.shiftKey && e.which === 70) {
+
       // F will toggle favorite
       console.log('shift F keybinding');
     }

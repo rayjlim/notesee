@@ -129,11 +129,9 @@ const MdEditor = props => {
   const handleKeyDown = function (e) {
     console.log('mdeditor: handle key presss' + e.which + ':' + hasChanges);
     if (e.altKey && e.which === 83) {
-      // S
       console.log('S keybinding');
       save();
     } else if (e.ctrlKey && e.shiftKey && e.which === 49) {
-      // F
       console.log('shift 1 - template keybinding');
       firstTemplate();
     }
