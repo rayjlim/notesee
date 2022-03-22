@@ -275,12 +275,14 @@ function App() {
   const handleKeyDown = function (e) {
     if (e.altKey && e.which === 66) {
       console.log('B keybinding');
-      drawerToggleClickHandler();
-    } else if (e.altKey && e.which === 77) {
+      drawerToggleClickHandler();}
+    else if (e.altKey && e.which === 77) {
       // F will toggle favorite
       console.log('M keybinding');
       switchMode();
-    } else if (e.altKey && e.shiftKey && e.which === 70) {
+    }
+    else if (e.altKey && e.shiftKey && e.which === 70) {
+
       // F will toggle favorite
       console.log('shift F keybinding');
     }
@@ -306,6 +308,7 @@ function App() {
                     onClick={e => drawerToggleClickHandler()}
                     title="Alt/Opt + B"
                   >
+
                     Side Bar
                   </button>
                 </div>
