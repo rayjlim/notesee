@@ -62,17 +62,7 @@ function SlideDrawer(props) {
       <div style={{ textAlign: 'left' }}>
         <SearchTextForm />
       </div>
-      <div>
-        <h2>Backlinks</h2>
-        <ul>
-          {props.documentInfo.backlinks &&
-            props.documentInfo.backlinks.map(item => (
-              <li key={item + Math.random()}>
-                <a href={`/${item}`}>{item}</a>
-              </li>
-            ))}
-        </ul>
-      </div>
+
       <UploadForm />
       <button onClick={e => toggleShowTree(!showTree)}>Toggle Show Tree</button>
       {showTree ? (
@@ -85,7 +75,11 @@ function SlideDrawer(props) {
       <button onClick={e => toggleShowGraph(!showGraph)}>
         Toggle Show Graph
       </button>
-      {showGraph && tree.length ? <NetworkGraph nodes={tree} /> : <div>Graph - Hidden</div>}
+      {showGraph && tree.length ? (
+        <NetworkGraph nodes={tree} />
+      ) : (
+        <div>Graph - Hidden</div>
+      )}
       <hr />
       <div>
         <DeleteBtn path={props.documentInfo.path} />

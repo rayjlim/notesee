@@ -62,13 +62,11 @@ function App() {
   };
 
   const doLogin = async function () {
-    console.log(user);
-    console.log(password);
     const token = await checkLogin(user, password);
     setUser('');
     setPassword('');
-    if(!token){
-      alert('invalid login')
+    if (!token) {
+      alert('invalid login');
       return;
     }
     console.log(token);
@@ -255,6 +253,8 @@ function App() {
       }
     })();
     // eslint-disable-next-line
+
+    document.addEventListener('keydown', handleKeyDown);
   }, []);
 
   const drawerToggleClickHandler = () => {
@@ -272,6 +272,25 @@ function App() {
     backlinks,
   };
 
+  const handleKeyDown = function (e) {
+    if (e.altKey && e.which === 66) {
+      console.log('B keybinding - Side bar');
+      drawerToggleClickHandler();}
+    else if (e.altKey && e.which === 77) {
+      console.log('M keybinding');
+      switchMode();
+    }
+    else if (e.altKey && e.shiftKey && e.which === 70) {
+
+      // F will toggle favorite
+      console.log('shift F keybinding');
+    }
+  };
+  const divStyle = {
+    width: '50%',
+    display: 'inline-block',
+  };
+
   return (
     <div className="App">
       {isLoggedIn ? (
@@ -284,7 +303,10 @@ function App() {
                 <div className="childDiv">
                   <SlideDrawer show={drawerOpen} documentInfo={documentInfo} />
                   {backdrop}
-                  <button onClick={e => drawerToggleClickHandler()}>
+                  <button
+                    onClick={e => drawerToggleClickHandler()}
+                    title="Alt/Opt + B"
+                  >
                     Side Bar
                   </button>
                 </div>
@@ -303,7 +325,7 @@ function App() {
                 <Fragment />
               )}
 
-              <button onClick={e => switchMode()}>
+              <button onClick={e => switchMode()} title="Alt/Opt + M">
                 Switch Mode
                 {mode === 'edit' ? (
                   <Fragment> : Editor</Fragment>
@@ -330,7 +352,19 @@ function App() {
               )}
             </Fragment>
           )}
-          <div className="breadcrumb">
+
+          <div style={divStyle}>
+            <h2>Backlinks</h2>
+            <ul>
+              {documentInfo.backlinks &&
+                documentInfo.backlinks.map(item => (
+                  <li key={item + Math.random()}>
+                    <a href={`/${item}`}>{item}</a>
+                  </li>
+                ))}
+            </ul>
+          </div>
+          <div className="breadcrumb" style={divStyle}>
             <button
               onClick={e =>
                 setVisual({
