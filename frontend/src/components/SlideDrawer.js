@@ -62,17 +62,6 @@ function SlideDrawer(props) {
       <div style={{ textAlign: 'left' }}>
         <SearchTextForm />
       </div>
-      <div>
-        <h2>Backlinks</h2>
-        <ul>
-          {props.documentInfo.backlinks &&
-            props.documentInfo.backlinks.map(item => (
-              <li key={item + Math.random()}>
-                <a href={`/${item}`}>{item}</a>
-              </li>
-            ))}
-        </ul>
-      </div>
       <UploadForm />
       <button onClick={e => toggleShowTree(!showTree)}>Toggle Show Tree</button>
       {showTree ? (
