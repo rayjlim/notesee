@@ -21,7 +21,6 @@ function SearchTextForm(props) {
     (async () => {
       console.log('send search for: ' + query);
       try {
-        
         const response = await fetch(
           `${Constants.REST_ENDPOINT}/search?a=search&text=${query}`,
           {
@@ -52,7 +51,11 @@ function SearchTextForm(props) {
       }
     })();
   }
+  function copyToClipboard(text) {
+    navigator.clipboard.writeText(`[${text}](/${text})`);
+  }
 
+  // TODO : Focus on search when useEffect
   return (
     <Fragment>
       Search:{' '}
@@ -71,6 +74,9 @@ function SearchTextForm(props) {
             {Object.keys(results).map((oneKey, i) => {
               return (
                 <li key={i}>
+                  <button onClick={e => copyToClipboard(`${results[oneKey]}`)}>
+                    [clip]
+                  </button>
                   <a href={`/${results[oneKey]}`}>{`/${results[oneKey]}`}</a>
                 </li>
               );
