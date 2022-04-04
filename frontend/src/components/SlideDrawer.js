@@ -62,7 +62,6 @@ function SlideDrawer(props) {
       <div style={{ textAlign: 'left' }}>
         <SearchTextForm />
       </div>
-
       <UploadForm />
       <button onClick={e => toggleShowTree(!showTree)}>Toggle Show Tree</button>
       {showTree ? (

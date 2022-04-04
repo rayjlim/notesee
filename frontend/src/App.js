@@ -47,9 +47,7 @@ function App() {
       if (response.ok) {
         const results = await response.json();
 
-        console.log(results);
-        // TODO: set the cookie with the token
-
+        console.log('login results', results);
         window.localStorage.setItem('appToken', results.token);
         setLoggedIn(true);
         return results.token;
@@ -94,10 +92,10 @@ function App() {
       const response = await fetch(
         `${Constants.REST_ENDPOINT}${pathname}?a=create`,
         {
-          method: 'GET', // *GET, POST, PUT, DELETE, etc.
-          mode: 'cors', // no-cors, *cors, same-origin
-          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-          credentials: 'same-origin', // include, *same-origin, omit
+          method: 'GET',
+          mode: 'cors',
+          cache: 'no-cache',
+          credentials: 'same-origin',
           headers: {
             'Content-Type': 'application/json',
             'x-app-token': token,
@@ -275,13 +273,11 @@ function App() {
   const handleKeyDown = function (e) {
     if (e.altKey && e.which === 66) {
       console.log('B keybinding - Side bar');
-      drawerToggleClickHandler();}
-    else if (e.altKey && e.which === 77) {
+      drawerToggleClickHandler();
+    } else if (e.altKey && e.which === 77) {
       console.log('M keybinding');
       switchMode();
-    }
-    else if (e.altKey && e.shiftKey && e.which === 70) {
-
+    } else if (e.altKey && e.shiftKey && e.which === 70) {
       // F will toggle favorite
       console.log('shift F keybinding');
     }

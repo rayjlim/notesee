@@ -18,7 +18,6 @@ function UploadForm(props) {
     );
 
     console.log(`send upload`);
-    // const token = window.localStorage.getItem('appToken'); // TODO: use AppToken
 
     try {
       const response = await fetch(
@@ -47,8 +46,8 @@ function UploadForm(props) {
 
   return (
     <div>
-      <span>Upload Form</span>
-      {linkContent !== '' && (
+      <h3>Upload Form</h3>
+      {linkContent != '' && (
         <div>
           {/* <img src={linkContent} alt="new upload"/> */}
           ![description]({linkContent})
