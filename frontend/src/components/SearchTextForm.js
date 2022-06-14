@@ -52,7 +52,10 @@ function SearchTextForm(props) {
     })();
   }
   function copyToClipboard(text) {
-    navigator.clipboard.writeText(`[${text}](/${text})`);
+    const regex = /^(.*[\\/])/i;
+    const title = text.replace(regex, '').replace('.md','').replace(/-/g,' ');
+
+    navigator.clipboard.writeText(`[${title}](/${text})`);
   }
 
   // TODO : Focus on search when useEffect

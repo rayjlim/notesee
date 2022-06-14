@@ -31,7 +31,8 @@ CREATE TABLE `ns_documents` (
   `id` int(11) NOT NULL,
   `content` text CHARACTER SET utf32 COLLATE utf32_unicode_ci NOT NULL,
   `path` varchar(128) NOT NULL,
-  `updateDate` date DEFAULT NULL
+  `update_date` date DEFAULT NULL,
+  `is_favorite` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --

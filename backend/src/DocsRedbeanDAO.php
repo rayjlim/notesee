@@ -52,6 +52,24 @@ class DocsRedbeanDAO
     }
 
     /**
+     * Favorite a Record
+     * 
+     * @param $path    Logical Path
+     * @param $content markdown content
+     *
+     * @return Document Object
+     */
+    public function favoriteByPath($path, $favorite)
+    {
+        $doc = \R::findOne(DOCS, ' path = ? ', [$path]);
+
+        $doc->isFavorite = $favorite == 'true' ? 1 : 0;
+        // echo $doc;
+        \R::store($doc);
+        return $doc;
+    }
+
+    /**
      * Get a Document by Path
      * 
      * @param $path logical folder location
@@ -118,6 +136,12 @@ class DocsRedbeanDAO
     public function getBacklinks($path)
     {
         $found = \R::getCol('SELECT source from ' . MAPPING . ' where target = \'' . $path . '\'');
+        return $found;
+    }
+
+    public function getFavorites()
+    {
+        $found = \R::getCol('SELECT path FROM ' . DOCS . ' WHERE `is_favorite` = 1 ORDER BY `path` ASC');
         return $found;
     }
 
