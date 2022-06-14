@@ -5,11 +5,11 @@ import Constants from '../constants';
 import Prompt from './Prompt';
 import './MdEditor.css';
 
-const MdEditor = props => {
+export default function MdEditor(props) {
   const [markdown, setMarkdown] = useState(props.content);
   const [hasChanges, setHasChanges] = useState(false);
   const [showEditor, setShowEditor] = useState(true);
-
+ 
   const save = async function () {
     console.log(markdown);
     console.log(props.path);
@@ -36,7 +36,6 @@ const MdEditor = props => {
 
       if (response.ok) {
         const results = await response.json();
-        // alert('saved');
         console.log(results);
         if (results.status === 'success') {
           setHasChanges(false);
@@ -54,7 +53,7 @@ const MdEditor = props => {
 
   const editorOnchange = editor => {
     console.log('editorOnchange');
-    // console.log( editor.getMarkdown());
+    // console.log(editor.getMarkdown());
 
     const modified = editor.getMarkdown();
     console.log(editor);
@@ -126,33 +125,36 @@ const MdEditor = props => {
     }
   };
 
-  const handleKeyDown = function (e) {
-    console.log('mdeditor: handle key presss' + e.which + ':' + hasChanges);
-    if (e.altKey && e.which === 83) {
-      console.log('S keybinding');
-      save();
-    } else if (e.ctrlKey && e.shiftKey && e.which === 49) {
-      console.log('shift 1 - template keybinding');
-      firstTemplate();
-    }
-  };
   useEffect(() => {
-    document.addEventListener('keydown', handleKeyDown);
-  }, []);
+    document.addEventListener('keydown', e => {
+      console.log('mdeditor: handle key presss ' + e.key);
+      // console.log('131:' + markdown + ', hasChanges ' + hasChanges);
+      if (e.altKey && e.key === 's') {
+        console.log('S keybinding');
+        // Note: this is a hack because the markdown value is taken from the init value
+        document.getElementById('saveBtn').click();
+        // save();
+      } else if (e.ctrlKey && e.shiftKey && e.key === '1') {
+        console.log('shift 1 - template keybinding');
+        firstTemplate();
+      }
+    });
+  });
   const divStyle = {
     width: '50%',
     display: 'inline-block',
   };
-  // console.log('mdeditor: render ' + props.mode);
+
   return (
     <Fragment>
       <Prompt dataUnsaved={hasChanges} />
       <div className={hasChanges ? 'changed' : 'unchanged'}>
         <div style={divStyle}>
-          <button onClick={e => save()} title="Alt/Opt + S">
+          <button onClick={e => save()} title="Alt/Opt + S" id="saveBtn">
             Save
           </button>
           <span> {hasChanges ? 'has changes' : 'unchanged'}</span>
+         
         </div>
         <div style={divStyle}>
           {props.mode !== 'edit' ? <span>preview</span> : <span>editable</span>}
@@ -179,5 +181,4 @@ const MdEditor = props => {
       </div>
     </Fragment>
   );
-};
-export default MdEditor;
+}

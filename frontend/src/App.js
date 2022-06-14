@@ -11,8 +11,10 @@ const BREADCRUMB_MAX = 10;
 
 function App() {
   const [markdown, setMarkdown] = useState('');
+  const [isFavorite, setFavorite] = useState(false);
   const [path, setPath] = useState('');
   const [backlinks, setBacklinks] = useState([]);
+  const [favorites, setFavorites] = useState([]);
 
   const [isLoggedIn, setLoggedIn] = useState(false);
 
@@ -122,8 +124,9 @@ function App() {
     }
   };
 
-  const load = async function (token, _breadcrumb = []) {
+  const load = async function (_breadcrumb = []) {
     console.log('load');
+    const token = window.localStorage.getItem('appToken');
     let pathname = window.location.pathname;
     console.log(pathname);
 
@@ -202,9 +205,75 @@ function App() {
         console.log('results', results);
 
         setMarkdown(results.source);
+        setFavorite(results.isFavorite);
         setPath(pathname.substring(1));
         setBacklinks(results.backlinks);
         setVisual({ ...visual, loading: false, showCreateButton });
+      } else {
+        console.log('Network response was not ok.');
+      }
+    } catch (error) {
+      console.error('Error: ' + error);
+    }
+  };
+
+  const getFavorites = async () => {
+    console.log('getFavorites');
+
+    const token = window.localStorage.getItem('appToken');
+    try {
+      const response = await fetch(
+        `${Constants.REST_ENDPOINT}/?a=getFavorites`,
+        {
+          method: 'GET',
+          mode: 'cors',
+          cache: 'no-cache',
+          credentials: 'same-origin',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-app-token': token,
+          },
+          redirect: 'follow', // manual, *follow, error
+          referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        }
+      );
+
+      if (response.ok) {
+        const results = await response.json();
+        console.log(results);
+        setFavorites(results.paths);
+      } else {
+        console.log('Network response was not ok.');
+      }
+    } catch (error) {
+      console.error('Error: ' + error);
+    }
+  };
+
+  const toggleFavorite = async () => {
+    console.log('toggle Favorite');
+
+    const token = window.localStorage.getItem('appToken');
+    try {
+      console.log(isFavorite);
+      const response = await fetch(
+        `${Constants.REST_ENDPOINT}/?a=favorite&favorite=${!isFavorite}&path=${path}`,
+        {
+          method: 'GET',
+          mode: 'cors',
+          cache: 'no-cache',
+          credentials: 'same-origin',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-app-token': token,
+          },
+          redirect: 'follow', // manual, *follow, error
+          referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        }
+      );
+
+      if (response.ok) {
+        setFavorite(!isFavorite);
       } else {
         console.log('Network response was not ok.');
       }
@@ -247,11 +316,11 @@ function App() {
         console.log('logged in:', token);
 
         setLoggedIn(true);
-        await load(token, _breadcrumb);
+        await load(_breadcrumb);
+        await getFavorites();
       }
     })();
     // eslint-disable-next-line
-
     document.addEventListener('keydown', handleKeyDown);
   }, []);
 
@@ -320,7 +389,7 @@ function App() {
               ) : (
                 <Fragment />
               )}
-
+              <span>Favorite: {isFavorite ? 'Y' : 'N'} <button onClick={e => toggleFavorite()}>Toggle Favorite</button></span>
               <button onClick={e => switchMode()} title="Alt/Opt + M">
                 Switch Mode
                 {mode === 'edit' ? (
@@ -354,6 +423,17 @@ function App() {
             <ul>
               {documentInfo.backlinks &&
                 documentInfo.backlinks.map(item => (
+                  <li key={item + Math.random()}>
+                    <a href={`/${item}`}>{item}</a>
+                  </li>
+                ))}
+            </ul>
+          </div>
+          <div style={divStyle}>
+            <h2>Favorites</h2>
+            <ul>
+              {favorites &&
+                favorites.map(item => (
                   <li key={item + Math.random()}>
                     <a href={`/${item}`}>{item}</a>
                   </li>

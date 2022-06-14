@@ -119,6 +119,13 @@ class Wiki
         return $paths;
     }
 
+    protected function _getFavorites()
+    {
+        $ORM = new \Notesee\DocsRedbeanDAO();
+        $paths = $ORM->getFavorites();
+        return $paths;
+    }
+
     protected function _getBacklinks($path)
     {
         $ORM = new \Notesee\DocsRedbeanDAO();
@@ -307,7 +314,8 @@ class Wiki
             $pageData->page = $this->_default_page_data;
             $pageData->backlinks = $this->_getBacklinks($pagePath);
 
-            $pageData->source = str_replace("\\n", "\n", $source);;
+            $pageData->source = str_replace("\\n", "\n", $source);
+            $pageData->isFavorite = $entrys[0]['is_favorite'] == '1';
 
             $this->_json($pageData);
         } catch (Exception $e) {
@@ -455,7 +463,16 @@ class Wiki
         $this->_json($pageData);
     }
 
-    public function uploadImageAction(){
+    public function getFavoritesAction()
+    {
+        $pageData = new stdClass();
+        $pageData->paths = $this->_getFavorites();
+        $this->_json($pageData);
+    }
+
+
+    public function uploadImageAction()
+    {
         // DevHelp::debugMsg('upload' . __FILE__);
 
         $filePath = $_POST["filePath"] . '/' ?? date(YEAR_MONTH_FORMAT);
@@ -510,7 +527,22 @@ class Wiki
             echo 'Caught exception: ', $e->getMessage(), $targetDir, '\n';
             echo 'targetFileFullPath: ', $targetFileFullPath, '\n';
         }
-        
+    }
+
+    public function favoriteAction()
+    {
+        $status = false;
+        $ORM = new \Notesee\DocsRedbeanDAO();
+        $status = $ORM->favoriteByPath($_REQUEST['path'], $_REQUEST['favorite']);
+
+        if ($status) {
+            // header('HTTP/1.0 204 No Content');
+            header('HTTP/1.0 200 OK');
+            echo $_REQUEST['path'] . $_REQUEST['favorite'];
+        } else {
+            header('HTTP/1.0 500 Server Error');
+            echo "Unable to Favorite : " . $_REQUEST['path'];
+        }
     }
 
     protected function getTargetLinks($source)
