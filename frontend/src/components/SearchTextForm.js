@@ -58,7 +58,6 @@ function SearchTextForm(props) {
     navigator.clipboard.writeText(`[${title}](/${text})`);
   }
 
-  // TODO : Focus on search when useEffect
   return (
     <Fragment>
       Search:{' '}

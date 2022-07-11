@@ -6,7 +6,6 @@ if (!defined('APP_STARTED')) {
 /**
  * This class is only instantiated if the ACCESS_USER and ACCESS_PASSWORD constants are defined
  *
- * @todo Add log for the login attempts and limit as soon as possible.
  */
 class Login
 {
@@ -53,11 +52,10 @@ class Login
      */
     private function doLogin($ip, $username, $password)
     {
-        // Check the access to this function, using logs and ip
-        //--> to be implemented
+
+
 
         // Check credentials
-
         if ($username !== $_ENV['ACCESS_USER'] || $password !== $_ENV['ACCESS_PASSWORD']) {
             return false;
         }
@@ -71,8 +69,6 @@ class Login
      */
     private function doLogout()
     {
-        // TODO: log activity; mark database
-        
         return true;
     }
 

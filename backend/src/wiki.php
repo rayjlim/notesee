@@ -72,7 +72,6 @@ class Wiki
                 $error = json_last_error();
                 $message = 'There was an error parsing the JSON Front Matter for this page';
 
-                // todo: Better error information?
                 if ($error == JSON_ERROR_SYNTAX) {
                     $message .= ': Incorrect JSON syntax (missing comma, or double-quotes?)';
                 }
@@ -216,8 +215,7 @@ class Wiki
         if (str_ends_with($pagePath, '/')) {
             $pagePath .= $_ENV['DEFAULT_FILE'];
         }
-        // TODO: check and handle if $page is not valid
-
+ 
         try {
 
             $ORM = new \Notesee\DocsRedbeanDAO();
@@ -338,7 +336,7 @@ class Wiki
             throw new Exception("Invalid/Missing parameters");
         }
 
-        $ref = $_POST['ref'];        // path in the library
+        $ref = $_POST['ref'];        // path in the note
         $source = $_POST['source'];  // markdown content
 
         $path = base64_decode($ref);
@@ -346,27 +344,25 @@ class Wiki
         // Check if the file is safe to work with, otherwise just
         // give back a generic 404 as well, so we don't allow blind
         // scanning of files:
-        // @todo: we CAN give back a more informative error message
-        // for files that aren't writable...
 
         // Check if empty
         if (trim($source)) {
-            // TODO: error handling
-
             $entry = $ORM->update($path, $source);
-
-            // get backlinks
-            $links = $this->getTargetLinks($source);
 
             // get prefix            
             $prefix =  substr($path, 0, strrpos($path, '/'));
             $prefix = strlen($prefix) ? $prefix . '/' : $prefix;
 
+            // get backlinks
+            $links = $this->getTargetLinks($source);
+   
             $prefixedLinks = [];
 
             foreach ($links[2] as $link) {
                 if (
-                    strpos($link, "http://") === false && strpos($link, "https://") === false && strpos($link, "#") === false
+                    strpos($link, "http://") === false
+                    && strpos($link, "https://") === false
+                    && strpos($link, "#") === false
                 ) {
                     $targetValue = ($link[0] == '/') ? ltrim($link, '/') : $prefix . $link;
                     array_push($prefixedLinks, $targetValue);
@@ -409,8 +405,6 @@ class Wiki
         if (count($entrys)) {
             throw new Error('record exists');
         }
-        // TODO: error handling
-        // TODO: Update Tree cache
         $entry = $ORM->insert($page, $content);
         $entry->action = 'create';
         $entry->status = 'success';
@@ -485,7 +479,6 @@ class Wiki
         $createdDir = false;
 
         try {
-            // TODO: Check if image file is a actual image or fake image
             $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
             if ($check == false) {
                 throw new Exception("File is not an image");
@@ -514,8 +507,6 @@ class Wiki
             if (!move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $targetFileFullPath)) {
                 throw new Exception("Sorry, there was an error moving upload file");
             }
-
-            // TODO: check image size, if greater than X, then resize
 
             $data['fileName'] = $urlFileName;
             $data['filePath'] = $filePath;
