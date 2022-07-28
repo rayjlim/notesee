@@ -31,3 +31,4 @@ backend/config/.htaccess
 scripts/.env
 scripts/passfile.txt
 uploads/*
+backend/_logs/*

@@ -3,6 +3,7 @@ if (!defined('APP_STARTED')) {
     die('Forbidden!');
 }
 
+
 /**
  * This class is only instantiated if the ACCESS_USER and ACCESS_PASSWORD constants are defined
  *
@@ -52,10 +53,7 @@ class Login
      */
     private function doLogin($ip, $username, $password)
     {
-
-
-
-        // Check credentials
+        Logger::log("Login attempt from $ip for $username");
         if ($username !== $_ENV['ACCESS_USER'] || $password !== $_ENV['ACCESS_PASSWORD']) {
             return false;
         }
@@ -69,6 +67,7 @@ class Login
      */
     private function doLogout()
     {
+        \Logger::log("Logout");
         return true;
     }
 
@@ -105,7 +104,7 @@ class Login
 
         $username = isset($_POST['username']) ? htmlspecialchars($_POST['username']) : null;
         $password = isset($_POST['password']) ? htmlspecialchars($_POST['password']) : null;
-
+        $error = '';
         if (isset($_POST['login'])) {
             if (!$username || !$password) {
                 $error = 'Please complete both fields.';
@@ -117,11 +116,12 @@ class Login
                 }
             }
         }
+        
 
         // Show the login layout and stop
         // $layout = __DIR__ . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'login.php';
         // include($layout);
-        echo "login required";
+        echo "login required " . $error;
         exit;
     }
 
