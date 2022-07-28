@@ -1,4 +1,5 @@
-import React, { useEffect, useState, Fragment } from 'react';
+import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import Graph from 'react-vis-network-graph';
 import Constants from '../constants';
 
@@ -6,12 +7,12 @@ import Constants from '../constants';
 // need to import the vis network css in order to show tooltip
 // import "./network.css";
 
-function NetworkGraph(props) {
+const NetworkGraph = ({ nodes }) => {
   const token = window.localStorage.getItem('appToken');
   const [graph, setGraph] = useState({
     // /network?a=network
     //   { id: 1, label: "Node 1", title: "node 1 tootip text" },
-    nodes: props.nodes.map(item => {
+    nodes: nodes.map(item => {
       const output = item
         .substring(0, item.length - 3)
         .replace(/^.+\/([^/]*)$/, '$1');
@@ -31,16 +32,16 @@ function NetworkGraph(props) {
   };
 
   const events = {
-    select: function (event) {
-      var { nodes } = event;
-      if (nodes ) {
-        alert(`going to ${nodes}`)
-        var r = true;
-        if (r)
-          window.location = `/${nodes}`;
-        
+    select: event => {
+      const localNodes = event.nodes;
+      if (localNodes) {
+        alert(`going to ${localNodes}`);
+        const r = true;
+        if (r) {
+          window.location = `/${localNodes}`;
+        }
       }
-    }
+    },
   };
 
   useEffect(() => {
@@ -61,7 +62,7 @@ function NetworkGraph(props) {
 
         if (response.ok) {
           const results = await response.json();
-          const edgesResult = results.map((item, id) => ({
+          const edgesResult = results.map(item => ({
             from: item.target,
             to: item.source,
           }));
@@ -72,21 +73,25 @@ function NetworkGraph(props) {
           console.log('Network response was not ok.');
         }
       } catch (error) {
-        console.error('Error: ' + error);
+        console.error('Error: ', error);
       }
     })();
   }, []);
 
   console.log(graph);
   return (
-    <Fragment>
+    <div>
       {(graph.nodes.length && graph.edges.length) ? (
         <Graph graph={graph} options={graphOptions} events={events} />
       ) : (
-        <Fragment>Loading Graph</Fragment>
+        <>Loading Graph</>
       )}
-    </Fragment>
+    </div>
   );
-}
+};
 
 export default NetworkGraph;
+
+NetworkGraph.propTypes = {
+  nodes: PropTypes.array.isRequired,
+};

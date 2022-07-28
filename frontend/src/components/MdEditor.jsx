@@ -1,19 +1,21 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import Editor from 'react-editor-md';
 import langSetting from '../lang';
 import Constants from '../constants';
 import Prompt from './Prompt';
 import './MdEditor.css';
 
-export default function MdEditor(props) {
-  const [markdown, setMarkdown] = useState(props.content);
+// eslint-disable-next-line object-curly-newline
+const MdEditor = ({ content, path, mode, onSave }) => {
+  const [markdown, setMarkdown] = useState(content);
   const [hasChanges, setHasChanges] = useState(false);
   const [showEditor, setShowEditor] = useState(true);
- 
-  const save = async function () {
+
+  const save = async () => {
     console.log(markdown);
-    console.log(props.path);
-    const ref = btoa(props.path);
+    console.log(path);
+    const ref = btoa(path);
 
     console.log(ref);
     const formData = new URLSearchParams();
@@ -23,7 +25,7 @@ export default function MdEditor(props) {
     const token = window.localStorage.getItem('appToken');
 
     try {
-      const response = await fetch(prefix + '/index.php?a=edit', {
+      const response = await fetch(`${prefix}/index.php?a=edit`, {
         method: 'POST',
         mode: 'cors',
         cache: 'no-cache',
@@ -47,7 +49,7 @@ export default function MdEditor(props) {
         console.log('Network response was not ok.');
       }
     } catch (error) {
-      alert('Error: ' + error);
+      alert('Error: ', error);
     }
   };
 
@@ -57,10 +59,10 @@ export default function MdEditor(props) {
 
     const modified = editor.getMarkdown();
     console.log(editor);
-    let newCursor = editor.getCursor();
+    const newCursor = editor.getCursor();
     // console.log(newCursor);
     const regex = /\[\[(.+?)\]\][ ]/g;
-    let match = regex.exec(modified);
+    const match = regex.exec(modified);
     console.log(match);
     const found = modified.match(regex);
     if (found) {
@@ -69,7 +71,7 @@ export default function MdEditor(props) {
       const title = match['1'].replace(/-/g, ' ');
       const filename = match['1'].replace(/ /g, '-').toLowerCase();
 
-      console.log(match.index + ' ' + regex.lastIndex);
+      console.log(match.index, ' ', regex.lastIndex);
 
       const matchLen = match['1'].length;
       const replaced = modified.replace(regex, `[${title}](${filename}.md)`);
@@ -78,7 +80,7 @@ export default function MdEditor(props) {
       editor.clear();
       editor.insertValue(replaced);
 
-      //place the cursor
+      // place the cursor
       console.log(newCursor.ch, matchLen);
       newCursor.ch = newCursor.ch + matchLen + 3;
       editor.setCursor(newCursor);
@@ -88,13 +90,11 @@ export default function MdEditor(props) {
 
     setMarkdown(editor.getMarkdown());
     setHasChanges(true);
-    props.onSave(editor.getMarkdown());
+    onSave(editor.getMarkdown());
   };
 
   function firstTemplate() {
-    const newContent =
-      markdown +
-      `\n
+    const newContent = `${markdown}\n
 ## Summary\n
 - a\n
 ## Achievements\n
@@ -102,7 +102,7 @@ export default function MdEditor(props) {
 ## Next day\n
 - c\n`;
     setMarkdown(newContent);
-    props.onSave(newContent);
+    onSave(newContent);
     setShowEditor(false);
     setTimeout(() => {
       setShowEditor(true);
@@ -110,8 +110,8 @@ export default function MdEditor(props) {
   }
 
   const editorOnload = editor => {
-    console.log('editor loaded: ' + props.mode);
-    if (props.mode !== 'edit') {
+    console.log('editor loaded: ', mode);
+    if (mode !== 'edit') {
       editor.unwatch();
       editor.watch();
       editor.previewing();
@@ -127,7 +127,7 @@ export default function MdEditor(props) {
 
   useEffect(() => {
     document.addEventListener('keydown', e => {
-      console.log('mdeditor: handle key presss ' + e.key);
+      console.log('mdeditor: handle key presss ', e.key);
       // console.log('131:' + markdown + ', hasChanges ' + hasChanges);
       if (e.altKey && e.key === 's') {
         console.log('S keybinding');
@@ -146,18 +146,19 @@ export default function MdEditor(props) {
   };
 
   return (
-    <Fragment>
+    <>
       <Prompt dataUnsaved={hasChanges} />
       <div className={hasChanges ? 'changed' : 'unchanged'}>
         <div style={divStyle}>
-          <button onClick={e => save()} title="Alt/Opt + S" id="saveBtn">
+          <button onClick={() => save()} title="Alt/Opt + S" id="saveBtn" type="button">
             Save
           </button>
-          <span> {hasChanges ? 'has changes' : 'unchanged'}</span>
-         
+          <span>
+            {hasChanges ? 'has changes' : 'unchanged'}
+          </span>
         </div>
         <div style={divStyle}>
-          {props.mode !== 'edit' ? <span>preview</span> : <span>editable</span>}
+          {mode !== 'edit' ? <span>preview</span> : <span>editable</span>}
         </div>
 
         {showEditor && (
@@ -165,20 +166,29 @@ export default function MdEditor(props) {
             config={{
               path: '/assets/',
               delay: 0,
-              markdown: markdown,
+              markdown,
               lang: langSetting,
               onload: editorOnload,
               onchange: editorOnchange,
             }}
           />
         )}
-        <button onClick={e => save()} title="Alt/Opt + S">
+        <button onClick={() => save()} title="Alt/Opt + S" type="button">
           Save
         </button>
-        <button onClick={e => firstTemplate()} title="Ctrl + Shift + 1">
+        <button onClick={() => firstTemplate()} title="Ctrl + Shift + 1" type="button">
           Dev Template
         </button>
       </div>
-    </Fragment>
+    </>
   );
-}
+};
+
+export default MdEditor;
+
+MdEditor.propTypes = {
+  content: PropTypes.string.isRequired,
+  path: PropTypes.string.isRequired,
+  mode: PropTypes.string.isRequired,
+  onSave: PropTypes.func.isRequired,
+};

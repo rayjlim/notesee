@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect } from 'react';
 import { marked } from 'marked';
 import './App.css';
 import MdEditor from './components/MdEditor';
@@ -9,7 +9,7 @@ import Constants from './constants';
 
 const BREADCRUMB_MAX = 10;
 
-function App() {
+const App = () => {
   const [markdown, setMarkdown] = useState('');
   const [isFavorite, setFavorite] = useState(false);
   const [path, setPath] = useState('');
@@ -30,104 +30,10 @@ function App() {
   });
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const checkLogin = async function (formUser = '', formPass = '') {
-    const prefix = Constants.REST_ENDPOINT;
-    const formData = new URLSearchParams();
-
-    formData.append('username', formUser);
-    formData.append('password', formPass);
-    formData.append('login', true);
-
-    try {
-      const response = await fetch(prefix + '/inbox.md', {
-        method: 'POST',
-        mode: 'cors',
-        cache: 'no-cache',
-        body: formData,
-      });
-
-      if (response.ok) {
-        const results = await response.json();
-
-        console.log('login results', results);
-        window.localStorage.setItem('appToken', results.token);
-        setLoggedIn(true);
-        return results.token;
-      } else {
-        console.log('Network response was not ok.');
-      }
-    } catch (error) {
-      console.log('Error when parsing means not logged in, ' + error);
-    }
-  };
-
-  const doLogin = async function () {
-    const token = await checkLogin(user, password);
-    setUser('');
-    setPassword('');
-    if (!token) {
-      alert('invalid login');
-      return;
-    }
-    console.log(token);
-    await load(token);
-  };
-
-  const doLogout = () => {
-    window.localStorage.setItem('appToken', null);
-    setLoggedIn(false);
-  };
-
-  const switchMode = () => {
-    const newMode = mode === 'edit' ? 'read' : 'edit';
-    console.log('switchMode', newMode);
-    window.localStorage.setItem('mode', newMode);
-    setMode(newMode);
-  };
-
-  const createPage = async () => {
-    let pathname = window.location.pathname;
-    console.log('create page');
-
-    const token = window.localStorage.getItem('appToken');
-    try {
-      const response = await fetch(
-        `${Constants.REST_ENDPOINT}${pathname}?a=create`,
-        {
-          method: 'GET',
-          mode: 'cors',
-          cache: 'no-cache',
-          credentials: 'same-origin',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-App-Token': token,
-          },
-          redirect: 'follow', // manual, *follow, error
-          referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        }
-      );
-
-      if (response.ok) {
-        const results = await response.json();
-
-        console.log(results);
-        if (results.status === 'success') {
-          setVisual({ ...visual, showCreateButton: false });
-        } else {
-          alert('Server Error on create');
-        }
-      } else {
-        console.log('Network response was not ok.');
-      }
-    } catch (error) {
-      console.error('Error: ' + error);
-    }
-  };
-
-  const load = async function (_breadcrumb = []) {
+  const load = async (_breadcrumb = []) => {
     console.log('load');
     const token = window.localStorage.getItem('appToken');
-    let pathname = window.location.pathname;
+    let { pathname } = window.location;
     console.log(pathname);
 
     if (pathname === '/') {
@@ -140,13 +46,13 @@ function App() {
     let newbreadcrumb;
     console.log('breadcrumb-precheck', _breadcrumb);
     if (
-      _breadcrumb.length &&
-      _breadcrumb[_breadcrumb.length - 1] === pathname
+      _breadcrumb.length
+      && _breadcrumb[_breadcrumb.length - 1] === pathname
     ) {
       console.log('breadcrumb: same', _breadcrumb);
     } else if (
-      _breadcrumb.length > 1 &&
-      _breadcrumb[_breadcrumb.length - 2] === pathname
+      _breadcrumb.length > 1
+      && _breadcrumb[_breadcrumb.length - 2] === pathname
     ) {
       console.log('breadcrumb: went to parent', _breadcrumb);
       newbreadcrumb = _breadcrumb.slice(0, _breadcrumb.length - 1);
@@ -156,6 +62,7 @@ function App() {
     } else {
       console.log('add current', pathname);
       if (_breadcrumb.length > BREADCRUMB_MAX) {
+        // eslint-disable-next-line no-param-reassign
         _breadcrumb = _breadcrumb.slice(1, _breadcrumb.length - 1);
       }
       newbreadcrumb = [..._breadcrumb, pathname];
@@ -184,7 +91,7 @@ function App() {
         console.log('load response ok');
         document.title = `Notesee - ${pathname.substring(
           1,
-          pathname.length - 3
+          pathname.length - 3,
         )}`;
         const results = await response.json();
 
@@ -213,7 +120,101 @@ function App() {
         console.log('Network response was not ok.');
       }
     } catch (error) {
-      console.error('Error: ' + error);
+      console.error('Error: ', error);
+    }
+  };
+
+  const checkLogin = async (formUser = '', formPass = '') => {
+    const prefix = Constants.REST_ENDPOINT;
+    const formData = new URLSearchParams();
+
+    formData.append('username', formUser);
+    formData.append('password', formPass);
+    formData.append('login', true);
+
+    try {
+      const response = await fetch(prefix, '/inbox.md', {
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        body: formData,
+      });
+
+      if (response.ok) {
+        const results = await response.json();
+
+        console.log('login results', results);
+        window.localStorage.setItem('appToken', results.token);
+        setLoggedIn(true);
+        return results.token;
+      }
+      console.log('Network response was not ok.');
+    } catch (error) {
+      console.log('Error when parsing means not logged in, ', error);
+    }
+    return true;
+  };
+
+  const doLogin = async () => {
+    const token = await checkLogin(user, password);
+    setUser('');
+    setPassword('');
+    if (!token) {
+      alert('invalid login');
+      return;
+    }
+    console.log(token);
+    await load(token);
+  };
+
+  const doLogout = () => {
+    window.localStorage.setItem('appToken', null);
+    setLoggedIn(false);
+  };
+
+  const switchMode = () => {
+    const newMode = mode === 'edit' ? 'read' : 'edit';
+    console.log('switchMode', newMode);
+    window.localStorage.setItem('mode', newMode);
+    setMode(newMode);
+  };
+
+  const createPage = async () => {
+    const { pathname } = window.location;
+    console.log('create page');
+
+    const token = window.localStorage.getItem('appToken');
+    try {
+      const response = await fetch(
+        `${Constants.REST_ENDPOINT}${pathname}?a=create`,
+        {
+          method: 'GET',
+          mode: 'cors',
+          cache: 'no-cache',
+          credentials: 'same-origin',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-App-Token': token,
+          },
+          redirect: 'follow', // manual, *follow, error
+          referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        },
+      );
+
+      if (response.ok) {
+        const results = await response.json();
+
+        console.log(results);
+        if (results.status === 'success') {
+          setVisual({ ...visual, showCreateButton: false });
+        } else {
+          alert('Server Error on create');
+        }
+      } else {
+        console.log('Network response was not ok.');
+      }
+    } catch (error) {
+      console.error('Error: ', error);
     }
   };
 
@@ -235,7 +236,7 @@ function App() {
           },
           redirect: 'follow', // manual, *follow, error
           referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        }
+        },
       );
 
       if (response.ok) {
@@ -246,7 +247,7 @@ function App() {
         console.log('Network response was not ok.');
       }
     } catch (error) {
-      console.error('Error: ' + error);
+      console.error('Error: ', error);
     }
   };
 
@@ -269,7 +270,7 @@ function App() {
           },
           redirect: 'follow', // manual, *follow, error
           referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        }
+        },
       );
 
       if (response.ok) {
@@ -278,7 +279,7 @@ function App() {
         console.log('Network response was not ok.');
       }
     } catch (error) {
-      console.error('Error: ' + error);
+      console.error('Error: ', error);
     }
   };
 
@@ -294,20 +295,20 @@ function App() {
 
   useEffect(() => {
     (async () => {
-      const _mode = window.localStorage.getItem('mode');
-      if (_mode) {
-        console.log('_mode', _mode);
-        setMode(_mode);
+      const localMode = window.localStorage.getItem('mode');
+      if (localMode) {
+        console.log('localMode', localMode);
+        setMode(localMode);
       }
 
-      const _breadcrumbStr = window.localStorage.getItem('breadcrumb');
-      console.log(_breadcrumbStr);
-      let _breadcrumb;
-      if (_breadcrumbStr) {
-        console.log('has breadcrumb', _breadcrumb);
-        _breadcrumb = JSON.parse(_breadcrumbStr);
-        if (Array.isArray(_breadcrumb) && _breadcrumb.length) {
-          setBreadcrumb(_breadcrumb);
+      const localBreadcrumbStr = window.localStorage.getItem('breadcrumb');
+      console.log(localBreadcrumbStr);
+      let localBreadcrumb;
+      if (localBreadcrumbStr) {
+        console.log('has breadcrumb', localBreadcrumb);
+        localBreadcrumb = JSON.parse(localBreadcrumbStr);
+        if (Array.isArray(localBreadcrumb) && localBreadcrumb.length) {
+          setBreadcrumb(localBreadcrumb);
         }
       }
 
@@ -316,7 +317,7 @@ function App() {
         console.log('logged in:', token);
 
         setLoggedIn(true);
-        await load(_breadcrumb);
+        await load(localBreadcrumb);
         await getFavorites();
       }
     })();
@@ -330,7 +331,7 @@ function App() {
 
   let backdrop;
   if (drawerOpen) {
-    backdrop = <Backdrop close={e => drawerToggleClickHandler()} />;
+    backdrop = <Backdrop close={() => drawerToggleClickHandler()} />;
   }
 
   const documentInfo = {
@@ -339,7 +340,7 @@ function App() {
     backlinks,
   };
 
-  const handleKeyDown = function (e) {
+  const handleKeyDown = e => {
     if (e.altKey && e.which === 66) {
       console.log('B keybinding - Side bar');
       drawerToggleClickHandler();
@@ -359,43 +360,52 @@ function App() {
   return (
     <div className="App">
       {isLoggedIn ? (
-        <Fragment>
+        <>
           {visual.loading ? (
             <span>Loading</span>
           ) : (
-            <Fragment>
+            <>
               <div>
                 <div className="childDiv">
                   <SlideDrawer show={drawerOpen} documentInfo={documentInfo} />
                   {backdrop}
                   <button
-                    onClick={e => drawerToggleClickHandler()}
+                    onClick={() => drawerToggleClickHandler()}
                     title="Alt/Opt + B"
+                    type="button"
                   >
                     Side Bar
                   </button>
                 </div>
                 <div className="childDiv">
-                  <button onClick={e => doLogout()}>Logout</button>
+                  <button onClick={() => doLogout()} type="button">Logout</button>
                 </div>
               </div>
 
               {visual.showCreateButton ? (
-                <Fragment>
-                  <button onClick={e => createPage()} className="create-btn">
-                    Create {path}
-                  </button>
-                </Fragment>
+                <button onClick={() => createPage()} className="create-btn" type="button">
+                  Create
+                  {' '}
+                  {path}
+                </button>
               ) : (
-                <Fragment />
+                <span> </span>
               )}
-              <span>Favorite: {isFavorite ? 'Y' : 'N'} <button onClick={e => toggleFavorite()}>Toggle Favorite</button></span>
-              <button onClick={e => switchMode()} title="Alt/Opt + M">
+              <span>
+                Favorite:
+                {' '}
+                {isFavorite ? 'Y' : 'N'}
+                {' '}
+                <button onClick={() => toggleFavorite()} type="button">
+                  Toggle Favorite
+                </button>
+              </span>
+              <button onClick={() => switchMode()} title="Alt/Opt + M" type="button">
                 Switch Mode
                 {mode === 'edit' ? (
-                  <Fragment> : Editor</Fragment>
+                  <> : Editor</>
                 ) : (
-                  <Fragment>: Read</Fragment>
+                  <>: Read</>
                 )}
               </button>
               {mode === 'edit' ? (
@@ -406,23 +416,21 @@ function App() {
                   mode={mode}
                 />
               ) : (
-                <Fragment>
-                  <MdEditor
-                    content={markdown}
-                    path={path}
-                    onSave={setMarkdown}
-                    mode={mode}
-                  />
-                </Fragment>
+                <MdEditor
+                  content={markdown}
+                  path={path}
+                  onSave={setMarkdown}
+                  mode={mode}
+                />
               )}
-            </Fragment>
+            </>
           )}
 
           <div style={divStyle}>
             <h2>Backlinks</h2>
             <ul>
-              {documentInfo.backlinks &&
-                documentInfo.backlinks.map(item => (
+              {documentInfo.backlinks
+                && documentInfo.backlinks.map(item => (
                   <li key={item + Math.random()}>
                     <a href={`/${item}`}>{item}</a>
                   </li>
@@ -432,8 +440,8 @@ function App() {
           <div style={divStyle}>
             <h2>Favorites</h2>
             <ul>
-              {favorites &&
-                favorites.map(item => (
+              {favorites
+                && favorites.map(item => (
                   <li key={item + Math.random()}>
                     <a href={`/${item}`}>{item}</a>
                   </li>
@@ -442,33 +450,33 @@ function App() {
           </div>
           <div className="breadcrumb" style={divStyle}>
             <button
-              onClick={e =>
-                setVisual({
-                  ...visual,
-                  showBreadcrumb: !visual.showBreadcrumb,
-                })
-              }
+              onClick={() => setVisual({
+                ...visual,
+                showBreadcrumb: !visual.showBreadcrumb,
+              })}
+              type="button"
             >
               {visual.showBreadcrumb ? (
-                <Fragment>Hide</Fragment>
+                <>Hide</>
               ) : (
-                <Fragment>Show</Fragment>
-              )}{' '}
+                <>Show</>
+              )}
+              {' '}
               Breadcrumb
             </button>
             <ul className="breadcrumb">
-              {visual.showBreadcrumb &&
-                breadcrumb &&
-                breadcrumb.map(item => (
+              {visual.showBreadcrumb
+                && breadcrumb
+                && breadcrumb.map(item => (
                   <li key={item + Math.random()}>
                     <a href={item}>{item}</a>
                   </li>
                 ))}
             </ul>
           </div>
-        </Fragment>
+        </>
       ) : (
-        <Fragment>
+        <>
           <span>User</span>
           <input
             type="text"
@@ -481,11 +489,11 @@ function App() {
             value={password}
             onChange={e => setPassword(e.target.value)}
           />
-          <button onClick={e => doLogin()}>Login</button>
-        </Fragment>
+          <button onClick={() => doLogin()} type="button">Login</button>
+        </>
       )}
     </div>
   );
-}
+};
 
 export default App;

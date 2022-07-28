@@ -1,24 +1,16 @@
-import React, {Fragment} from 'react';
+import { useEffect, useRef } from 'react';
 
-class Prompt extends React.Component {
-  componentDidMount() {
-    window.addEventListener('beforeunload', this.beforeunload.bind(this));
-  }
+const useUnload = fn => {
+  const cb = useRef(fn);
 
-  componentWillUnmount() {
-    window.removeEventListener('beforeunload', this.beforeunload.bind(this));
-  }
+  useEffect(() => {
+    const onUnload = cb.current;
+    window.addEventListener('beforeunload', onUnload);
+    return () => {
+      window.removeEventListener('beforeunload', onUnload);
+    };
+  }, [cb]);
+  return null;
+};
 
-  beforeunload(e) {
-    if (this.props.dataUnsaved) {
-      e.preventDefault();
-      e.returnValue = true;
-    }
-  }
-
-  render() {
-    return <Fragment></Fragment>;
-  }
-}
-
-export default Prompt;
+export default useUnload;

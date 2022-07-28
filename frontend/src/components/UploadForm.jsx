@@ -1,23 +1,24 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 // # UploadForm.js
 import React, { useState } from 'react';
 import format from 'date-fns/format';
 import Constants from '../constants';
 
-function UploadForm(props) {
+const UploadForm = () => {
   const token = window.localStorage.getItem('appToken');
   const [selectFile, setSelectedFile] = useState(null);
   const [linkContent, setLinkContent] = useState([]);
 
-  async function upload(event) {
+  async function upload() {
     const formData = new FormData();
     formData.append('fileToUpload', selectFile);
     const filePath = document.getElementById('filePath').value;
     formData.append(
       'filePath',
-      filePath.length ? filePath : format(new Date(), 'yyyy-MM')
+      filePath.length ? filePath : format(new Date(), 'yyyy-MM'),
     );
 
-    console.log(`send upload`);
+    console.log('send upload');
 
     try {
       const response = await fetch(
@@ -28,7 +29,7 @@ function UploadForm(props) {
           headers: {
             'X-App-Token': token,
           },
-        }
+        },
       );
 
       console.log(response);
@@ -47,10 +48,12 @@ function UploadForm(props) {
   return (
     <div>
       <h3>Upload Form</h3>
-      {linkContent != '' && (
+      {linkContent !== '' && (
         <div>
           {/* <img src={linkContent} alt="new upload"/> */}
-          ![description]({linkContent})
+          ![description](
+          {linkContent}
+          )
         </div>
       )}
       <form action="../uploadImage/">
@@ -74,19 +77,19 @@ function UploadForm(props) {
           />
         </div>
         {/* <div className="form-group">
-                    <label for="newName">New Name</label>
-                    <input type="text" className="form-control" id="newName" name="newName" value="" />
-                </div> */}
+              <label for="newName">New Name</label>
+              <input type="text" className="form-control" id="newName" name="newName" value="" />
+            </div> */}
         <button
           type="button"
           className="btn btn-success btn-block"
-          onClick={e => upload()}
+          onClick={() => upload()}
         >
           Upload
         </button>
       </form>
     </div>
   );
-}
+};
 
 export default UploadForm;
