@@ -1,5 +1,6 @@
 // # SlideDrawer.js
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import './SlideDrawer.css';
 import pkg from '../../package.json';
 import Constants from '../constants';
@@ -7,9 +8,9 @@ import SearchTextForm from './SearchTextForm';
 import Tree from './Tree';
 import NetworkGraph from './NetworkGraph';
 import DeleteBtn from './DeleteBtn';
-import UploadForm from './UploadForm.jsx';
+import UploadForm from './UploadForm';
 
-function SlideDrawer(props) {
+const SlideDrawer = ({ show, documentInfo }) => {
   const [showTree, toggleShowTree] = useState(false);
   const [showGraph, toggleShowGraph] = useState(false);
 
@@ -34,7 +35,7 @@ function SlideDrawer(props) {
               },
               redirect: 'follow',
               referrerPolicy: 'no-referrer',
-            }
+            },
           );
 
           if (response.ok) {
@@ -45,7 +46,7 @@ function SlideDrawer(props) {
             console.log('Network response was not ok.');
           }
         } catch (error) {
-          console.error('Error: ' + error);
+          console.error('Error: ', error);
         }
       })();
     }
@@ -53,7 +54,7 @@ function SlideDrawer(props) {
   }, [showTree, showGraph]);
 
   let drawerClasses = 'side-drawer';
-  if (props.show) {
+  if (show) {
     drawerClasses = 'side-drawer open';
   }
   return (
@@ -63,7 +64,7 @@ function SlideDrawer(props) {
         <SearchTextForm />
       </div>
       <UploadForm />
-      <button onClick={e => toggleShowTree(!showTree)}>Toggle Show Tree</button>
+      <button onClick={() => toggleShowTree(!showTree)} type="button">Toggle Show Tree</button>
       {showTree ? (
         <div className="scroll">
           <Tree items={tree} />
@@ -71,7 +72,7 @@ function SlideDrawer(props) {
       ) : (
         <div>Tree - Hidden</div>
       )}
-      <button onClick={e => toggleShowGraph(!showGraph)}>
+      <button onClick={() => toggleShowGraph(!showGraph)} type="button">
         Toggle Show Graph
       </button>
       {showGraph && tree.length ? (
@@ -81,11 +82,19 @@ function SlideDrawer(props) {
       )}
       <hr />
       <div>
-        <DeleteBtn path={props.documentInfo.path} />
+        <DeleteBtn path={documentInfo.path} />
       </div>
-      <div className="drawer-footer">Notesee App v{pkg.version}</div>
+      <div className="drawer-footer">
+        Notesee App v
+        {pkg.version}
+      </div>
     </div>
   );
-}
+};
 
 export default SlideDrawer;
+
+SlideDrawer.propTypes = {
+  show: PropTypes.bool.isRequired,
+  documentInfo: PropTypes.object.isRequired,
+};

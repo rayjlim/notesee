@@ -1,9 +1,13 @@
-import React from 'react'
-import './Backdrop.css'
-export default class Backdrop extends React.Component {
-  render(){
-    return(
-      <div className="backdrop"  onClick={this.props.close}/>
-    )
-  }
-}
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+import React from 'react';
+import PropTypes from 'prop-types';
+import './Backdrop.css';
+
+const Backdrop = ({ close }) => <div className="backdrop" onClick={close} />;
+
+export default Backdrop;
+
+Backdrop.propTypes = {
+  close: PropTypes.func.isRequired,
+};
