@@ -3,8 +3,8 @@ import { marked } from 'marked';
 import './App.css';
 import MdEditor from './components/MdEditor';
 
-import SlideDrawer from './components/SlideDrawer.js';
-import Backdrop from './components/Backdrop.js';
+import SlideDrawer from './components/SlideDrawer';
+import Backdrop from './components/Backdrop';
 import Constants from './constants';
 
 const BREADCRUMB_MAX = 10;

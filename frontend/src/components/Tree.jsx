@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import './Tree.css';
 
-function Tree({ items, depth = 0 }) {
+function Tree({ items }) {
   if (!items || !items.length) {
     return null;
   }
