@@ -29,7 +29,7 @@ export default function MdEditor(props) {
         cache: 'no-cache',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-          'x-app-token': token,
+          'X-App-Token': token,
         },
         body: formData,
       });
