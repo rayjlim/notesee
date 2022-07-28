@@ -53,7 +53,7 @@ function NetworkGraph(props) {
           credentials: 'same-origin',
           headers: {
             'Content-Type': 'application/json',
-            'x-app-token': token,
+            'X-App-Token': token,
           },
           redirect: 'follow',
           referrerPolicy: 'no-referrer',
