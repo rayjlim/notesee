@@ -4,7 +4,6 @@ if (!defined('APP_STARTED')) {
 }
 
 define("LIBRARY", __DIR__ . "/library");
-define("YEAR_MONTH_FORMAT", "Y-m");
 
 class Wiki
 {
@@ -215,7 +214,7 @@ class Wiki
         if (str_ends_with($pagePath, '/')) {
             $pagePath .= $_ENV['DEFAULT_FILE'];
         }
- 
+
         try {
 
             $ORM = new \Notesee\DocsRedbeanDAO();
@@ -346,6 +345,7 @@ class Wiki
         // scanning of files:
 
         // Check if empty
+        \Logger::log("Edit: " . $path);
         if (trim($source)) {
             $entry = $ORM->update($path, $source);
 
@@ -355,7 +355,7 @@ class Wiki
 
             // get backlinks
             $links = $this->getTargetLinks($source);
-   
+
             $prefixedLinks = [];
 
             foreach ($links[2] as $link) {
@@ -406,6 +406,7 @@ class Wiki
             throw new Error('record exists');
         }
         $entry = $ORM->insert($page, $content);
+        \Logger::log("Created: " . $page);
         $entry->action = 'create';
         $entry->status = 'success';
         $this->_json($entry);
@@ -441,7 +442,7 @@ class Wiki
         $ORM = new \Notesee\DocsRedbeanDAO();
         $ORM->deleteSourceMapping($path);
         $status = $ORM->deleteByPath($path);
-
+        \Logger::log("Delete: " . $path);
         if ($status) {
             header('HTTP/1.0 204 No Content');
         } else {
@@ -507,7 +508,7 @@ class Wiki
             if (!move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $targetFileFullPath)) {
                 throw new Exception("Sorry, there was an error moving upload file");
             }
-
+            \Logger::log("Uploaded: " . $filePath . $urlFileName);
             $data['fileName'] = $urlFileName;
             $data['filePath'] = $filePath;
             $data['createdDir'] = $createdDir;
@@ -542,9 +543,9 @@ class Wiki
         return $matches;
     }
 
+    // Used in testing
     function addOne($number)
     {
-
         return $number + 1;
     }
 
