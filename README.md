@@ -1,5 +1,7 @@
 # Notesee 
 
+[![PHP Composer](https://github.com/rayjlim/notesee/actions/workflows/php.yml/badge.svg)](https://github.com/rayjlim/notesee/actions/workflows/php.yml)
+
 Wiki like notes application using a React based front end and PHP backend with Redbean for ORM.
 Documents are written in markdown.
 
