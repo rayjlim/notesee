@@ -2,10 +2,9 @@
 // # UploadForm.js
 import React, { useState } from 'react';
 import format from 'date-fns/format';
-import Constants from '../constants';
+import constants from '../constants';
 
 const UploadForm = () => {
-  const token = window.localStorage.getItem('appToken');
   const [selectFile, setSelectedFile] = useState(null);
   const [linkContent, setLinkContent] = useState([]);
 
@@ -17,12 +16,12 @@ const UploadForm = () => {
       'filePath',
       filePath.length ? filePath : format(new Date(), 'yyyy-MM'),
     );
-
     console.log('send upload');
 
     try {
+      const token = window.localStorage.getItem(constants.STORAGE_KEY);
       const response = await fetch(
-        `${Constants.REST_ENDPOINT}/search?a=uploadImage`,
+        `${constants.REST_ENDPOINT}/search?a=uploadImage`,
         {
           method: 'POST',
           body: formData,
@@ -35,7 +34,7 @@ const UploadForm = () => {
       console.log(response);
       const data = await response.json();
       console.log(data);
-      setLinkContent(`${Constants.IMG_PATH}/${data.filePath}${data.fileName}`);
+      setLinkContent(`${constants.IMG_PATH}/${data.filePath}${data.fileName}`);
       //   history.push(
       //     `/media?fileName=${data.fileName}&filePath=${data.filePath}`
       //   );

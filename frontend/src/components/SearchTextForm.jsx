@@ -1,9 +1,7 @@
 import React, { useRef, useState } from 'react';
-import Constants from '../constants';
+import constants from '../constants';
 
 const SearchTextForm = () => {
-  const token = window.localStorage.getItem('appToken');
-
   const [results, setResults] = useState({});
   const [query, setQuery] = useState('react hooks');
   const searchInput = useRef(null);
@@ -21,8 +19,9 @@ const SearchTextForm = () => {
     (async () => {
       console.log('send search for: ', query);
       try {
+        const token = window.localStorage.getItem(constants.STORAGE_KEY);
         const response = await fetch(
-          `${Constants.REST_ENDPOINT}/search?a=search&text=${query}`,
+          `${constants.REST_ENDPOINT}/search?a=search&text=${query}`,
           {
             method: 'GET',
             mode: 'cors',
