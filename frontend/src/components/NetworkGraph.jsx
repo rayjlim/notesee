@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Graph from 'react-vis-network-graph';
-import Constants from '../constants';
+import constants from '../constants';
 
 // import "./styles.css";
 // need to import the vis network css in order to show tooltip
 // import "./network.css";
 
 const NetworkGraph = ({ nodes }) => {
-  const token = window.localStorage.getItem('appToken');
   const [graph, setGraph] = useState({
     // /network?a=network
     //   { id: 1, label: "Node 1", title: "node 1 tootip text" },
@@ -46,8 +45,10 @@ const NetworkGraph = ({ nodes }) => {
 
   useEffect(() => {
     (async () => {
+      // TODO: convert to custom hook
       try {
-        const response = await fetch(`${Constants.REST_ENDPOINT}/network?a=network`, {
+        const token = window.localStorage.getItem(constants.STORAGE_KEY);
+        const response = await fetch(`${constants.REST_ENDPOINT}/network?a=network`, {
           method: 'GET',
           mode: 'cors',
           cache: 'no-cache',

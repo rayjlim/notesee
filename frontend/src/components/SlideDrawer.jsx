@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import './SlideDrawer.css';
 import pkg from '../../package.json';
-import Constants from '../constants';
+import constants from '../constants';
 import SearchTextForm from './SearchTextForm';
 import Tree from './Tree';
 import NetworkGraph from './NetworkGraph';
@@ -20,10 +20,10 @@ const SlideDrawer = ({ show, documentInfo }) => {
     if ((showTree || showGraph) && !tree.length) {
       (async () => {
         console.log('#useEffect :');
-        const token = window.localStorage.getItem('appToken');
+        const token = window.localStorage.getItem(constants.STORAGE_KEY);
         try {
           const response = await fetch(
-            `${Constants.REST_ENDPOINT}/search?a=getTree`,
+            `${constants.REST_ENDPOINT}/search?a=getTree`,
             {
               method: 'GET',
               mode: 'cors',

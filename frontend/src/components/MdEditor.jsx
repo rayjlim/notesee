@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Editor from 'react-editor-md';
 import langSetting from '../lang';
-import Constants from '../constants';
+import constants from '../constants';
 import Prompt from './Prompt';
 import './MdEditor.css';
 
@@ -12,6 +12,7 @@ const MdEditor = ({ content, path, mode, onSave }) => {
   const [hasChanges, setHasChanges] = useState(false);
   const [showEditor, setShowEditor] = useState(true);
 
+  // TODO: convert to custom hook
   const save = async () => {
     console.log(markdown);
     console.log(path);
@@ -21,8 +22,8 @@ const MdEditor = ({ content, path, mode, onSave }) => {
     const formData = new URLSearchParams();
     formData.append('ref', ref);
     formData.append('source', markdown);
-    const prefix = Constants.REST_ENDPOINT;
-    const token = window.localStorage.getItem('appToken');
+    const prefix = constants.REST_ENDPOINT;
+    const token = window.localStorage.getItem(constants.STORAGE_KEY);
 
     try {
       const response = await fetch(`${prefix}/index.php?a=edit`, {

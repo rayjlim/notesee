@@ -5,7 +5,7 @@ import MdEditor from './components/MdEditor';
 
 import SlideDrawer from './components/SlideDrawer';
 import Backdrop from './components/Backdrop';
-import Constants from './constants';
+import constants from './constants';
 
 const BREADCRUMB_MAX = 10;
 
@@ -32,7 +32,6 @@ const App = () => {
 
   const load = async (_breadcrumb = []) => {
     console.log('load');
-    const token = window.localStorage.getItem('appToken');
     let { pathname } = window.location;
     console.log(pathname);
 
@@ -70,11 +69,11 @@ const App = () => {
       setBreadcrumb(newbreadcrumb);
     }
     console.log('breacdrumb-postcheck', newbreadcrumb);
-
+    // TODO: convert to custom hook
     try {
       // handle history
-
-      const response = await fetch(`${Constants.REST_ENDPOINT}${pathname}`, {
+      const token = window.localStorage.getItem(constants.STORAGE_KEY);
+      const response = await fetch(`${constants.REST_ENDPOINT}${pathname}`, {
         method: 'GET',
         mode: 'cors',
         cache: 'no-cache',
@@ -125,7 +124,7 @@ const App = () => {
   };
 
   const checkLogin = async (formUser = '', formPass = '') => {
-    const prefix = Constants.REST_ENDPOINT;
+    const prefix = constants.REST_ENDPOINT;
     const formData = new URLSearchParams();
 
     formData.append('username', formUser);
@@ -144,7 +143,7 @@ const App = () => {
         const results = await response.json();
 
         console.log('login results', results);
-        window.localStorage.setItem('appToken', results.token);
+        window.localStorage.setItem(constants.STORAGE_KEY, results.token);
         setLoggedIn(true);
         return results.token;
       }
@@ -168,7 +167,7 @@ const App = () => {
   };
 
   const doLogout = () => {
-    window.localStorage.setItem('appToken', null);
+    window.localStorage.setItem(constants.STORAGE_KEY, null);
     setLoggedIn(false);
   };
 
@@ -183,10 +182,10 @@ const App = () => {
     const { pathname } = window.location;
     console.log('create page');
 
-    const token = window.localStorage.getItem('appToken');
+    const token = window.localStorage.getItem(constants.STORAGE_KEY);
     try {
       const response = await fetch(
-        `${Constants.REST_ENDPOINT}${pathname}?a=create`,
+        `${constants.REST_ENDPOINT}${pathname}?a=create`,
         {
           method: 'GET',
           mode: 'cors',
@@ -221,10 +220,10 @@ const App = () => {
   const getFavorites = async () => {
     console.log('getFavorites');
 
-    const token = window.localStorage.getItem('appToken');
+    const token = window.localStorage.getItem(constants.STORAGE_KEY);
     try {
       const response = await fetch(
-        `${Constants.REST_ENDPOINT}/?a=getFavorites`,
+        `${constants.REST_ENDPOINT}/?a=getFavorites`,
         {
           method: 'GET',
           mode: 'cors',
@@ -254,11 +253,11 @@ const App = () => {
   const toggleFavorite = async () => {
     console.log('toggle Favorite');
 
-    const token = window.localStorage.getItem('appToken');
+    const token = window.localStorage.getItem(constants.STORAGE_KEY);
     try {
       console.log(isFavorite);
       const response = await fetch(
-        `${Constants.REST_ENDPOINT}/?a=favorite&favorite=${!isFavorite}&path=${path}`,
+        `${constants.REST_ENDPOINT}/?a=favorite&favorite=${!isFavorite}&path=${path}`,
         {
           method: 'GET',
           mode: 'cors',
@@ -312,7 +311,7 @@ const App = () => {
         }
       }
 
-      const token = window.localStorage.getItem('appToken');
+      const token = window.localStorage.getItem(constants.STORAGE_KEY);
       if (token && token !== '') {
         console.log('logged in:', token);
 

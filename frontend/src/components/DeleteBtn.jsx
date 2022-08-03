@@ -1,16 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Constants from '../constants';
+import constants from '../constants';
 
 const DeleteBtn = ({ path }) => {
-  const token = window.localStorage.getItem('appToken');
-
-  function sendDelete() {
+  // TODO: convert to custom hook
+  const sendDelete = () => {
     (async () => {
       console.log('delete path: ', path);
       try {
+        const token = window.localStorage.getItem(constants.STORAGE_KEY);
         const response = await fetch(
-          `${Constants.REST_ENDPOINT}/search?a=delete&path=${path}`,
+          `${constants.REST_ENDPOINT}/search?a=delete&path=${path}`,
           {
             method: 'GET',
             mode: 'cors',
@@ -34,7 +34,7 @@ const DeleteBtn = ({ path }) => {
         console.error(`Error: ${error}`);
       }
     })();
-  }
+  };
 
   return (
     <button onClick={() => sendDelete(path)} type="button">
