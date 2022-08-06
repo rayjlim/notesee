@@ -37,7 +37,7 @@ const DeleteBtn = ({ path }) => {
   };
 
   return (
-    <button onClick={() => sendDelete(path)} type="button">
+    <button onClick={() => sendDelete()} type="button">
       Delete
       {' '}
       {path}
