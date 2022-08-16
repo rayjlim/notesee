@@ -340,11 +340,6 @@ const App = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  let backdrop;
-  if (drawerOpen) {
-    backdrop = <Backdrop close={() => drawerToggleClickHandler()} />;
-  }
-
   const documentInfo = {
     markdown,
     path,
@@ -366,8 +361,13 @@ const App = () => {
             <>
               <div>
                 <div className="childDiv">
-                  {drawerOpen && <SlideDrawer show={drawerOpen} documentInfo={documentInfo} />}
-                  {backdrop}
+                  {drawerOpen && (
+                    <SlideDrawer
+                      show={drawerOpen}
+                      documentInfo={documentInfo}
+                    />
+                  )}
+                  {drawerOpen && <Backdrop close={() => drawerToggleClickHandler()} />}
                   <button
                     onClick={() => drawerToggleClickHandler()}
                     title="Alt/Opt + B"
