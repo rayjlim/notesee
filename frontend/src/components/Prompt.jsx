@@ -1,16 +1,25 @@
-import { useEffect, useRef } from 'react';
+import React from 'react';
 
-const useUnload = fn => {
-  const cb = useRef(fn);
+class Prompt extends React.Component {
+  componentDidMount() {
+    window.addEventListener('beforeunload', this.beforeunload.bind(this));
+  }
 
-  useEffect(() => {
-    const onUnload = cb.current;
-    window.addEventListener('beforeunload', onUnload);
-    return () => {
-      window.removeEventListener('beforeunload', onUnload);
-    };
-  }, [cb]);
-  return null;
-};
+  componentWillUnmount() {
+    window.removeEventListener('beforeunload', this.beforeunload.bind(this));
+  }
 
-export default useUnload;
+  beforeunload(e) {
+    // eslint-disable-next-line react/destructuring-assignment, react/prop-types
+    if (this.props.dataUnsaved) {
+      e.preventDefault();
+      e.returnValue = true;
+    }
+  }
+
+  render() {
+    return <>a</>;
+  }
+}
+
+export default Prompt;

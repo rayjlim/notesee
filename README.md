@@ -1,4 +1,4 @@
-# Notesee 
+# Notesee
 
 [![Node.js CI](https://github.com/rayjlim/notesee/actions/workflows/node.js.yml/badge.svg)](https://github.com/rayjlim/notesee/actions/workflows/node.js.yml)
 
@@ -13,6 +13,7 @@ To release a new version `npx standard-version`
 
 Issues managed at [Github](https://github.com/rayjlim/notesee/issues)
 
-### Setup Frontend
+### Setup
 
-Create `/frontend/.env` (use .env.example for reference) change example value for production value.
+For Frontend, create `/frontend/.env` (use .env.example for reference) change example value for production value.
+Similar, for Backend, create '/backend/.env'.
