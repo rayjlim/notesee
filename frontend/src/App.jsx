@@ -132,7 +132,7 @@ const App = () => {
     formData.append('login', true);
 
     try {
-      const response = await fetch(prefix, '/inbox.md', {
+      const response = await fetch(`${prefix}/index.md`, {
         method: 'POST',
         mode: 'cors',
         cache: 'no-cache',
@@ -149,7 +149,7 @@ const App = () => {
       }
       console.log('Network response was not ok.');
     } catch (error) {
-      console.log('Error when parsing means not logged in, ', error);
+      console.log('Error when parsing means not logged in, ', error, prefix);
     }
     return true;
   };
@@ -304,7 +304,7 @@ const App = () => {
       console.log(localBreadcrumbStr);
       let localBreadcrumb;
       if (localBreadcrumbStr) {
-        console.log('has breadcrumb', localBreadcrumb);
+        console.log('has breadcrumb', localBreadcrumbStr);
         localBreadcrumb = JSON.parse(localBreadcrumbStr);
         if (Array.isArray(localBreadcrumb) && localBreadcrumb.length) {
           setBreadcrumb(localBreadcrumb);

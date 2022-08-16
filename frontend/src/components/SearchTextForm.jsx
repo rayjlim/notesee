@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import constants from '../constants';
 
 const SearchTextForm = () => {
@@ -15,7 +15,7 @@ const SearchTextForm = () => {
     setResults({});
     searchInput.current.focus();
   }
-  function sendSearchText() {
+  const sendSearchText = () => {
     (async () => {
       console.log('send search for: ', query);
       try {
@@ -49,13 +49,17 @@ const SearchTextForm = () => {
         console.error('Error: ', error);
       }
     })();
-  }
+  };
   function copyToClipboard(text) {
     const regex = /^(.*[\\/])/i;
     const title = text.replace(regex, '').replace('.md', '').replace(/-/g, ' ');
 
     navigator.clipboard.writeText(`[${title}](/${text})`);
   }
+
+  useEffect(() => {
+    searchInput.current.focus();
+  });
 
   return (
     <>
