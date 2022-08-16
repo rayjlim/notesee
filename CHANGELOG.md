@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.2.0](https://github.com/rayjlim/notesee/compare/v0.1.14...v0.2.0) (2022-08-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* ⬆️  upgrade to react 17
+
+### Features
+
+* [#16](https://github.com/rayjlim/notesee/issues/16) toggle favorite on doc, list favorites ([a26585c](https://github.com/rayjlim/notesee/commit/a26585c7414378e2b2acde5fc120ceb229e9e8fb))
+* ✅ setup unit testing (backend) ([4263c55](https://github.com/rayjlim/notesee/commit/4263c55e7e5eccb9cf91f9359dd170a08c0785c3))
+* ✨ [#44](https://github.com/rayjlim/notesee/issues/44) first parts of templates ([0163d58](https://github.com/rayjlim/notesee/commit/0163d58247a25f4b9b419a17ae95dd01b75f7a07))
+* ✨ [#69](https://github.com/rayjlim/notesee/issues/69) search links to clipboard ([326feb7](https://github.com/rayjlim/notesee/commit/326feb78afb88c477eac9665ba146c51bab32d9f))
+* ✨ focus on search ([d99e1c5](https://github.com/rayjlim/notesee/commit/d99e1c5affa46fa9a044ef5d7f0527136619c424))
+* ✨ image upload capability ([749568a](https://github.com/rayjlim/notesee/commit/749568ad465fd14213feeba43fe432f54c0c2c8c))
+* ✨ key binding and move backlinks to bottom ([30d47eb](https://github.com/rayjlim/notesee/commit/30d47eb76718aca5e44c7393f0629dbbfeb5faa8))
+* ✨ prep for custom hooks ([e1bfc5b](https://github.com/rayjlim/notesee/commit/e1bfc5b6c4394e5cce5a4a25e39c78be1ac5ee2d))
+
+
+### Bug Fixes
+
+* ♻️ change to proper jsx extention ([1493dfe](https://github.com/rayjlim/notesee/commit/1493dfebbc8afb0e967f741308294ee9e4c205c6))
+* ♻️ convert todo comments to github tasks ([2ef182a](https://github.com/rayjlim/notesee/commit/2ef182aa0080fa2c9669f516e518a6c946d27b8c))
+* ♻️ refactor prefix usage ([aeb5e63](https://github.com/rayjlim/notesee/commit/aeb5e638b51e9aa7c9cd3348b15edfab3be08d51))
+* ⬆️  upgrade to react 17 ([dad29fd](https://github.com/rayjlim/notesee/commit/dad29fd379bbdf0be9067e59cf97720b1a9a5668))
+* 🐛 [#45](https://github.com/rayjlim/notesee/issues/45) wiki links style to lowercase ([c96731c](https://github.com/rayjlim/notesee/commit/c96731ce6ff3fb0ea2c7a0d20a6d1ecea48b708f))
+* 🐛 [#45](https://github.com/rayjlim/notesee/issues/45) wiki links use lowercase ([6549d6d](https://github.com/rayjlim/notesee/commit/6549d6dc27bbca40f8ffb8912e8e9f5559b29fde))
+* 🐛 change header for X-App-Token ([24e316a](https://github.com/rayjlim/notesee/commit/24e316ab1a30141e46b8f04b146d5396cfe84a13))
+* 🐛 network graph data timing ([d5546f8](https://github.com/rayjlim/notesee/commit/d5546f878295f487bad77c0da0e443b8d2d2ea50))
+* 🐛 remove eventlistener on unload ([e849eca](https://github.com/rayjlim/notesee/commit/e849eca012d8eb5059020a7523928362e08f9494))
+* 🐛 show error when bad login ([437e3eb](https://github.com/rayjlim/notesee/commit/437e3eb8461dfd0bdecd854d59fc153f77796f70))
+* 🐛 showing link content only when link made ([e315a27](https://github.com/rayjlim/notesee/commit/e315a27137e30f3224c0fa21b895cdd8c9e13cd4))
+* 🔒️ encrypt secrets for easier maintenance ([a5da8ed](https://github.com/rayjlim/notesee/commit/a5da8eda56d609bd598308e5d13fa29f0e6ce216))
+* Use editor for preview too ([5081379](https://github.com/rayjlim/notesee/commit/50813790107d840c57b265585209fcb189dd3bc7))
+
 ### [0.1.15](https://github.com/rayjlim/notesee/compare/v0.1.14...v0.1.15) (2022-03-21)
 
 
