@@ -291,6 +291,21 @@ const App = () => {
     smartLists: true,
     smartypants: false,
   });
+  const drawerToggleClickHandler = () => {
+    setDrawerOpen(!drawerOpen);
+  };
+  const handleKeyDown = e => {
+    if (e.altKey && e.which === 66) {
+      console.log('B keybinding - Side bar');
+      drawerToggleClickHandler();
+    } else if (e.altKey && e.which === 77) {
+      console.log('M keybinding');
+      switchMode();
+    } else if (e.altKey && e.shiftKey && e.which === 70) {
+      // F will toggle favorite
+      console.log('shift F keybinding');
+    }
+  };
 
   useEffect(() => {
     (async () => {
@@ -322,11 +337,8 @@ const App = () => {
     })();
     // eslint-disable-next-line
     document.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
-
-  const drawerToggleClickHandler = () => {
-    setDrawerOpen(!drawerOpen);
-  };
 
   let backdrop;
   if (drawerOpen) {
@@ -339,18 +351,6 @@ const App = () => {
     backlinks,
   };
 
-  const handleKeyDown = e => {
-    if (e.altKey && e.which === 66) {
-      console.log('B keybinding - Side bar');
-      drawerToggleClickHandler();
-    } else if (e.altKey && e.which === 77) {
-      console.log('M keybinding');
-      switchMode();
-    } else if (e.altKey && e.shiftKey && e.which === 70) {
-      // F will toggle favorite
-      console.log('shift F keybinding');
-    }
-  };
   const divStyle = {
     width: '50%',
     display: 'inline-block',

@@ -126,20 +126,23 @@ const MdEditor = ({ content, path, mode, onSave }) => {
     }
   };
 
+  const checkKeyPressed = e => {
+    console.log('mdeditor: handle key presss ', e.key);
+    // console.log('131:' + markdown + ', hasChanges ' + hasChanges);
+    if (e.altKey && e.key === 's') {
+      console.log('S keybinding');
+      // Note: this is a hack because the markdown value is taken from the init value
+      document.getElementById('saveBtn').click();
+      // save();
+    } else if (e.ctrlKey && e.shiftKey && e.key === '1') {
+      console.log('shift 1 - template keybinding');
+      firstTemplate();
+    }
+  };
+
   useEffect(() => {
-    document.addEventListener('keydown', e => {
-      console.log('mdeditor: handle key presss ', e.key);
-      // console.log('131:' + markdown + ', hasChanges ' + hasChanges);
-      if (e.altKey && e.key === 's') {
-        console.log('S keybinding');
-        // Note: this is a hack because the markdown value is taken from the init value
-        document.getElementById('saveBtn').click();
-        // save();
-      } else if (e.ctrlKey && e.shiftKey && e.key === '1') {
-        console.log('shift 1 - template keybinding');
-        firstTemplate();
-      }
-    });
+    document.addEventListener('keydown', checkKeyPressed);
+    return () => window.removeEventListener('resize', checkKeyPressed);
   });
   const divStyle = {
     width: '50%',
