@@ -366,7 +366,7 @@ const App = () => {
             <>
               <div>
                 <div className="childDiv">
-                  <SlideDrawer show={drawerOpen} documentInfo={documentInfo} />
+                  {drawerOpen && <SlideDrawer show={drawerOpen} documentInfo={documentInfo} />}
                   {backdrop}
                   <button
                     onClick={() => drawerToggleClickHandler()}
