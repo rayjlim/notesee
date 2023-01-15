@@ -32,7 +32,7 @@ class DocsRedbeanDAO
         $doc->content = $content;
         $iResource = new \Resource();
         $date = $iResource->getDateTime();
-        $doc->update_date = $date->format(FULL_DATETIME_FORMAT);
+        $doc->update_date = $date->format(DATE_FORMAT);
         $doc->isFavorite = false;
         $id = \R::store($doc);
         $doc->id = $id;
@@ -53,7 +53,7 @@ class DocsRedbeanDAO
         $doc->content = str_replace("\n", "\\n", $content);
         $iResource = new \Resource();
         $date = $iResource->getDateTime();
-        $doc->update_date = $date->format(FULL_DATETIME_FORMAT);
+        $doc->update_date = $date->format(DATE_FORMAT);
         \R::store($doc);
         return $doc;
     }

@@ -306,6 +306,9 @@ class Wiki
                 $source = $entrys[0]['content'];
             }else{
                 $entrys[0]['is_favorite'] = 0;
+                $iResource = new \Resource();
+                $date = $iResource->getDateTime();
+                $entrys[0]['update_date'] = $date->format(DATE_FORMAT);
             }
 
             $pageData = new stdClass();
