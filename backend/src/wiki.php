@@ -304,6 +304,11 @@ class Wiki
             $source = "";
             if (!count($entrys) == 0) {
                 $source = $entrys[0]['content'];
+            }else{
+                $entrys[0]['is_favorite'] = 0;
+                $iResource = new \Resource();
+                $date = $iResource->getDateTime();
+                $entrys[0]['update_date'] = $date->format(DATE_FORMAT);
             }
 
             $pageData = new stdClass();
@@ -313,6 +318,7 @@ class Wiki
 
             $pageData->source = str_replace("\\n", "\n", $source);
             $pageData->isFavorite = $entrys[0]['is_favorite'] == '1';
+            $pageData->modifiedDate = $entrys[0]['update_date'];
 
             $this->_json($pageData);
         } catch (Exception $e) {

@@ -30,6 +30,10 @@ class DocsRedbeanDAO
         $doc = \R::getRedBean()->dispense(DOCS);
         $doc->path = $path;
         $doc->content = $content;
+        $iResource = new \Resource();
+        $date = $iResource->getDateTime();
+        $doc->update_date = $date->format(DATE_FORMAT);
+        $doc->isFavorite = false;
         $id = \R::store($doc);
         $doc->id = $id;
         return $doc;
@@ -47,6 +51,9 @@ class DocsRedbeanDAO
     {
         $doc  = \R::findOne(DOCS, ' path = ? ', [$path]);
         $doc->content = str_replace("\n", "\\n", $content);
+        $iResource = new \Resource();
+        $date = $iResource->getDateTime();
+        $doc->update_date = $date->format(DATE_FORMAT);
         \R::store($doc);
         return $doc;
     }
