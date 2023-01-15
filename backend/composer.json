@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-        "yeriomin/redbean-single-file": "^4.3",
+        "gabordemooij/redbean": "dev-master",
         "vlucas/phpdotenv": "^5.4"
     },
     "require-dev": {

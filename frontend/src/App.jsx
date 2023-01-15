@@ -330,7 +330,7 @@ const App = () => {
       }
 
       const token = window.localStorage.getItem(constants.STORAGE_KEY);
-      if (token && token !== '') {
+      if (token && token !== '' && token !== 'null') {
         console.log('logged in:', token);
 
         setLoggedIn(true);
