@@ -304,6 +304,8 @@ class Wiki
             $source = "";
             if (!count($entrys) == 0) {
                 $source = $entrys[0]['content'];
+            }else{
+                $entrys[0]['is_favorite'] = 0;
             }
 
             $pageData = new stdClass();
