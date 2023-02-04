@@ -21,8 +21,9 @@ require_once __DIR__ . '/vendor/autoload.php';
 $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
-\R::setup('mysql:host=' . $_ENV['DB_HOST'] . ';dbname=' . $_ENV['DB_NAME'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);
-\R::freeze(true);
+use \RedBeanPHP\R as R;
+R::setup('mysql:host=' . $_ENV['DB_HOST'] . ';dbname=' . $_ENV['DB_NAME'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);
+R::freeze(true);
 
 $request_uri = parse_url($_SERVER['REQUEST_URI']);
 $request_uri = explode("/", $request_uri['path']);

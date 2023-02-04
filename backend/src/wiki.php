@@ -210,6 +210,7 @@ class Wiki
     public function indexAction()
     {
         $request = parse_url($_SERVER['REQUEST_URI']);
+
         $pagePath = str_replace("###" . APP_DIR . "/", "", "###" . urldecode($request['path']));
         if (str_ends_with($pagePath, '/')) {
             $pagePath .= $_ENV['DEFAULT_FILE'];
@@ -302,7 +303,7 @@ class Wiki
             $entrys = $ORM->getByPath($pagePath);
 
             $source = "";
-            if (!count($entrys) == 0) {
+            if (count($entrys) !== 0) {
                 $source = $entrys[0]['content'];
             }
 

@@ -1,7 +1,7 @@
 <?php
 
 namespace Notesee;
-
+use \RedBeanPHP\R as R;
 define('DOCS', 'ns_documents');
 define('MAPPING', 'ns_maps');
 /**
@@ -27,10 +27,14 @@ class DocsRedbeanDAO
      */
     public function insert($path, $content)
     {
-        $doc = \R::getRedBean()->dispense(DOCS);
+        $doc = R::getRedBean()->dispense(DOCS);
         $doc->path = $path;
         $doc->content = $content;
-        $id = \R::store($doc);
+
+        $doc->update_date = (new \DateTime())->format(DATE_FORMAT);
+        $doc->isFavorite = false;
+        $id = R::store($doc);
+
         $doc->id = $id;
         return $doc;
     }
@@ -45,10 +49,15 @@ class DocsRedbeanDAO
      */
     public function update($path, $content)
     {
-        $doc  = \R::findOne(DOCS, ' path = ? ', [$path]);
-        $doc->content = str_replace("\n", "\\n", $content);
-        \R::store($doc);
-        return $doc;
+        $doc  = R::findOne(DOCS, ' path = ? ', [$path]);
+        if ($doc) {
+            $doc->content = str_replace("\n", "\\n", $content);
+            $doc->update_date = (new \DateTime())->format(FULL_DATETIME_FORMAT);
+            R::store($doc);
+            return $doc;
+        } else {
+            throw new \Exception("Document not found");
+        }
     }
 
     /**
@@ -61,11 +70,11 @@ class DocsRedbeanDAO
      */
     public function favoriteByPath($path, $favorite)
     {
-        $doc = \R::findOne(DOCS, ' path = ? ', [$path]);
+        $doc = R::findOne(DOCS, ' path = ? ', [$path]);
 
         $doc->isFavorite = $favorite == 'true' ? 1 : 0;
         // echo $doc;
-        \R::store($doc);
+        R::store($doc);
         return $doc;
     }
 
@@ -78,20 +87,13 @@ class DocsRedbeanDAO
      */
     public function getByPath($path)
     {
-        $found = \R::findAll(
+        $found = R::findAll(
             DOCS,
             ' path = ?',
             [$path]
         );
-        $sequencedArray = array_values(
-            array_map(
-                function ($item) {
-                    return $item->export();
-                },
-                $found
-            )
-        );
-        return $sequencedArray;
+        return R::exportAll($found);
+
     }
 
     /**
@@ -103,8 +105,8 @@ class DocsRedbeanDAO
      */
     public function deleteByPath($path)
     {
-        $doc  = \R::findOne(DOCS, ' path = ? ', [$path]);
-        \R::trash($doc);
+        $doc  = R::findOne(DOCS, ' path = ? ', [$path]);
+        R::trash($doc);
         return true;
     }
 
@@ -115,68 +117,60 @@ class DocsRedbeanDAO
      */
     public function getPaths()
     {
-        $found = \R::getCol('SELECT path from ' . DOCS . ' order by path');
+        $found = R::getCol('SELECT path from ' . DOCS . ' order by path');
         return $found;
     }
 
     public function getMaps()
     {
-        $found = \R::findAll(MAPPING);
-        $sequencedArray = array_values(
-            array_map(
-                function ($item) {
-                    return $item->export();
-                },
-                $found
-            )
-        );
-        return $sequencedArray;
+        $found = R::findAll(MAPPING);
+        return R::exportAll($found);
     }
 
     public function getBacklinks($path)
     {
-        $found = \R::getCol('SELECT source from ' . MAPPING . ' where target = \'' . $path . '\'');
+        $found = R::getCol('SELECT source from ' . MAPPING . ' where target = \'' . $path . '\'');
         return $found;
     }
 
     public function getFavorites()
     {
-        $found = \R::getCol('SELECT path FROM ' . DOCS . ' WHERE `is_favorite` = 1 ORDER BY `path` ASC');
+        $found = R::getCol('SELECT path FROM ' . DOCS . ' WHERE `is_favorite` = 1 ORDER BY `path` ASC');
         return $found;
     }
 
     public function getForwardlinks($path)
     {
-        $found = \R::getCol('SELECT target from ' . MAPPING . ' where source = \'' . $path . '\'');
+        $found = R::getCol('SELECT target from ' . MAPPING . ' where source = \'' . $path . '\'');
         return $found;
     }
     public function addMapping($source, $target)
     {
-        $mapping = \R::getRedBean()->dispense(MAPPING);
+        $mapping = R::getRedBean()->dispense(MAPPING);
         $mapping->source = $source;
         $mapping->target = $target;
-        $id = \R::store($mapping);
+        $id = R::store($mapping);
         return $id;
     }
 
     public function deleteMapping($source, $target)
     {
-        $mapping  = \R::findOne(MAPPING, ' source = ? AND target = ?', [$source, $target]);
-        \R::trash($mapping);
+        $mapping  = R::findOne(MAPPING, ' source = ? AND target = ?', [$source, $target]);
+        R::trash($mapping);
     }
 
     public function deleteSourceMapping($source)
     {
-        $mappings  = \R::find(MAPPING, ' source = ? ', [$source]);
+        $mappings  = R::find(MAPPING, ' source = ? ', [$source]);
         foreach ($mappings as $mapping) {
-            \R::trash($mapping);
+            R::trash($mapping);
         }
     }
     
     // SEARCH
     public function contentsContains($text)
     {
-        $found = \R::find(DOCS, ' content LIKE ? ', ['%' . $text . '%']);
+        $found = R::find(DOCS, ' content LIKE ? ', ['%' . $text . '%']);
         return $found;
     }
 }
