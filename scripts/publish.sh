@@ -34,8 +34,8 @@ if [ -z "$NOBACKENDBUILD" ]; then
   mkdir -p ../backend/build
   cd ../backend
   rsync -ravz --exclude-from '../scripts/exclude-from-prep.txt' --delete . ./build
-    rsync -avz  ".env.production"  ./build/.env
-      rsync -avz  "config/.htaccess"  ./build
+  rsync -avz  ".env.production"  ./build/.env
+  rsync -avz  "config/.htaccess"  ./build
   rsync -avz  "../scripts/exclude-from-prod.txt"   ./build
 
   cd ./build
@@ -69,7 +69,7 @@ echo "start upload"
 # setup passwordless ssh
 if [ ! -z $RESETSSH ]; then
     echo "Reset ssh key"
-    ssh-keygen -f $KEY_DIR -R $FTP_HOST
+    ssh-keygen -f $KEY_FILE -R $FTP_HOST
     ssh-copy-id -f -i ~/.ssh/id_rsa -oHostKeyAlgorithms=+ssh-dss $FTP_USER@$FTP_HOST
 else
     echo "Skip SSH Reset"
@@ -96,6 +96,7 @@ if [ -z "$NOFRONTENDBUILD" ]; then
   rsync -rave  'ssh -oHostKeyAlgorithms=+ssh-dss' \
     --delete . $FTP_USER@$FTP_HOST:$FTP_TARGETFOLDER_UI/
 
-  ssh  $FTP_USER@$FTP_HOST "chmod -R 755 $FTP_TARGETFOLDER_UI/"
+  ssh $FTP_USER@$FTP_HOST -p 2222 -oHostKeyAlgorithms=+ssh-dss \
+    "chmod -R 755 $FTP_TARGETFOLDER_UI/"
   cd ../..
 fi

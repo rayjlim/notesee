@@ -1,4 +1,5 @@
 <?php
+
 // Allow from any origin
 if (isset($_SERVER['HTTP_ORIGIN'])) {
     header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
@@ -19,6 +20,7 @@ $dotenv = \Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
 use \RedBeanPHP\R as R;
+
 R::setup('mysql:host=' . $_ENV['DB_HOST'] . ';dbname=' . $_ENV['DB_NAME'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);
 R::freeze(true);
 
@@ -35,7 +37,7 @@ define('BASE_URL', "http" . ($https ? "s" : "") . "://" . $_SERVER['HTTP_HOST'] 
 
 // APP_DIR  ex. /projects/notesee/backend
 // BASE_URL ex. http://localhost/notesee/backend
-
-Login::instance()->dispatch();
-
+// echo 'Login 51';
+// Login::instance()->dispatch();
+// echo 'wiki 53';
 Wiki::instance()->dispatch();

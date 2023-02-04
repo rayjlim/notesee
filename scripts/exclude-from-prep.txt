@@ -10,3 +10,4 @@
 .phpunit-watcher.yml
 cs-ruleset.xml
 phpcs.xml
+codeception.yml

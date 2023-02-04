@@ -12,6 +12,8 @@ const BREADCRUMB_MAX = 10;
 const App = () => {
   const [markdown, setMarkdown] = useState('');
   const [isFavorite, setFavorite] = useState(false);
+  const [modifiedDate, setModifiedDate] = useState(null);
+
   const [path, setPath] = useState('');
   const [backlinks, setBacklinks] = useState([]);
   const [favorites, setFavorites] = useState([]);
@@ -112,6 +114,7 @@ const App = () => {
 
         setMarkdown(results.source);
         setFavorite(results.isFavorite);
+        setModifiedDate(results.modifiedDate);
         setPath(pathname.substring(1));
         setBacklinks(results.backlinks);
         setVisual({ ...visual, loading: false, showCreateButton });
@@ -327,7 +330,7 @@ const App = () => {
       }
 
       const token = window.localStorage.getItem(constants.STORAGE_KEY);
-      if (token && token !== '') {
+      if (token && token !== '' && token !== 'null') {
         console.log('logged in:', token);
 
         setLoggedIn(true);
@@ -375,6 +378,12 @@ const App = () => {
                   >
                     Side Bar
                   </button>
+                  {' '}
+                  <span>
+                    Modified Date:
+                    {' '}
+                    {modifiedDate}
+                  </span>
                 </div>
                 <div className="childDiv">
                   <button onClick={() => doLogout()} type="button">Logout</button>

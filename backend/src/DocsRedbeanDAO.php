@@ -2,6 +2,7 @@
 
 namespace Notesee;
 use \RedBeanPHP\R as R;
+
 define('DOCS', 'ns_documents');
 define('MAPPING', 'ns_maps');
 /**
@@ -58,6 +59,7 @@ class DocsRedbeanDAO
         } else {
             throw new \Exception("Document not found");
         }
+
     }
 
     /**
@@ -125,6 +127,7 @@ class DocsRedbeanDAO
     {
         $found = R::findAll(MAPPING);
         return R::exportAll($found);
+
     }
 
     public function getBacklinks($path)
