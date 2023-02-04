@@ -305,6 +305,11 @@ class Wiki
             $source = "";
             if (count($entrys) !== 0) {
                 $source = $entrys[0]['content'];
+            }else{
+                $entrys[0]['is_favorite'] = 0;
+                $iResource = new \Resource();
+                $date = $iResource->getDateTime();
+                $entrys[0]['update_date'] = $date->format(DATE_FORMAT);
             }
 
             $pageData = new stdClass();
@@ -524,7 +529,13 @@ class Wiki
 
     public function favoriteAction()
     {
-        $status = false;
+        // Check if the required parameters (path, favorite) are set in the request
+        if (!isset($_REQUEST['path'], $_REQUEST['favorite'])) {
+            header('HTTP/1.0 400 Bad Request');
+            echo "Missing required parameters (path, favorite)";
+            exit;
+        }
+
         $ORM = new \Notesee\DocsRedbeanDAO();
         $status = $ORM->favoriteByPath($_REQUEST['path'], $_REQUEST['favorite']);
 

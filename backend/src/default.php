@@ -11,4 +11,5 @@ define ("LOGS_DIR",  ABSPATH .'_logs');
 define ("LOG_PREFIX", 'notesee');
 
 define("FULL_DATETIME_FORMAT", "Y-m-d G:i:s");
+define("DATE_FORMAT", "Y-m-d");
 define("YEAR_MONTH_FORMAT", "Y-m");
