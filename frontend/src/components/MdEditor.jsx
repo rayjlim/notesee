@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import MarkdownIt from 'markdown-it';
-import Editor from "react-markdown-editor-lite";
+import Editor from 'react-markdown-editor-lite';
 // import style manually
 import 'react-markdown-editor-lite/lib/index.css';
 import './MdEditor.css';
@@ -67,13 +67,11 @@ const MdEditor = ({ content, path, mode, onSave }) => {
     }
   };
 
-  const handleEditorChange =({ html, text }) => {
+  const handleEditorChange = ({ text }) => {
     console.log('editorOnchange');
 
     let modified = text;
 
-    // const newCursor = editor.getCursor();
-    // console.log(newCursor);
     const regex = /\[\[(.+?)\]\][ ]/g;
     const match = regex.exec(modified);
     console.log(match);
@@ -85,13 +83,9 @@ const MdEditor = ({ content, path, mode, onSave }) => {
 
       const title = match['1'].replace(/-/g, ' ');
       const filename = match['1'].replace(/ /g, '-').toLowerCase();
-
-      console.log(match.index, ' ', regex.lastIndex);
-
-      const matchLen = match['1'].length;
       modified = modified.replace(regex, `[${title}](${filename}.md)`);
-      
-     // place the cursor
+
+      // place the cursor
       mdEditor.current.setSelection(mdEditor.current.getSelection());
     }
 
@@ -131,13 +125,12 @@ const MdEditor = ({ content, path, mode, onSave }) => {
   };
 
   useEffect(() => {
-    console.log("Editor mode", mdEditor.current.getView());
+    console.log('Editor mode', mdEditor.current.getView());
 
     if (mode !== 'edit') {
-      mdEditor.current.setView({md: false, html: true})
-      
+      mdEditor.current.setView({ md: false, html: true });
     } else {
-      mdEditor.current.setView({md: true, html: true})
+      mdEditor.current.setView({ md: true, html: true });
     }
     document.addEventListener('keydown', checkKeyPressed);
     return () => window.removeEventListener('resize', checkKeyPressed);
@@ -146,30 +139,43 @@ const MdEditor = ({ content, path, mode, onSave }) => {
     width: '50%',
     display: 'inline-block',
   };
- 
+
   return (
     <>
       <Prompt dataUnsaved={hasChanges} />
       <div className={hasChanges ? 'changed' : 'unchanged'}>
         <div style={saveBarStyle}>
-          <button onClick={() => save()} title="Alt/Opt + S" id="saveBtn" type="button">
+          <button
+            onClick={() => save()}
+            title="Alt/Opt + S"
+            id="saveBtn"
+            type="button"
+          >
             Save
           </button>
-          <span>
-            {hasChanges ? 'has changes' : 'unchanged'}
-          </span>
+          <span>{hasChanges ? 'has changes' : 'unchanged'}</span>
         </div>
         <div style={saveBarStyle}>
           {mode !== 'edit' ? <span>preview</span> : <span>editable</span>}
         </div>
-        <button onClick={handleClick}>Get value</button>
+        <button onClick={handleClick} type="button">Get value</button>
         {showEditor && (
-           <Editor style={{ height: '70vh' }} ref={mdEditor} value={markdown} renderHTML={text => mdParser.render(markdown)} onChange={handleEditorChange} />
+          <Editor
+            style={{ height: '70vh' }}
+            ref={mdEditor}
+            value={markdown}
+            renderHTML={text => mdParser.render(text)}
+            onChange={handleEditorChange}
+          />
         )}
         <button onClick={() => save()} title="Alt/Opt + S" type="button">
           Save
         </button>
-        <button onClick={() => firstTemplate()} title="Ctrl + Shift + 1" type="button">
+        <button
+          onClick={() => firstTemplate()}
+          title="Ctrl + Shift + 1"
+          type="button"
+        >
           Dev Template
         </button>
       </div>
