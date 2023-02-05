@@ -91,17 +91,8 @@ const MdEditor = ({ content, path, mode, onSave }) => {
       const matchLen = match['1'].length;
       modified = modified.replace(regex, `[${title}](${filename}.md)`);
       
-    //   // set the text
-    //   editor.clear();
-    //   editor.insertValue(replaced);
-    mdEditor.current.setSelection(mdEditor.current.getSelection());
-
-    //   // place the cursor
-    //   console.log(newCursor.ch, matchLen);
-    //   newCursor.ch = newCursor.ch + matchLen + 3;
-    //   editor.setCursor(newCursor);
-    //   editor.unwatch();
-    //   editor.watch();
+     // place the cursor
+      mdEditor.current.setSelection(mdEditor.current.getSelection());
     }
 
     setMarkdown(modified);
@@ -125,24 +116,8 @@ const MdEditor = ({ content, path, mode, onSave }) => {
     }, 20);
   }
 
-  const editorOnload = editor => {
-    console.log('editor loaded: ', mode);
-    if (mode !== 'edit') {
-      editor.unwatch();
-      editor.watch();
-      editor.previewing();
-      // editor.fullscreen();
-      console.log('preview');
-    } else {
-      editor.previewing();
-      setTimeout(() => {
-        editor.previewing();
-      }, 20);
-    }
-  };
-
   const checkKeyPressed = e => {
-    console.log('mdeditor: handle key presss ', e.key);
+    console.log('MdEditor: handle key presss ', e.key);
     // console.log('131:' + markdown + ', hasChanges ' + hasChanges);
     if (e.altKey && e.key === 's') {
       console.log('S keybinding');
@@ -156,10 +131,18 @@ const MdEditor = ({ content, path, mode, onSave }) => {
   };
 
   useEffect(() => {
+    console.log("Editor mode", mdEditor.current.getView());
+
+    if (mode !== 'edit') {
+      mdEditor.current.setView({md: false, html: true})
+      
+    } else {
+      mdEditor.current.setView({md: true, html: true})
+    }
     document.addEventListener('keydown', checkKeyPressed);
     return () => window.removeEventListener('resize', checkKeyPressed);
   });
-  const divStyle = {
+  const saveBarStyle = {
     width: '50%',
     display: 'inline-block',
   };
@@ -168,7 +151,7 @@ const MdEditor = ({ content, path, mode, onSave }) => {
     <>
       <Prompt dataUnsaved={hasChanges} />
       <div className={hasChanges ? 'changed' : 'unchanged'}>
-        <div style={divStyle}>
+        <div style={saveBarStyle}>
           <button onClick={() => save()} title="Alt/Opt + S" id="saveBtn" type="button">
             Save
           </button>
@@ -176,7 +159,7 @@ const MdEditor = ({ content, path, mode, onSave }) => {
             {hasChanges ? 'has changes' : 'unchanged'}
           </span>
         </div>
-        <div style={divStyle}>
+        <div style={saveBarStyle}>
           {mode !== 'edit' ? <span>preview</span> : <span>editable</span>}
         </div>
         <button onClick={handleClick}>Get value</button>
