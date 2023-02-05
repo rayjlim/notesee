@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.2](https://github.com/rayjlim/notesee/compare/v0.2.1...v0.2.2) (2023-02-05)
+
+
+### Features
+
+* [#71](https://github.com/rayjlim/notesee/issues/71) save update_date ([d5eaed3](https://github.com/rayjlim/notesee/commit/d5eaed310c9bb7652bc443418d5c8f0cda62b451))
+* change out editor ([1d89873](https://github.com/rayjlim/notesee/commit/1d898736c181fdd38c6b219880a4c3924d60ed08))
+* default modified date for newly created ([ce5a7d3](https://github.com/rayjlim/notesee/commit/ce5a7d3cc11e61ad690a0f057da29685ca8334be))
+
+
+### Bug Fixes
+
+* [#71](https://github.com/rayjlim/notesee/issues/71) add 'update_date' field to api ([6cc850a](https://github.com/rayjlim/notesee/commit/6cc850aaa79e607fcd7e0a60a40c9e787a2009b1))
+* [#71](https://github.com/rayjlim/notesee/issues/71) show modified date ([114f972](https://github.com/rayjlim/notesee/commit/114f9724dd30718109df8e57ef79cc3fee598c16))
+* ⬆️ composer update ([9d068d4](https://github.com/rayjlim/notesee/commit/9d068d4d2980ec076e626263e12e73c18724161f))
+* is_favorite default false on newly created file ([623fc81](https://github.com/rayjlim/notesee/commit/623fc81da21270322d4934f29db47b87cfbfd51a))
+* update Redbean reference ([c79b307](https://github.com/rayjlim/notesee/commit/c79b3074fa0e3dcc4c19871cb79c720344fc3662))
+* upgrade Redbean dependency ([8be33c8](https://github.com/rayjlim/notesee/commit/8be33c8052aac0a86882608fd124a553ff6520e7))
+* view mode button ([ee4c18b](https://github.com/rayjlim/notesee/commit/ee4c18bd86fd017055a54752bd1f8c1c1f155d3f))
+* viewport of editor relative size ([853cced](https://github.com/rayjlim/notesee/commit/853ccedfa60233a09af81eb74c1828ae9f785752))
+
 ### [0.2.1](https://github.com/rayjlim/notesee/compare/v0.2.0...v0.2.1) (2022-08-16)
 
 ## [0.2.0](https://github.com/rayjlim/notesee/compare/v0.1.14...v0.2.0) (2022-08-16)

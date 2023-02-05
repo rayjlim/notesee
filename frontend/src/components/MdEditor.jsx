@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import Editor from 'react-editor-md';
-import langSetting from '../lang';
+import MarkdownIt from 'markdown-it';
+import Editor from "react-markdown-editor-lite";
+// import style manually
+import 'react-markdown-editor-lite/lib/index.css';
+import './MdEditor.css';
+
 import constants from '../constants';
 import Prompt from './Prompt';
-import './MdEditor.css';
+
+// Initialize a markdown parser
+const mdParser = new MarkdownIt(/* Markdown-it options */);
 
 // eslint-disable-next-line object-curly-newline
 const MdEditor = ({ content, path, mode, onSave }) => {
@@ -12,6 +18,13 @@ const MdEditor = ({ content, path, mode, onSave }) => {
   const [hasChanges, setHasChanges] = useState(false);
   const [showEditor, setShowEditor] = useState(true);
 
+  const mdEditor = React.useRef(null);
+
+  const handleClick = () => {
+    if (mdEditor.current) {
+      alert(mdEditor.current.getMdValue());
+    }
+  };
   // TODO: convert to custom hook
   const save = async () => {
     console.log(markdown);
@@ -54,18 +67,19 @@ const MdEditor = ({ content, path, mode, onSave }) => {
     }
   };
 
-  const editorOnchange = editor => {
+  const handleEditorChange =({ html, text }) => {
     console.log('editorOnchange');
-    // console.log(editor.getMarkdown());
 
-    const modified = editor.getMarkdown();
-    console.log(editor);
-    const newCursor = editor.getCursor();
+    let modified = text;
+
+    // const newCursor = editor.getCursor();
     // console.log(newCursor);
     const regex = /\[\[(.+?)\]\][ ]/g;
     const match = regex.exec(modified);
     console.log(match);
     const found = modified.match(regex);
+
+    console.log(mdEditor.current.getSelection());
     if (found) {
       console.log(match['1']);
 
@@ -75,23 +89,15 @@ const MdEditor = ({ content, path, mode, onSave }) => {
       console.log(match.index, ' ', regex.lastIndex);
 
       const matchLen = match['1'].length;
-      const replaced = modified.replace(regex, `[${title}](${filename}.md)`);
-
-      // set the text
-      editor.clear();
-      editor.insertValue(replaced);
-
-      // place the cursor
-      console.log(newCursor.ch, matchLen);
-      newCursor.ch = newCursor.ch + matchLen + 3;
-      editor.setCursor(newCursor);
-      editor.unwatch();
-      editor.watch();
+      modified = modified.replace(regex, `[${title}](${filename}.md)`);
+      
+     // place the cursor
+      mdEditor.current.setSelection(mdEditor.current.getSelection());
     }
 
-    setMarkdown(editor.getMarkdown());
+    setMarkdown(modified);
     setHasChanges(true);
-    onSave(editor.getMarkdown());
+    onSave(modified);
   };
 
   function firstTemplate() {
@@ -110,24 +116,8 @@ const MdEditor = ({ content, path, mode, onSave }) => {
     }, 20);
   }
 
-  const editorOnload = editor => {
-    console.log('editor loaded: ', mode);
-    if (mode !== 'edit') {
-      editor.unwatch();
-      editor.watch();
-      editor.previewing();
-      // editor.fullscreen();
-      console.log('preview');
-    } else {
-      editor.previewing();
-      setTimeout(() => {
-        editor.previewing();
-      }, 20);
-    }
-  };
-
   const checkKeyPressed = e => {
-    console.log('mdeditor: handle key presss ', e.key);
+    console.log('MdEditor: handle key presss ', e.key);
     // console.log('131:' + markdown + ', hasChanges ' + hasChanges);
     if (e.altKey && e.key === 's') {
       console.log('S keybinding');
@@ -141,19 +131,27 @@ const MdEditor = ({ content, path, mode, onSave }) => {
   };
 
   useEffect(() => {
+    console.log("Editor mode", mdEditor.current.getView());
+
+    if (mode !== 'edit') {
+      mdEditor.current.setView({md: false, html: true})
+      
+    } else {
+      mdEditor.current.setView({md: true, html: true})
+    }
     document.addEventListener('keydown', checkKeyPressed);
     return () => window.removeEventListener('resize', checkKeyPressed);
   });
-  const divStyle = {
+  const saveBarStyle = {
     width: '50%',
     display: 'inline-block',
   };
-
+ 
   return (
     <>
       <Prompt dataUnsaved={hasChanges} />
       <div className={hasChanges ? 'changed' : 'unchanged'}>
-        <div style={divStyle}>
+        <div style={saveBarStyle}>
           <button onClick={() => save()} title="Alt/Opt + S" id="saveBtn" type="button">
             Save
           </button>
@@ -161,21 +159,12 @@ const MdEditor = ({ content, path, mode, onSave }) => {
             {hasChanges ? 'has changes' : 'unchanged'}
           </span>
         </div>
-        <div style={divStyle}>
+        <div style={saveBarStyle}>
           {mode !== 'edit' ? <span>preview</span> : <span>editable</span>}
         </div>
-
+        <button onClick={handleClick}>Get value</button>
         {showEditor && (
-          <Editor
-            config={{
-              path: '/assets/',
-              delay: 0,
-              markdown,
-              lang: langSetting,
-              onload: editorOnload,
-              onchange: editorOnchange,
-            }}
-          />
+           <Editor style={{ height: '70vh' }} ref={mdEditor} value={markdown} renderHTML={text => mdParser.render(markdown)} onChange={handleEditorChange} />
         )}
         <button onClick={() => save()} title="Alt/Opt + S" type="button">
           Save

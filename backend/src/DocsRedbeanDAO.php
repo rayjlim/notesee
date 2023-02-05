@@ -31,11 +31,11 @@ class DocsRedbeanDAO
         $doc = R::getRedBean()->dispense(DOCS);
         $doc->path = $path;
         $doc->content = $content;
-        $iResource = new \Resource();
-        $date = $iResource->getDateTime();
-        $doc->update_date = $date->format(DATE_FORMAT);
+
+        $doc->update_date = (new \DateTime())->format(DATE_FORMAT);
         $doc->isFavorite = false;
         $id = R::store($doc);
+
         $doc->id = $id;
         return $doc;
     }
@@ -51,12 +51,15 @@ class DocsRedbeanDAO
     public function update($path, $content)
     {
         $doc  = R::findOne(DOCS, ' path = ? ', [$path]);
-        $doc->content = str_replace("\n", "\\n", $content);
-        $iResource = new \Resource();
-        $date = $iResource->getDateTime();
-        $doc->update_date = $date->format(FULL_DATETIME_FORMAT);
-        R::store($doc);
-        return $doc;
+        if ($doc) {
+            $doc->content = str_replace("\n", "\\n", $content);
+            $doc->update_date = (new \DateTime())->format(FULL_DATETIME_FORMAT);
+            R::store($doc);
+            return $doc;
+        } else {
+            throw new \Exception("Document not found");
+        }
+
     }
 
     /**
@@ -91,15 +94,8 @@ class DocsRedbeanDAO
             ' path = ?',
             [$path]
         );
-        $sequencedArray = array_values(
-            array_map(
-                function ($item) {
-                    return $item->export();
-                },
-                $found
-            )
-        );
-        return $sequencedArray;
+        return R::exportAll($found);
+
     }
 
     /**
@@ -130,15 +126,8 @@ class DocsRedbeanDAO
     public function getMaps()
     {
         $found = R::findAll(MAPPING);
-        $sequencedArray = array_values(
-            array_map(
-                function ($item) {
-                    return $item->export();
-                },
-                $found
-            )
-        );
-        return $sequencedArray;
+        return R::exportAll($found);
+
     }
 
     public function getBacklinks($path)

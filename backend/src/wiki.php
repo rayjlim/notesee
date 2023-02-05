@@ -210,6 +210,7 @@ class Wiki
     public function indexAction()
     {
         $request = parse_url($_SERVER['REQUEST_URI']);
+
         $pagePath = str_replace("###" . APP_DIR . "/", "", "###" . urldecode($request['path']));
         if (str_ends_with($pagePath, '/')) {
             $pagePath .= $_ENV['DEFAULT_FILE'];
@@ -302,7 +303,7 @@ class Wiki
             $entrys = $ORM->getByPath($pagePath);
 
             $source = "";
-            if (!count($entrys) == 0) {
+            if (count($entrys) !== 0) {
                 $source = $entrys[0]['content'];
             }else{
                 $entrys[0]['is_favorite'] = 0;
@@ -331,14 +332,17 @@ class Wiki
      */
     public function editAction()
     {
-        $ORM = new \Notesee\DocsRedbeanDAO();
 
         // Bail out early if we don't get the right request method && params
-        if (
-            $_SERVER['REQUEST_METHOD'] != 'POST'
-            || empty($_POST['ref']) || !isset($_POST['source'])
-        ) {
-            throw new Exception("Invalid/Missing parameters");
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            header('HTTP/1.0 400 Bad Request');
+            echo "Must be POST method";
+            exit;
+        }
+        if (!isset($_POST['ref'], $_POST['source'])) {
+            header('HTTP/1.0 400 Bad Request');
+            echo "Missing required parameters (ref, source)";
+            exit;
         }
 
         $ref = $_POST['ref'];        // path in the note
@@ -353,6 +357,7 @@ class Wiki
         // Check if empty
         \Logger::log("Edit: " . $path);
         if (trim($source)) {
+            $ORM = new \Notesee\DocsRedbeanDAO();
             $entry = $ORM->update($path, $source);
 
             // get prefix            
@@ -428,21 +433,28 @@ class Wiki
 
     public function searchAction()
     {
-        $ORM = new \Notesee\DocsRedbeanDAO();
+        if (!isset($_REQUEST['text'])) {
+            header('HTTP/1.0 400 Bad Request');
+            echo "Missing required parameters (text)";
+            exit;
+        }
         $text = $_REQUEST['text'];
+        $ORM = new \Notesee\DocsRedbeanDAO();
         $entrys = $ORM->contentsContains($text);
 
-        $reduced_columns = array_map(function ($n) {
-            return ($n->path);
-        }, $entrys);
-        // print_r($b);
+        $reduced_columns = array_column($entrys, 'path');
 
         $this->_json($reduced_columns);
-        // echo "search info = ".$text;
     }
 
     public function deleteAction()
     {
+        if (!isset($_REQUEST['path'])) {
+            header('HTTP/1.0 400 Bad Request');
+            echo "Missing required parameters (path)";
+            exit;
+        }
+
         $path = $_REQUEST['path'];
         $status = false;
         $ORM = new \Notesee\DocsRedbeanDAO();
@@ -529,7 +541,13 @@ class Wiki
 
     public function favoriteAction()
     {
-        $status = false;
+        // Check if the required parameters (path, favorite) are set in the request
+        if (!isset($_REQUEST['path'], $_REQUEST['favorite'])) {
+            header('HTTP/1.0 400 Bad Request');
+            echo "Missing required parameters (path, favorite)";
+            exit;
+        }
+
         $ORM = new \Notesee\DocsRedbeanDAO();
         $status = $ORM->favoriteByPath($_REQUEST['path'], $_REQUEST['favorite']);
 
