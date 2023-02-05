@@ -164,7 +164,7 @@ const MdEditor = ({ content, path, mode, onSave }) => {
         </div>
         <button onClick={handleClick}>Get value</button>
         {showEditor && (
-           <Editor style={{ height: '500px' }} ref={mdEditor} value={markdown} renderHTML={text => mdParser.render(markdown)} onChange={handleEditorChange} />
+           <Editor style={{ height: '70vh' }} ref={mdEditor} value={markdown} renderHTML={text => mdParser.render(markdown)} onChange={handleEditorChange} />
         )}
         <button onClick={() => save()} title="Alt/Opt + S" type="button">
           Save
