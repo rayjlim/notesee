@@ -332,14 +332,17 @@ class Wiki
      */
     public function editAction()
     {
-        $ORM = new \Notesee\DocsRedbeanDAO();
 
         // Bail out early if we don't get the right request method && params
-        if (
-            $_SERVER['REQUEST_METHOD'] != 'POST'
-            || empty($_POST['ref']) || !isset($_POST['source'])
-        ) {
-            throw new Exception("Invalid/Missing parameters");
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            header('HTTP/1.0 400 Bad Request');
+            echo "Must be POST method";
+            exit;
+        }
+        if (!isset($_POST['ref'], $_POST['source'])) {
+            header('HTTP/1.0 400 Bad Request');
+            echo "Missing required parameters (ref, source)";
+            exit;
         }
 
         $ref = $_POST['ref'];        // path in the note
@@ -354,6 +357,7 @@ class Wiki
         // Check if empty
         \Logger::log("Edit: " . $path);
         if (trim($source)) {
+            $ORM = new \Notesee\DocsRedbeanDAO();
             $entry = $ORM->update($path, $source);
 
             // get prefix            
@@ -429,21 +433,28 @@ class Wiki
 
     public function searchAction()
     {
-        $ORM = new \Notesee\DocsRedbeanDAO();
+        if (!isset($_REQUEST['text'])) {
+            header('HTTP/1.0 400 Bad Request');
+            echo "Missing required parameters (text)";
+            exit;
+        }
         $text = $_REQUEST['text'];
+        $ORM = new \Notesee\DocsRedbeanDAO();
         $entrys = $ORM->contentsContains($text);
 
-        $reduced_columns = array_map(function ($n) {
-            return ($n->path);
-        }, $entrys);
-        // print_r($b);
+        $reduced_columns = array_column($entrys, 'path');
 
         $this->_json($reduced_columns);
-        // echo "search info = ".$text;
     }
 
     public function deleteAction()
     {
+        if (!isset($_REQUEST['path'])) {
+            header('HTTP/1.0 400 Bad Request');
+            echo "Missing required parameters (path)";
+            exit;
+        }
+
         $path = $_REQUEST['path'];
         $status = false;
         $ORM = new \Notesee\DocsRedbeanDAO();

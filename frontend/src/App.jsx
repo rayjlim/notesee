@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { marked } from 'marked';
+// import { marked } from 'marked';
 import './App.css';
 import MdEditor from './components/MdEditor';
 
@@ -285,15 +285,15 @@ const App = () => {
     }
   };
 
-  marked.setOptions({
-    renderer: new marked.Renderer(),
-    gfm: true,
-    tables: true,
-    breaks: true,
-    pedantic: false,
-    smartLists: true,
-    smartypants: false,
-  });
+  // marked.setOptions({
+  //   renderer: new marked.Renderer(),
+  //   gfm: true,
+  //   tables: true,
+  //   breaks: true,
+  //   pedantic: false,
+  //   smartLists: true,
+  //   smartypants: false,
+  // });
   const drawerToggleClickHandler = () => {
     setDrawerOpen(!drawerOpen);
   };

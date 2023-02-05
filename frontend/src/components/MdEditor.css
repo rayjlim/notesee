@@ -6,3 +6,7 @@ background-color: yellow;
 .unchanged {
     background-color: white;
 }
+
+.custom-html-style {
+    text-align: left;
+}
