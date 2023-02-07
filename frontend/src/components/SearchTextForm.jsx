@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import constants from '../constants';
+import './SearchTextForm.css';
 
 const SearchTextForm = () => {
   const [results, setResults] = useState({});
@@ -75,20 +76,30 @@ const SearchTextForm = () => {
         Clear
       </button>
       {Object.keys(results).length !== 0 ? (
-        <p>
-          <ul>
-            {Object.keys(results).map(oneKey => (
-              <li key={oneKey}>
-                <button onClick={() => copyToClipboard(`${results[oneKey]}`)} type="button">
-                  [clip]
-                </button>
-                <a href={`/${results[oneKey]}`}>{`/${results[oneKey]}`}</a>
-              </li>
-            ))}
-          </ul>
-        </p>
+        <>
+          <span style={{ padding: '0 1em' }}>
+            Found
+            {' '}
+            {Object.keys(results).length}
+            {' '}
+            Result(s)
+          </span>
+          <div className={Object.keys(results).length < 20 ? '' : 'scroll'}>
+            <ul>
+              {Object.keys(results).map(oneKey => (
+                <li key={oneKey}>
+                  <button onClick={() => copyToClipboard(`${results[oneKey]}`)} type="button">
+                    [clip]
+                  </button>
+                  {' '}
+                  <a href={`/${results[oneKey]}`}>{`/${results[oneKey]}`}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </>
       ) : (
-        <>No Results</>
+        <span style={{ padding: '0 1em' }}>No Result(s)</span>
       )}
     </>
   );
