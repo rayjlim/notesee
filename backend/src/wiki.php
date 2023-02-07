@@ -82,34 +82,6 @@ class Wiki
         return array($source, $meta_data);
     }
 
-    protected function _view($view, $variables = array())
-    {
-        extract($variables);
-
-        $content = __DIR__ . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . "$view.php";
-
-        if (!isset($layout)) {
-            $layout = __DIR__ . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'layout.php';
-        }
-
-        if (file_exists($content)) {
-            ob_start();
-
-            include($content);
-            $content = ob_get_contents();
-            ob_end_clean();
-
-            if ($layout) {
-                include $layout;
-            } else {
-                echo $content;
-            }
-        } else {
-            echo '\n\n' . $content . '\n\n';
-            throw new Exception("View $view not found");
-        }
-    }
-
     protected function _getTree()
     {
         $ORM = new \Notesee\DocsRedbeanDAO();
@@ -130,6 +102,7 @@ class Wiki
         $links = $ORM->getBacklinks($path);
         return $links;
     }
+
     public function dispatch()
     {
         $action = $this->_getAction();
@@ -219,60 +192,6 @@ class Wiki
         try {
 
             $ORM = new \Notesee\DocsRedbeanDAO();
-            // $parts = explode('/', $page);
-
-            // $not_found = function () use ($page) {
-            //     $page = htmlspecialchars($page, ENT_QUOTES);
-            //     // throw new Exception("Page '$page' was not found");
-            // };
-
-            // Handle directories by showing a neat listing of its
-            // contents
-            // if (is_dir($path)) {
-            //     echo "is dir";
-            //     if (!file_exists($path)) {
-            //         $not_found();
-            //     }
-
-            //     if (file_exists($path . DIRECTORY_SEPARATOR . 'index.md')) {
-            //         return $this->_render('index.md');
-            //     }
-
-            //     // Get a printable version of the actual folder name:
-            //     $dir_name = htmlspecialchars(end($parts), ENT_QUOTES, 'UTF-8');
-
-            //     // Get a printable version of the rest of the path,
-            //     // so that we can display it with a different appearance:
-            //     $rest_parts = array_slice($parts, 0, count($parts) - 1);
-            //     $rest_parts = htmlspecialchars(join("/", $rest_parts), ENT_QUOTES, 'UTF-8');
-
-            //     // Pass this to the render view, cleverly disguised as just
-            //     // another page, so we can make use of the tree, breadcrumb,
-            //     // etc.
-            //     $page_data = $this->_default_page_data;
-            //     $page_data['title'] = 'Listing: ' . $dir_name;
-
-            //     $files = scandir($path);
-            //     $list = "<h2>I'm just an empty folder</h2>\n";
-            //     if (2 < count($files)) {
-            //         $list = "<h2>I'm a folder and I have</h2><ul>\n";
-            //         foreach ($files as $file) {
-            //             if (preg_match('/^\..*$/', $file)) {
-            //                 continue;
-            //             }
-            //             $list .= "<li><a href=\"". $_SERVER['REQUEST_URI'] ."/${file}\">${file}</a></li>\n";
-            //         }
-            //         $list .= "</ul>\n";
-            //     }
-
-            //     $this->_view('render', array(
-            //         'parts' => $parts,
-            //         'page' => $page_data,
-            //         'html' => $list,
-            //         'is_dir' => true
-            //     ));
-            //     return;
-            // }
 
             $extension = substr($pagePath, strrpos($pagePath, '.') + 1, 20);
             // echo ' check extension'. $extension;
@@ -305,7 +224,7 @@ class Wiki
             $source = "";
             if (count($entrys) !== 0) {
                 $source = $entrys[0]['content'];
-            }else{
+            } else {
                 $entrys[0]['is_favorite'] = 0;
                 $iResource = new \Resource();
                 $date = $iResource->getDateTime();
@@ -349,6 +268,9 @@ class Wiki
         $source = $_POST['source'];  // markdown content
 
         $path = base64_decode($ref);
+        if (str_ends_with($path, '/')) {
+            $path .= $_ENV['DEFAULT_FILE'];
+        }
 
         // Check if the file is safe to work with, otherwise just
         // give back a generic 404 as well, so we don't allow blind
@@ -365,7 +287,7 @@ class Wiki
             $prefix = strlen($prefix) ? $prefix . '/' : $prefix;
 
             // get backlinks
-            $links = $this->getTargetLinks($source);
+            $links = $this->_getTargetLinks($source);
 
             $prefixedLinks = [];
 
@@ -376,6 +298,9 @@ class Wiki
                     && strpos($link, "#") === false
                 ) {
                     $targetValue = ($link[0] == '/') ? ltrim($link, '/') : $prefix . $link;
+                    if (str_ends_with($targetValue, '/')) {
+                        $targetValue .= $_ENV['DEFAULT_FILE'];
+                    }
                     array_push($prefixedLinks, $targetValue);
                 }
             }
@@ -407,20 +332,49 @@ class Wiki
     {
         $ORM = new \Notesee\DocsRedbeanDAO();
         $request    = parse_url($_SERVER['REQUEST_URI']);
-        $page       = str_replace("###" . APP_DIR . "/", "", "###" . urldecode($request['path']));
+        $path       = str_replace("###" . APP_DIR . "/", "", "###" . urldecode($request['path']));
 
-        $content    = "# " . htmlspecialchars($page, ENT_QUOTES, 'UTF-8');
+        if (str_ends_with($path, '/')) {
+            $path .= $_ENV['DEFAULT_FILE'];
+        }
 
-        $entrys = $ORM->getByPath($page);
+        $content    = "# " . htmlspecialchars($path, ENT_QUOTES, 'UTF-8');
+
+        $entrys = $ORM->getByPath($path);
 
         if (count($entrys)) {
             throw new Error('record exists');
         }
-        $entry = $ORM->insert($page, $content);
-        \Logger::log("Created: " . $page);
+        $entry = $ORM->insert($path, $content);
+        \Logger::log("Created: " . $path);
         $entry->action = 'create';
         $entry->status = 'success';
         $this->_json($entry);
+    }
+
+    public function deleteAction()
+    {
+        if (!isset($_REQUEST['path'])) {
+            header('HTTP/1.0 400 Bad Request');
+            echo "Missing required parameters (path)";
+            exit;
+        }
+
+        $path = $_REQUEST['path'];
+        if (str_ends_with($path, '/')) {
+            $path .= $_ENV['DEFAULT_FILE'];
+        }
+        $status = false;
+        $ORM = new \Notesee\DocsRedbeanDAO();
+        $ORM->deleteSourceMapping($path);
+        $status = $ORM->deleteByPath($path);
+        \Logger::log("Delete: " . $path);
+        if ($status) {
+            header('HTTP/1.0 204 No Content');
+        } else {
+            header('HTTP/1.0 500 Server Error');
+            echo "Unable to Delete " . $path;
+        }
     }
 
     public function networkAction()
@@ -428,7 +382,6 @@ class Wiki
         $ORM = new \Notesee\DocsRedbeanDAO();
         $entrys = $ORM->getMaps();
         $this->_json($entrys);
-        // echo "network info";
     }
 
     public function searchAction()
@@ -447,28 +400,6 @@ class Wiki
         $this->_json($reduced_columns);
     }
 
-    public function deleteAction()
-    {
-        if (!isset($_REQUEST['path'])) {
-            header('HTTP/1.0 400 Bad Request');
-            echo "Missing required parameters (path)";
-            exit;
-        }
-
-        $path = $_REQUEST['path'];
-        $status = false;
-        $ORM = new \Notesee\DocsRedbeanDAO();
-        $ORM->deleteSourceMapping($path);
-        $status = $ORM->deleteByPath($path);
-        \Logger::log("Delete: " . $path);
-        if ($status) {
-            header('HTTP/1.0 204 No Content');
-        } else {
-            header('HTTP/1.0 500 Server Error');
-            echo "Unable to Delete " . $path;
-        }
-    }
-
     public function getTreeAction()
     {
         $pageData = new stdClass();
@@ -482,7 +413,6 @@ class Wiki
         $pageData->paths = $this->_getFavorites();
         $this->_json($pageData);
     }
-
 
     public function uploadImageAction()
     {
@@ -561,7 +491,7 @@ class Wiki
         }
     }
 
-    protected function getTargetLinks($source)
+    protected function _getTargetLinks($source)
     {
         preg_match_all('/\[([^]]*)\] *\(([^)]*)\)/', $source, $matches);
         return $matches;
