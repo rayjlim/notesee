@@ -166,6 +166,20 @@ class Wiki
         exit;
     }
 
+    protected function _500($message = 'Server Error.')
+    {
+        header('HTTP/1.0 500 Internal Server Error', true);
+        $page_data = $this->_default_page_data;
+        $page_data['title'] = 'Not Found';
+        $output = array(
+            'error' => $message,
+            'page' => $page_data
+        );
+        print_r($output);
+
+        exit;
+    }
+
     protected function _ErrorCode($code, $message = 'Page not found.')
     {
         header('HTTP/1.0 ' . $code . ' ' . $message, true);
@@ -280,6 +294,13 @@ class Wiki
         \Logger::log("Edit: " . $path);
         if (trim($source)) {
             $ORM = new \Notesee\DocsRedbeanDAO();
+
+            // Validate path exists
+            $entrys = $ORM->getByPath($path);
+            if (count($entrys) === 0) {
+                $this->_500('Invalid Ref');
+            }
+
             $entry = $ORM->update($path, $source);
 
             // get prefix            

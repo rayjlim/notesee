@@ -18,7 +18,7 @@ class Prompt extends React.Component {
   }
 
   render() {
-    return <>a</>;
+    return <> </>;
   }
 }
 
