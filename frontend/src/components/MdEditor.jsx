@@ -27,11 +27,11 @@ const MdEditor = ({ content, path, mode, onSave }) => {
   };
   // TODO: convert to custom hook
   const save = async () => {
-    console.log(markdown);
+    // console.log(markdown);
     console.log(path);
     const ref = btoa(path);
 
-    console.log(ref);
+    // console.log(ref);
     const formData = new URLSearchParams();
     formData.append('ref', ref);
     formData.append('source', markdown);
@@ -115,9 +115,7 @@ const MdEditor = ({ content, path, mode, onSave }) => {
     // console.log('131:' + markdown + ', hasChanges ' + hasChanges);
     if (e.altKey && e.key === 's') {
       console.log('S keybinding');
-      // Note: this is a hack because the markdown value is taken from the init value
-      document.getElementById('saveBtn').click();
-      // save();
+      save();
     } else if (e.ctrlKey && e.shiftKey && e.key === '1') {
       console.log('shift 1 - template keybinding');
       firstTemplate();
@@ -134,7 +132,7 @@ const MdEditor = ({ content, path, mode, onSave }) => {
     }
     document.addEventListener('keydown', checkKeyPressed);
     return () => window.removeEventListener('resize', checkKeyPressed);
-  });
+  }, []);
   const saveBarStyle = {
     width: '50%',
     display: 'inline-block',
