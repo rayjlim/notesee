@@ -1,0 +1,11 @@
+/* # SEarchTextForm.css */
+div.scroll {
+    margin: .5em 1em;
+    padding: 1em;
+    background-color: rgb(247, 247, 247);
+    height: 75vh;
+    width: 85%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    text-align: justify;
+}

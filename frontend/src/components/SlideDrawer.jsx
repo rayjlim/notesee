@@ -57,10 +57,11 @@ const SlideDrawer = ({ show, documentInfo }) => {
   if (show) {
     drawerClasses = 'side-drawer open';
   }
+
   return (
     <div className={drawerClasses}>
       <h1>Side Bar</h1>
-      <div style={{ textAlign: 'left' }}>
+      <div style={{ textAlign: 'center' }}>
         <SearchTextForm />
       </div>
       <UploadForm />
