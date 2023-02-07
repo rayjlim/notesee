@@ -1,11 +1,14 @@
 /* # SEarchTextForm.css */
-div.scroll {
-    margin: .5em 1em;
-    padding: 1em;
+div.results {
+    margin: .5em .1em;
+    padding: 0.1em .3em;
     background-color: rgb(247, 247, 247);
+    text-align: left;
+}
+
+div.scroll {
     height: 75vh;
-    width: 85%;
+    width: 98%;
     overflow-x: hidden;
     overflow-y: auto;
-    text-align: justify;
 }

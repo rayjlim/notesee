@@ -84,7 +84,7 @@ const SearchTextForm = () => {
             {' '}
             Result(s)
           </span>
-          <div className={Object.keys(results).length < 20 ? '' : 'scroll'}>
+          <div className={Object.keys(results).length < 15 ? 'results' : 'results scroll'}>
             <ul>
               {Object.keys(results).map(oneKey => (
                 <li key={oneKey}>
