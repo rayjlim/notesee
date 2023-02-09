@@ -20,11 +20,6 @@ const MdEditor = ({ content, path, mode, onSave }) => {
 
   const mdEditor = React.useRef(null);
 
-  const handleClick = () => {
-    if (mdEditor.current) {
-      alert(mdEditor.current.getMdValue());
-    }
-  };
   // TODO: convert to custom hook
   const save = async () => {
     // console.log(markdown);
@@ -115,7 +110,7 @@ const MdEditor = ({ content, path, mode, onSave }) => {
     // console.log('131:' + markdown + ', hasChanges ' + hasChanges);
     if (e.altKey && e.key === 's') {
       console.log('S keybinding');
-      save();
+      document.getElementById('saveBtn').click();
     } else if (e.ctrlKey && e.shiftKey && e.key === '1') {
       console.log('shift 1 - template keybinding');
       firstTemplate();
@@ -149,14 +144,10 @@ const MdEditor = ({ content, path, mode, onSave }) => {
             id="saveBtn"
             type="button"
           >
-            Save
+            {hasChanges ? 'Save changes' : 'unchanged'}
           </button>
-          <span>{hasChanges ? 'has changes' : 'unchanged'}</span>
         </div>
-        <div style={saveBarStyle}>
-          {mode !== 'edit' ? <span>preview</span> : <span>editable</span>}
-        </div>
-        <button onClick={handleClick} type="button">Get value</button>
+
         {showEditor && (
           <Editor
             style={{ height: '70vh' }}

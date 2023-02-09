@@ -399,13 +399,12 @@ const App = () => {
               ) : (
                 <span> </span>
               )}
-              <span>
+              <span style={{ margin: '0 1em' }}>
                 Favorite:
-                {' '}
-                {isFavorite ? 'Y' : 'N'}
-                {' '}
                 <button onClick={() => toggleFavorite()} type="button">
-                  Toggle Favorite
+                  {isFavorite ? 'Y' : 'N'}
+                  {' : '}
+                  Toggle
                 </button>
               </span>
               <button onClick={() => switchMode()} title="Alt/Opt + M" type="button">
