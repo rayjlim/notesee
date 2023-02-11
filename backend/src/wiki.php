@@ -512,6 +512,19 @@ class Wiki
         }
     }
 
+    public function getByUpdateDateAction()
+    {
+        $startDate = $_REQUEST["startDate"] ?? date(DATE_FORMAT, strtotime('-1 week'));
+        $endDate = $_REQUEST["endDate"] ?? date(DATE_FORMAT);$pageData = new stdClass();
+        $ORM = new \Notesee\DocsRedbeanDAO();
+        
+        $pageData = new stdClass();        
+        $pageData->startDate = $startDate;
+        $pageData->endDate = $endDate;
+        $pageData->paths = $ORM->getDocsByUpdateDate($startDate, $endDate);
+        $this->_json($pageData);
+    }
+
     protected function _getTargetLinks($source)
     {
         preg_match_all('/\[([^]]*)\] *\(([^)]*)\)/', $source, $matches);
