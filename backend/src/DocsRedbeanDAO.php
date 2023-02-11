@@ -90,7 +90,7 @@ class DocsRedbeanDAO
      */
     public function getDocsByUpdateDate($startDate, $endDate)
     {
-        $found = R::find(DOCS, ' update_date > ? AND update_date < ? ORDER BY `update_date` ASC', [$startDate, $endDate]);
+        $found = R::find(DOCS, ' update_date >= ? AND update_date <= ? ORDER BY `update_date` ASC', [$startDate, $endDate]);
 
         return R::exportAll($found);
     }
