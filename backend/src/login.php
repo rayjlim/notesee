@@ -121,7 +121,11 @@ class Login
         // Show the login layout and stop
         // $layout = __DIR__ . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'login.php';
         // include($layout);
-        echo "login required " . $error;
+        header('HTTP/1.0 403 Authentication Error');
+        $pageData = new stdClass();        
+        $pageData->message = $error;
+        $pageData->status = "fail";
+        echo json_encode($pageData);
         exit;
     }
 
