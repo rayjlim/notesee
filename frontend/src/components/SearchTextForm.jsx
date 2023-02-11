@@ -108,6 +108,7 @@ const SearchTextForm = () => {
         console.error('Error: ', error);
       }
     })();
+    return false;
   };
 
   function copyToClipboard(text) {
@@ -136,10 +137,10 @@ const SearchTextForm = () => {
       </button>
       <p style={{ margin: 0 }}>
         <span>Last Updated : </span>
-        <a href={() => false} onClick={() => getByUpdateDate('last day')}> Last Day</a>
-        <a href={() => false} onClick={() => getByUpdateDate('')}> Last Week</a>
-        <a href={() => false} onClick={() => getByUpdateDate('last 30')}> Last 30 days</a>
-        <a href={() => false} onClick={() => getByUpdateDate('last month')}> Last Month</a>
+        <a href="#blank" onClick={() => getByUpdateDate('last day')}> 1 Day</a>
+        <a href="#blank" onClick={() => getByUpdateDate('')}> 1 Week</a>
+        <a href="#blank" onClick={() => getByUpdateDate('last 30')}> 30 days</a>
+        <a href="#blank" onClick={() => getByUpdateDate('last month')}> Prev. Month</a>
       </p>
       {Object.keys(results).length !== 0 ? (
         <>

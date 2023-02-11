@@ -30,7 +30,7 @@ const App = () => {
     showCreateButton: false,
     showBreadcrumb: false,
   });
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [showSideBar, setShowSideBar] = useState(false);
 
   const load = async (_breadcrumb = []) => {
     console.log('load');
@@ -182,7 +182,7 @@ const App = () => {
 
   const switchMode = () => {
     const newMode = mode === 'edit' ? 'read' : 'edit';
-    console.log('switchMode', newMode);
+    console.log('switchMode', mode, ' to ', newMode);
     window.localStorage.setItem('mode', newMode);
     setMode(newMode);
   };
@@ -291,22 +291,10 @@ const App = () => {
     }
   };
 
-  // marked.setOptions({
-  //   renderer: new marked.Renderer(),
-  //   gfm: true,
-  //   tables: true,
-  //   breaks: true,
-  //   pedantic: false,
-  //   smartLists: true,
-  //   smartypants: false,
-  // });
-  const drawerToggleClickHandler = () => {
-    setDrawerOpen(!drawerOpen);
-  };
   const handleKeyDown = e => {
     if (e.altKey && e.which === 66) {
-      console.log('B keybinding - Side bar');
-      drawerToggleClickHandler();
+      console.log(`B keybinding - Side bar ${showSideBar}`);
+      document.getElementById('sideBarBtn').click();
     } else if (e.altKey && e.which === 77) {
       console.log('M keybinding');
       switchMode();
@@ -370,15 +358,23 @@ const App = () => {
             <>
               <div>
                 <div className="childDiv">
-                  {drawerOpen && (
+                  {showSideBar && (
                     <SlideDrawer
-                      show={drawerOpen}
+                      show={showSideBar}
                       documentInfo={documentInfo}
                     />
                   )}
-                  {drawerOpen && <Backdrop close={() => drawerToggleClickHandler()} />}
+                  { showSideBar
+                    && (
+                      <Backdrop
+                        close={
+                        () => setShowSideBar(!showSideBar)
+                        }
+                      />
+                    )}
                   <button
-                    onClick={() => drawerToggleClickHandler()}
+                    id="sideBarBtn"
+                    onClick={() => { setShowSideBar(!showSideBar); }}
                     title="Alt/Opt + B"
                     type="button"
                   >
