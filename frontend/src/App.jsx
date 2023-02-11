@@ -146,11 +146,17 @@ const App = () => {
         const results = await response.json();
 
         console.log('login results', results);
-        window.localStorage.setItem(constants.STORAGE_KEY, results.token);
-        setLoggedIn(true);
+        if (results.token !== 'undefined') {
+          window.localStorage.setItem(constants.STORAGE_KEY, results.token);
+          setLoggedIn(true);
+        }
         return results.token;
       }
-      console.log('Network response was not ok.');
+
+      console.log(response);
+      console.log(response.status);
+      const body = await response.json();
+      alert(`login failed : ${body.message} (${response.status})`);
     } catch (error) {
       console.log('Error when parsing means not logged in, ', error, prefix);
     }
