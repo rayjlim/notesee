@@ -51,6 +51,60 @@ const SearchTextForm = () => {
       }
     })();
   };
+  const getByUpdateDate = range => {
+    (async () => {
+      let term = range;
+      if (term === 'last month') {
+        const now = new Date();
+        const endDate = new Date(now.getFullYear(), now.getMonth(), 0).toISOString();
+        const startDate = new Date(
+          now.getFullYear() - (now.getMonth() > 0 ? 0 : 1),
+          (now.getMonth() - 1 + 12) % 12,
+          1,
+        ).toISOString();
+
+        term = `&startDate=${startDate}&endDate=${endDate}`;
+      } else if (term === 'last 30') {
+        const today = new Date();
+        const startDate = new Date(new Date().setDate(today.getDate() - 30)).toISOString();
+        const endDate = new Date().toISOString();
+        term = `&startDate=${startDate}&endDate=${endDate}`;
+      }
+
+      console.log('getByUpdateDate: ');
+      try {
+        const token = window.localStorage.getItem(constants.STORAGE_KEY);
+        const response = await fetch(
+          `${constants.REST_ENDPOINT}/search?a=getByUpdateDate${term}`,
+          {
+            method: 'GET',
+            mode: 'cors',
+            cache: 'no-cache',
+            credentials: 'same-origin',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-App-Token': token,
+            },
+            redirect: 'follow',
+            referrerPolicy: 'no-referrer',
+          },
+        );
+
+        if (response.ok) {
+          const fetchResults = await response.json();
+
+          console.log('results', fetchResults);
+
+          setResults(fetchResults.paths.map(x => x.path));
+        } else {
+          console.log('Network response was not ok.');
+        }
+      } catch (error) {
+        console.error('Error: ', error);
+      }
+    })();
+  };
+
   function copyToClipboard(text) {
     const regex = /^(.*[\\/])/i;
     const title = text.replace(regex, '').replace('.md', '').replace(/-/g, ' ');
@@ -75,6 +129,12 @@ const SearchTextForm = () => {
       <button type="button" onClick={handleClearSearch}>
         Clear
       </button>
+      <p style={{ margin: 0 }}>
+        <span>Last Updated : </span>
+        <a href={() => false} onClick={() => getByUpdateDate('')}> Last Week</a>
+        <a href={() => false} onClick={() => getByUpdateDate('last 30')}> Last 30 days</a>
+        <a href={() => false} onClick={() => getByUpdateDate('last month')}> Last Month</a>
+      </p>
       {Object.keys(results).length !== 0 ? (
         <>
           <span style={{ padding: '0 1em' }}>
@@ -86,13 +146,13 @@ const SearchTextForm = () => {
           </span>
           <div className={Object.keys(results).length < 15 ? 'results' : 'results scroll'}>
             <ul>
-              {Object.keys(results).map(oneKey => (
-                <li key={oneKey}>
-                  <button onClick={() => copyToClipboard(`${results[oneKey]}`)} type="button">
+              {Object.keys(results).map(index => (
+                <li key={index}>
+                  <button onClick={() => copyToClipboard(`${results[index]}`)} type="button">
                     [clip]
                   </button>
                   {' '}
-                  <a href={`/${results[oneKey]}`}>{`/${results[oneKey]}`}</a>
+                  <a href={`/${results[index]}`}>{`/${results[index]}`}</a>
                 </li>
               ))}
             </ul>

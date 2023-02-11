@@ -92,7 +92,7 @@ class DocsRedbeanDAO
     {
         $found = R::find(DOCS, ' update_date > ? AND update_date < ? ORDER BY `update_date` ASC', [$startDate, $endDate]);
 
-        return $found;
+        return R::exportAll($found);
     }
     
 
