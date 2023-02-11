@@ -56,18 +56,23 @@ const SearchTextForm = () => {
       let term = range;
       if (term === 'last month') {
         const now = new Date();
-        const endDate = new Date(now.getFullYear(), now.getMonth(), 0).toISOString();
+        const endDate = new Date(now.getFullYear(), now.getMonth(), 0).toISOString().split('T')[0];
         const startDate = new Date(
           now.getFullYear() - (now.getMonth() > 0 ? 0 : 1),
           (now.getMonth() - 1 + 12) % 12,
           1,
-        ).toISOString();
+        ).toISOString().split('T')[0];
 
         term = `&startDate=${startDate}&endDate=${endDate}`;
       } else if (term === 'last 30') {
         const today = new Date();
-        const startDate = new Date(new Date().setDate(today.getDate() - 30)).toISOString();
-        const endDate = new Date().toISOString();
+        const startDate = new Date(new Date().setDate(today.getDate() - 30)).toISOString().split('T')[0];
+        const endDate = new Date().toISOString().split('T')[0];
+        term = `&startDate=${startDate}&endDate=${endDate}`;
+      } else if (term === 'last day') {
+        const today = new Date();
+        const startDate = new Date(new Date().setDate(today.getDate() - 1)).toISOString().split('T')[0];
+        const endDate = new Date().toISOString().split('T')[0];
         term = `&startDate=${startDate}&endDate=${endDate}`;
       }
 
@@ -131,6 +136,7 @@ const SearchTextForm = () => {
       </button>
       <p style={{ margin: 0 }}>
         <span>Last Updated : </span>
+        <a href={() => false} onClick={() => getByUpdateDate('last day')}> Last Day</a>
         <a href={() => false} onClick={() => getByUpdateDate('')}> Last Week</a>
         <a href={() => false} onClick={() => getByUpdateDate('last 30')}> Last 30 days</a>
         <a href={() => false} onClick={() => getByUpdateDate('last month')}> Last Month</a>
