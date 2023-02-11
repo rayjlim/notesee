@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.4](https://github.com/rayjlim/notesee/compare/v0.2.3...v0.2.4) (2023-02-11)
+
+
+### Features
+
+* API for get by Update Date ([8d0537d](https://github.com/rayjlim/notesee/commit/8d0537d75fa56838f6443b3ec2a3b10569f3a0f1))
+* display options for last week, 30 days, last month ([ed7110b](https://github.com/rayjlim/notesee/commit/ed7110b31be5d8f60e41a438d60fb5af9c9faa18))
+
+
+### Bug Fixes
+
+* .htaccess for page routing ([4c1cd30](https://github.com/rayjlim/notesee/commit/4c1cd30e9606b9072247c269c80bf92a8b05c4dc))
+* 🐛 [#93](https://github.com/rayjlim/notesee/issues/93) remove hack of calling saveBtn ([5b0efa6](https://github.com/rayjlim/notesee/commit/5b0efa6ddb2d2772cb35f0fb079ebf45dc375cc6))
+* 🐛 [#96](https://github.com/rayjlim/notesee/issues/96) validate ref before save ([2df14e9](https://github.com/rayjlim/notesee/commit/2df14e9c470cde563b4d6d43bf7d9b86800a9231))
+* 🐛 [#96](https://github.com/rayjlim/notesee/issues/96) validate ref before save ([42c3545](https://github.com/rayjlim/notesee/commit/42c3545294bf4c719b161070e9374be5c95e9fdd))
+* date creation chop off time ([67dfc2e](https://github.com/rayjlim/notesee/commit/67dfc2e7fecd7f6164de600735b896d795421557))
+* date range inclusion ([bf08dab](https://github.com/rayjlim/notesee/commit/bf08dab2c02760d2d108401750031cce73a88273))
+* the save shortcut key not working ([ad6af5d](https://github.com/rayjlim/notesee/commit/ad6af5d5708354cecc791a6e9a2a2e84428c2112))
+
 ### [0.2.2](https://github.com/rayjlim/notesee/compare/v0.2.1...v0.2.2) (2023-02-05)
 
 
