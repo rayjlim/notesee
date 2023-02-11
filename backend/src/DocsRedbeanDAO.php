@@ -81,6 +81,22 @@ class DocsRedbeanDAO
     }
 
     /**
+     * Get Docs By Update Date
+     * 
+     * @param $path    Logical Path
+     * @param $content markdown content
+     *
+     * @return Document Object
+     */
+    public function getDocsByUpdateDate($startDate, $endDate)
+    {
+        $found = R::find(DOCS, ' update_date > ? AND update_date < ? ORDER BY `update_date` ASC', [$startDate, $endDate]);
+
+        return $found;
+    }
+    
+
+    /**
      * Get a Document by Path
      * 
      * @param $path logical folder location
