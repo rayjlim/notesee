@@ -32,3 +32,4 @@ scripts/.env
 scripts/passfile.txt
 uploads/*
 backend/_logs/*
+frontend/public/.htaccess
