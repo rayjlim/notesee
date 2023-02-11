@@ -38,6 +38,6 @@ define('BASE_URL', "http" . ($https ? "s" : "") . "://" . $_SERVER['HTTP_HOST'] 
 // APP_DIR  ex. /projects/notesee/backend
 // BASE_URL ex. http://localhost/notesee/backend
 // echo 'Login 51';
-// Login::instance()->dispatch();
+Login::instance()->dispatch();
 // echo 'wiki 53';
 Wiki::instance()->dispatch();
