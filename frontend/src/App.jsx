@@ -334,7 +334,7 @@ const App = () => {
     })();
     // eslint-disable-next-line
     document.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   const documentInfo = {
@@ -356,40 +356,35 @@ const App = () => {
             <span>Loading</span>
           ) : (
             <>
-              <div>
-                <div className="childDiv">
-                  {showSideBar && (
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
+                {showSideBar && (
+                  <>
                     <SlideDrawer
                       show={showSideBar}
                       documentInfo={documentInfo}
                     />
-                  )}
-                  { showSideBar
-                    && (
-                      <Backdrop
-                        close={
-                        () => setShowSideBar(!showSideBar)
-                        }
-                      />
-                    )}
-                  <button
-                    id="sideBarBtn"
-                    onClick={() => { setShowSideBar(!showSideBar); }}
-                    title="Alt/Opt + B"
-                    type="button"
-                  >
-                    Side Bar
-                  </button>
+                    <Backdrop
+                      close={
+                      () => setShowSideBar(!showSideBar)
+                      }
+                    />
+                  </>
+                )}
+                <button
+                  id="sideBarBtn"
+                  onClick={() => { setShowSideBar(!showSideBar); }}
+                  title="Alt/Opt + B"
+                  type="button"
+                  style={{ margin: '0 1rem' }}
+                >
+                  Side Bar
+                </button>
+                {' '}
+                <span>
+                  Modified Date:
                   {' '}
-                  <span>
-                    Modified Date:
-                    {' '}
-                    {modifiedDate}
-                  </span>
-                </div>
-                <div className="childDiv">
-                  <button onClick={() => doLogout()} type="button">Logout</button>
-                </div>
+                  {modifiedDate}
+                </span>
               </div>
 
               {visual.showCreateButton ? (
@@ -403,35 +398,24 @@ const App = () => {
               )}
               <span style={{ margin: '0 1em' }}>
                 Favorite:
+                {' '}
                 <button onClick={() => toggleFavorite()} type="button">
-                  {isFavorite ? 'Y' : 'N'}
-                  {' : '}
-                  Toggle
+                  {isFavorite ? 'Yes' : 'No'}
                 </button>
               </span>
+              <span>
+                Switch Mode:
+                {' '}
+              </span>
               <button onClick={() => switchMode()} title="Alt/Opt + M" type="button">
-                Switch Mode
-                {mode === 'edit' ? (
-                  <> : Editor</>
-                ) : (
-                  <>: Read</>
-                )}
+                {mode === 'edit' ? 'Editor' : 'Read'}
               </button>
-              {mode === 'edit' ? (
-                <MdEditor
-                  content={markdown}
-                  path={path}
-                  onSave={setMarkdown}
-                  mode={mode}
-                />
-              ) : (
-                <MdEditor
-                  content={markdown}
-                  path={path}
-                  onSave={setMarkdown}
-                  mode={mode}
-                />
-              )}
+              <MdEditor
+                content={markdown}
+                path={path}
+                onSave={setMarkdown}
+                mode={mode}
+              />
             </>
           )}
 
@@ -482,6 +466,9 @@ const App = () => {
                   </li>
                 ))}
             </ul>
+          </div>
+          <div className="childDiv">
+            <button onClick={() => doLogout()} type="button">Logout</button>
           </div>
         </>
       ) : (
