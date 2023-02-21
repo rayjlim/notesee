@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.5](https://github.com/rayjlim/notesee/compare/v0.2.4...v0.2.5) (2023-02-21)
+
+
+### Features
+
+* [#140](https://github.com/rayjlim/notesee/issues/140) logic for dev ribbon ([a1035ad](https://github.com/rayjlim/notesee/commit/a1035ad5eb8ecde7ed82293934013d151a3e3f2e))
+
+
+### Bug Fixes
+
+* [#98](https://github.com/rayjlim/notesee/issues/98) debug opt+b to toggle sidebar ([e134dba](https://github.com/rayjlim/notesee/commit/e134dba604e2268b02af510373c063246bebfa9a))
+* auth check return 403 header; better auth failure message ([0e9ab53](https://github.com/rayjlim/notesee/commit/0e9ab531f4b101674c7ca3817e37563cc155c838))
+* auth check return 403 header; better auth failure message ([2b524c6](https://github.com/rayjlim/notesee/commit/2b524c632b6fedfde717d47df81f3ba14550facb))
+* auth not working b/c token need check and logic was commented out ([17f7962](https://github.com/rayjlim/notesee/commit/17f79622a26b8366e79c2471d1f821fdda441033))
+* css refactor ([72deda4](https://github.com/rayjlim/notesee/commit/72deda49f216bc39abdeb1f77a5bf2fb96faa0e6))
+
 ### [0.2.4](https://github.com/rayjlim/notesee/compare/v0.2.3...v0.2.4) (2023-02-11)
 
 
