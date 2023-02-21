@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 // import { marked } from 'marked';
 import './App.css';
 import MdEditor from './components/MdEditor';
-
 import SlideDrawer from './components/SlideDrawer';
 import Backdrop from './components/Backdrop';
-import constants from './constants';
+
+import { ENVIRONMENT, STORAGE_KEY, REST_ENDPOINT } from './constants';
+import './ribbon.css';
 
 const BREADCRUMB_MAX = 10;
+const showDevRibbon = ENVIRONMENT === 'development';
 
 const App = () => {
   const [markdown, setMarkdown] = useState('');
@@ -71,11 +73,12 @@ const App = () => {
       setBreadcrumb(newbreadcrumb);
     }
     console.log('breacdrumb-postcheck', newbreadcrumb);
+
     // TODO: convert to custom hook
     try {
       // handle history
-      const token = window.localStorage.getItem(constants.STORAGE_KEY);
-      const response = await fetch(`${constants.REST_ENDPOINT}${pathname}`, {
+      const token = window.localStorage.getItem(STORAGE_KEY);
+      const response = await fetch(`${REST_ENDPOINT}${pathname}`, {
         method: 'GET',
         mode: 'cors',
         cache: 'no-cache',
@@ -127,7 +130,7 @@ const App = () => {
   };
 
   const checkLogin = async (formUser = '', formPass = '') => {
-    const prefix = constants.REST_ENDPOINT;
+    const prefix = REST_ENDPOINT;
     const formData = new URLSearchParams();
 
     formData.append('username', formUser);
@@ -147,7 +150,7 @@ const App = () => {
 
         console.log('login results', results);
         if (results.token !== 'undefined') {
-          window.localStorage.setItem(constants.STORAGE_KEY, results.token);
+          window.localStorage.setItem(STORAGE_KEY, results.token);
           setLoggedIn(true);
         }
         return results.token;
@@ -176,7 +179,7 @@ const App = () => {
   };
 
   const doLogout = () => {
-    window.localStorage.setItem(constants.STORAGE_KEY, null);
+    window.localStorage.setItem(STORAGE_KEY, null);
     setLoggedIn(false);
   };
 
@@ -191,10 +194,10 @@ const App = () => {
     const { pathname } = window.location;
     console.log('create page');
 
-    const token = window.localStorage.getItem(constants.STORAGE_KEY);
+    const token = window.localStorage.getItem(STORAGE_KEY);
     try {
       const response = await fetch(
-        `${constants.REST_ENDPOINT}${pathname}?a=create`,
+        `${REST_ENDPOINT}${pathname}?a=create`,
         {
           method: 'GET',
           mode: 'cors',
@@ -229,10 +232,10 @@ const App = () => {
   const getFavorites = async () => {
     console.log('getFavorites');
 
-    const token = window.localStorage.getItem(constants.STORAGE_KEY);
+    const token = window.localStorage.getItem(STORAGE_KEY);
     try {
       const response = await fetch(
-        `${constants.REST_ENDPOINT}/?a=getFavorites`,
+        `${REST_ENDPOINT}/?a=getFavorites`,
         {
           method: 'GET',
           mode: 'cors',
@@ -262,11 +265,11 @@ const App = () => {
   const toggleFavorite = async () => {
     console.log('toggle Favorite');
 
-    const token = window.localStorage.getItem(constants.STORAGE_KEY);
+    const token = window.localStorage.getItem(STORAGE_KEY);
     try {
       console.log(isFavorite);
       const response = await fetch(
-        `${constants.REST_ENDPOINT}/?a=favorite&favorite=${!isFavorite}&path=${path}`,
+        `${REST_ENDPOINT}/?a=favorite&favorite=${!isFavorite}&path=${path}`,
         {
           method: 'GET',
           mode: 'cors',
@@ -323,7 +326,7 @@ const App = () => {
         }
       }
 
-      const token = window.localStorage.getItem(constants.STORAGE_KEY);
+      const token = window.localStorage.getItem(STORAGE_KEY);
       if (token && token !== '' && token !== 'null' && token !== 'undefined') {
         console.log('logged in:', token);
 
@@ -350,6 +353,7 @@ const App = () => {
 
   return (
     <div className="App">
+      {showDevRibbon && <a className="github-fork-ribbon" href="#dev" data-ribbon="Development" title="Development">Development</a>}
       {isLoggedIn ? (
         <>
           {visual.loading ? (
