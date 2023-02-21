@@ -126,7 +126,7 @@ const MdEditor = ({ content, path, mode, onSave }) => {
       mdEditor.current.setView({ md: true, html: true });
     }
     document.addEventListener('keydown', checkKeyPressed);
-    return () => window.removeEventListener('resize', checkKeyPressed);
+    return () => document.removeEventListener('resize', checkKeyPressed);
   }, []);
   const saveBarStyle = {
     width: '50%',

@@ -2,4 +2,6 @@ module.exports = {
   REST_ENDPOINT: process.env.REACT_APP_API_ENDPOINT,
   IMG_PATH: process.env.REACT_APP_IMG_PATH,
   STORAGE_KEY: 'NOTESEE_KEY',
+  SHOW_GH_CORNER: process.env.REACT_APP_SHOW_GH_CORNER,
+  ENVIRONMENT: process.env.NODE_ENV,
 };
