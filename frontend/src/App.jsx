@@ -389,31 +389,28 @@ const App = () => {
                   {' '}
                   {modifiedDate}
                 </span>
-              </div>
-
-              {visual.showCreateButton ? (
-                <button onClick={() => createPage()} className="create-btn" type="button">
-                  Create
+                {visual.showCreateButton && (
+                  <button onClick={() => createPage()} className="create-btn" type="button">
+                    Create
+                    {' '}
+                    {path}
+                  </button>
+                )}
+                <span style={{ margin: '0 1em' }}>
+                  Favorite:
                   {' '}
-                  {path}
-                </button>
-              ) : (
-                <span> </span>
-              )}
-              <span style={{ margin: '0 1em' }}>
-                Favorite:
-                {' '}
-                <button onClick={() => toggleFavorite()} type="button">
-                  {isFavorite ? 'Yes' : 'No'}
-                </button>
-              </span>
-              <span>
-                Switch Mode:
-                {' '}
-              </span>
-              <button onClick={() => switchMode()} title="Alt/Opt + M" type="button">
-                {mode === 'edit' ? 'Editor' : 'Read'}
-              </button>
+                  <button onClick={() => toggleFavorite()} type="button">
+                    {isFavorite ? 'Yes' : 'No'}
+                  </button>
+                </span>
+                <span>
+                  Switch Mode:
+                  {' '}
+                  <button onClick={() => switchMode()} title="Alt/Opt + M" type="button">
+                    {mode === 'edit' ? 'Editor' : 'Read'}
+                  </button>
+                </span>
+              </div>
               <MdEditor
                 content={markdown}
                 path={path}

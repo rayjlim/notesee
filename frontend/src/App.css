@@ -43,8 +43,10 @@
 }
 
 .create-btn {
-  background-color: crimson;
+  background-color: rgb(255, 118, 118);
+  margin: 0 1rem;
 }
+
 .childDiv{
   text-align: right;
   display: inline-block;
