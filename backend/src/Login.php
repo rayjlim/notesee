@@ -113,9 +113,11 @@ class Login
 
     private function generateToken(){
         $tokenObj = new stdClass();
-        $tokenObj->user = $_ENV['ACCESS_USER'];
+        $tokenObj->username = $_ENV['ACCESS_USER'];
         $tokenObj->password = $_ENV['ACCESS_PASSWORD'];
-        return encrypt(json_encode($tokenObj));
+        $responseObj = new stdClass();
+        $responseObj->token = encrypt(json_encode($tokenObj));
+        return json_encode($responseObj);
     }
 
     private function loginError($message){

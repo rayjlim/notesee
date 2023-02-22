@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-// import { marked } from 'marked';
 import './App.css';
 import MdEditor from './components/MdEditor';
 import SlideDrawer from './components/SlideDrawer';
 import Backdrop from './components/Backdrop';
+import LoginForm from './components/LoginForm';
 
 import { STORAGE_KEY, REST_ENDPOINT } from './constants';
 import './ribbon.css';
@@ -20,9 +20,6 @@ const App = () => {
   const [favorites, setFavorites] = useState([]);
 
   const [isLoggedIn, setLoggedIn] = useState(false);
-
-  const [user, setUser] = useState('');
-  const [password, setPassword] = useState('');
 
   const [mode, setMode] = useState('read');
   const [breadcrumb, setBreadcrumb] = useState([]);
@@ -126,67 +123,6 @@ const App = () => {
     } catch (error) {
       console.error('Error: ', error);
     }
-  };
-
-  const checkLogin = async (formUser = '', formPass = '') => {
-    const prefix = REST_ENDPOINT;
-    const formData = new URLSearchParams();
-
-    formData.append('username', formUser);
-    formData.append('password', formPass);
-    formData.append('login', true);
-
-    try {
-      const response = await fetch(`${prefix}/index.md`, {
-        method: 'POST',
-        mode: 'cors',
-        cache: 'no-cache',
-        body: formData,
-      });
-
-      if (response.ok) {
-        const results = await response.json();
-
-        console.log('login results', results);
-        if (results.token !== 'undefined') {
-          window.localStorage.setItem(STORAGE_KEY, results.token);
-          setLoggedIn(true);
-        }
-        return results.token;
-      }
-
-      console.log(response);
-      console.log(response.status);
-      const body = await response.json();
-      alert(`login failed : ${body.message} (${response.status})`);
-    } catch (error) {
-      console.log('Error when parsing means not logged in, ', error, prefix);
-    }
-    return true;
-  };
-
-  const doLogin = async () => {
-    const token = await checkLogin(user, password);
-    setUser('');
-    setPassword('');
-    if (!token) {
-      alert('invalid login');
-      return;
-    }
-    console.log(token);
-    await load();
-  };
-
-  const doLogout = () => {
-    window.localStorage.setItem(STORAGE_KEY, null);
-    setLoggedIn(false);
-  };
-
-  const switchMode = () => {
-    const newMode = mode === 'edit' ? 'read' : 'edit';
-    console.log('switchMode', mode, ' to ', newMode);
-    window.localStorage.setItem('mode', newMode);
-    setMode(newMode);
   };
 
   const createPage = async () => {
@@ -293,6 +229,13 @@ const App = () => {
     }
   };
 
+  const switchMode = () => {
+    const newMode = mode === 'edit' ? 'read' : 'edit';
+    console.log('switchMode', mode, ' to ', newMode);
+    window.localStorage.setItem('mode', newMode);
+    setMode(newMode);
+  };
+
   const handleKeyDown = e => {
     if (e.altKey && e.which === 66) {
       console.log(`B keybinding - Side bar ${showSideBar}`);
@@ -326,7 +269,8 @@ const App = () => {
       }
 
       const token = window.localStorage.getItem(STORAGE_KEY);
-      if (token && token !== '' && token !== 'null' && token !== 'undefined') {
+      console.log('272: ', token);
+      if (token) {
         console.log('logged in:', token);
 
         setLoggedIn(true);
@@ -467,25 +411,12 @@ const App = () => {
             </ul>
           </div>
           <div className="childDiv">
-            <button onClick={() => doLogout()} type="button">Logout</button>
+            Logout Btn
+            {/* <button onClick={() => doLogout()} type="button">Logout</button> */}
           </div>
         </>
       ) : (
-        <>
-          <span>User</span>
-          <input
-            type="text"
-            value={user}
-            onChange={e => setUser(e.target.value)}
-          />
-          <span>Password</span>
-          <input
-            type="text"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-          />
-          <button onClick={() => doLogin()} type="button">Login</button>
-        </>
+        <LoginForm />
       )}
     </div>
   );
