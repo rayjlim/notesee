@@ -5,11 +5,10 @@ import MdEditor from './components/MdEditor';
 import SlideDrawer from './components/SlideDrawer';
 import Backdrop from './components/Backdrop';
 
-import { ENVIRONMENT, STORAGE_KEY, REST_ENDPOINT } from './constants';
+import { STORAGE_KEY, REST_ENDPOINT } from './constants';
 import './ribbon.css';
 
 const BREADCRUMB_MAX = 10;
-const showDevRibbon = ENVIRONMENT === 'development';
 
 const App = () => {
   const [markdown, setMarkdown] = useState('');
@@ -353,7 +352,6 @@ const App = () => {
 
   return (
     <div className="App">
-      {showDevRibbon && <a className="github-fork-ribbon" href="#dev" data-ribbon="Development" title="Development">Development</a>}
       {isLoggedIn ? (
         <>
           {visual.loading ? (
