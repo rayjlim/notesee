@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.6](https://github.com/rayjlim/notesee/compare/v0.2.5...v0.2.6) (2023-02-22)
+
+
+### Bug Fixes
+
+* consolidate buttons to top row ([4f56f3d](https://github.com/rayjlim/notesee/commit/4f56f3d01f95ae0bbb09bbed61db6eee4071074f))
+
 ### [0.2.5](https://github.com/rayjlim/notesee/compare/v0.2.4...v0.2.5) (2023-02-21)
 
 
