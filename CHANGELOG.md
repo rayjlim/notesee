@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.9](https://github.com/rayjlim/notesee/compare/v0.2.8...v0.2.9) (2023-02-23)
+
+
+### Bug Fixes
+
+* [#128](https://github.com/rayjlim/notesee/issues/128) move logic to new components ([a90ef68](https://github.com/rayjlim/notesee/commit/a90ef680b164f3effbe3a485b64dd1b20f568c04))
+* log auth events on serverside ([6a46de3](https://github.com/rayjlim/notesee/commit/6a46de3e00983a8c06142811e7d903b8ffcc2e71))
+
 ### [0.2.8](https://github.com/rayjlim/notesee/compare/v0.2.7...v0.2.8) (2023-02-23)
 
 
