@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.7](https://github.com/rayjlim/notesee/compare/v0.2.6...v0.2.7) (2023-02-23)
+
+
+### Features
+
+* frontend logic for login ([c8d0e55](https://github.com/rayjlim/notesee/commit/c8d0e5542b42dc52173b92e5b899f87fd42a75c8))
+* login form with google auth ([cc33c74](https://github.com/rayjlim/notesee/commit/cc33c74cadb06a3284f377eb848fc32e350e3018))
+
+
+### Bug Fixes
+
+* add google oauth dep ([7f2f4a4](https://github.com/rayjlim/notesee/commit/7f2f4a4888e41d99e428d5a7d8a0c068a9202504))
+* add Google Oauth to index.jsx ([00d005e](https://github.com/rayjlim/notesee/commit/00d005ebfa2d981f47a47dc3760ce628904f0ecc))
+* Login handle id; encrypt w/ ssl ([1ea176b](https://github.com/rayjlim/notesee/commit/1ea176b6e16043a93f1f2c8528aea428f6bc9e63))
+
 ### [0.2.6](https://github.com/rayjlim/notesee/compare/v0.2.5...v0.2.6) (2023-02-22)
 
 
