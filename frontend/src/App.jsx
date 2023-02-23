@@ -69,7 +69,7 @@ const App = () => {
         }
         setDocumentInfo({
           markdown: results.source,
-          favorite: results.isFavorite,
+          isFavorite: results.isFavorite,
           modifiedDate: results.modifiedDate,
           path: pathname.substring(1),
           backlinks: results.backlinks,
