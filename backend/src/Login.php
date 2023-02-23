@@ -3,7 +3,6 @@ if (!defined('APP_STARTED')) {
     die('Forbidden!');
 }
 
-
 /**
  * This class is only instantiated if the ACCESS_USER and ACCESS_PASSWORD constants are defined
  *
@@ -15,12 +14,12 @@ class Login
      */
     public function __construct()
     {
-        if (isset($_GET['action']) && $_GET['action'] === 'logout') {
-            $this->doLogout();
+        // if (isset($_GET['action']) && $_GET['action'] === 'logout') {
+        //     $this->doLogout();
 
-            header("location: " . BASE_URL);
-            exit;
-        }
+        //     header("location: " . BASE_URL);
+        //     exit;
+        // }
     }
 
     /**
@@ -47,11 +46,11 @@ class Login
      * Logout from the password protected area
      * @return boolean Always true
      */
-    private function doLogout()
-    {
-        Logger::log("Logout");
-        return true;
-    }
+    // private function doLogout()
+    // {
+    //     Logger::log("Logout");
+    //     return true;
+    // }
 
     /**
      * Get the IP address of the visitor
@@ -96,6 +95,7 @@ class Login
 
         if (isset($loginParams->id) && $loginParams->id !== '') {
             if ($loginParams->id == $_ENV['ACCESS_GOOGLE_ID']) {
+                Logger::log("login by id");
                 $token = $this->generateToken();
                 echo $token;
                 exit;
@@ -104,6 +104,7 @@ class Login
         }
         
         if ($username === $_ENV['ACCESS_USER'] && $password === $_ENV['ACCESS_PASSWORD']) {            
+            Logger::log("login by username/password");
             $token = $this->generateToken();
             echo $token;
             exit;
