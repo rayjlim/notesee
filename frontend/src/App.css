@@ -37,6 +37,11 @@
   }
 }
 
+.half-row {
+  display: inline-block;
+  width: 50%;
+}
+
 .breadcrumb li {
   list-style-type: none;
   text-align: left;
@@ -47,8 +52,30 @@
   margin: 0 1rem;
 }
 
-.childDiv{
+.logout-btn {
   text-align: right;
   display: inline-block;
   width: 50%;
+}
+
+.backlinks {
+  vertical-align: top;
+  text-align: left;
+  
+}
+.backlinks > ul{
+  list-style-type: none;
+  text-align: left;
+  padding: 0 2rem;
+}
+
+.favorites-list {
+  text-align: left;
+  
+}
+
+.favorites-list > ul {
+  list-style-type: none;
+  text-align: left;
+  padding: 0 2rem;
 }
