@@ -58,7 +58,6 @@ const LoginForm = forwardRef(({ showForm, validUser }, ref) => {
       }
 
       console.log(response);
-      console.log(response.status);
       const body = await response.json();
       alert(`login failed : ${body.message} (${response.status})`);
     } catch (error) {
@@ -68,8 +67,6 @@ const LoginForm = forwardRef(({ showForm, validUser }, ref) => {
   };
 
   const doLogin = async id => {
-    console.log('doLogin', id);
-    console.log(username.current.value, password.current.value);
     const loginParam = id
       ? { id, formUser: 'n/a', formPass: 'n/a' }
       : { formUser: username.current.value, formPass: password.current.value };
