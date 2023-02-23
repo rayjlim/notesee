@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './App.css';
 import MdEditor from './components/MdEditor';
 import SlideDrawer from './components/SlideDrawer';
@@ -11,6 +11,7 @@ import './ribbon.css';
 const BREADCRUMB_MAX = 10;
 
 const App = () => {
+  const ref = useRef();
   const [markdown, setMarkdown] = useState('');
   const [isFavorite, setFavorite] = useState(false);
   const [modifiedDate, setModifiedDate] = useState(null);
@@ -31,9 +32,8 @@ const App = () => {
   const [showSideBar, setShowSideBar] = useState(false);
 
   const load = async (_breadcrumb = []) => {
-    console.log('load');
     let { pathname } = window.location;
-    console.log(pathname);
+    console.log('load ', pathname);
 
     if (pathname === '/') {
       pathname = '/index.md';
@@ -88,14 +88,11 @@ const App = () => {
       });
 
       if (response.ok) {
-        console.log('load response ok');
         document.title = `Notesee - ${pathname.substring(
           1,
           pathname.length - 3,
         )}`;
         const results = await response.json();
-
-        console.log('results', results);
         let showCreateButton = false;
         if (results.source === '') {
           setVisual({ ...visual, showCreateButton: true });
@@ -109,7 +106,6 @@ const App = () => {
           results.source = `# ${title}`;
           showCreateButton = true;
         }
-        console.log('results', results);
 
         setMarkdown(results.source);
         setFavorite(results.isFavorite);
@@ -149,15 +145,11 @@ const App = () => {
 
       if (response.ok) {
         const results = await response.json();
-
-        console.log(results);
         if (results.status === 'success') {
           setVisual({ ...visual, showCreateButton: false });
-        } else {
-          alert('Server Error on create');
+          return;
         }
-      } else {
-        console.log('Network response was not ok.');
+        throw new Error('Server Error on create');
       }
     } catch (error) {
       console.error('Error: ', error);
@@ -165,8 +157,6 @@ const App = () => {
   };
 
   const getFavorites = async () => {
-    console.log('getFavorites');
-
     const token = window.localStorage.getItem(STORAGE_KEY);
     try {
       const response = await fetch(
@@ -187,11 +177,10 @@ const App = () => {
 
       if (response.ok) {
         const results = await response.json();
-        console.log(results);
         setFavorites(results.paths);
-      } else {
-        console.log('Network response was not ok.');
+        return;
       }
+      throw new Error('Network response was not ok.');
     } catch (error) {
       console.error('Error: ', error);
     }
@@ -221,9 +210,9 @@ const App = () => {
 
       if (response.ok) {
         setFavorite(!isFavorite);
-      } else {
-        console.log('Network response was not ok.');
+        return;
       }
+      throw new Error('Network response was not ok.');
     } catch (error) {
       console.error('Error: ', error);
     }
@@ -269,10 +258,7 @@ const App = () => {
       }
 
       const token = window.localStorage.getItem(STORAGE_KEY);
-      console.log('272: ', token);
       if (token) {
-        console.log('logged in:', token);
-
         setLoggedIn(true);
         await load(localBreadcrumb);
         await getFavorites();
@@ -296,7 +282,7 @@ const App = () => {
 
   return (
     <div className="App">
-      {isLoggedIn ? (
+      {isLoggedIn && (
         <>
           {visual.loading ? (
             <span>Loading</span>
@@ -411,13 +397,27 @@ const App = () => {
             </ul>
           </div>
           <div className="childDiv">
-            Logout Btn
-            {/* <button onClick={() => doLogout()} type="button">Logout</button> */}
+            <button
+              onClick={() => {
+                setLoggedIn(false);
+                ref.current.logout();
+              }}
+              type="button"
+            >
+              Logout
+            </button>
           </div>
         </>
-      ) : (
-        <LoginForm />
       )}
+      <LoginForm
+        ref={ref}
+        showForm={!isLoggedIn}
+        validUser={async () => {
+          setLoggedIn(true);
+          await load([]);
+          await getFavorites();
+        }}
+      />
     </div>
   );
 };

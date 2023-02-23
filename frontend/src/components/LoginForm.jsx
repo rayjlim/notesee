@@ -1,16 +1,29 @@
-import React, { useState, useRef, useEffect } from 'react';
-// import PropTypes from 'prop-types';
+import React, {
+  forwardRef,
+  useImperativeHandle,
+  useState, useRef,
+  useEffect,
+} from 'react';
+import PropTypes from 'prop-types';
 // import { ToastContainer, toast } from 'react-toastify';
-// import { googleLogout, useGoogleLogin } from '@react-oauth/google';
-import { useGoogleLogin } from '@react-oauth/google';
+import { googleLogout, useGoogleLogin } from '@react-oauth/google';
 import { REST_ENDPOINT, STORAGE_KEY } from '../constants';
 import './LoginForm.css';
 
-const LoginForm = () => {
+const LoginForm = forwardRef(({ showForm, validUser }, ref) => {
   const username = useRef('');
   const password = useRef('');
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
+
+  useImperativeHandle(ref, () => ({
+    logout() {
+      console.log('logout function');
+      window.localStorage.removeItem(STORAGE_KEY);
+      googleLogout();
+      setProfile(null);
+    },
+  }));
 
   const login = useGoogleLogin({
     onSuccess: codeResponse => setUser(codeResponse),
@@ -25,6 +38,7 @@ const LoginForm = () => {
       password: formPass,
       login: true,
     };
+    console.log('formData', formData);
     try {
       const response = await fetch(`${prefix}/index.md`, {
         method: 'POST',
@@ -38,9 +52,9 @@ const LoginForm = () => {
         console.log('login results', results);
         if (results.token !== 'undefined') {
           window.localStorage.setItem(STORAGE_KEY, results.token);
-          // setLoggedIn(true);
+          return results.token;
         }
-        return true;
+        return null;
       }
 
       console.log(response);
@@ -67,15 +81,14 @@ const LoginForm = () => {
       // toast.error('Bad Login');
       alert('bad login');
     } else {
-      console.log(token);
+      console.log('valid user', token);
+      validUser();
       // goto main page
     }
   };
 
   // const doLogout = () => {
-  //   window.localStorage.removeItem(STORAGE_KEY);
-  //   googleLogout();
-  //   setProfile(null);
+
   // };
 
   useEffect(
@@ -85,7 +98,7 @@ const LoginForm = () => {
           const response = await fetch(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`);
           const results = await response.json();
           console.log(results);
-          setProfile(results);
+          // setProfile(results);
           if (user.access_token) {
             doLogin(results.id);
           }
@@ -100,43 +113,55 @@ const LoginForm = () => {
   );
 
   return (
-    <div className="App">
+    <>
       {/* <ToastContainer /> */}
-      <h1>Login</h1>
-      <span>User</span>
-      <input type="text" ref={username} />
-      <span>Password</span>
-      <input type="password" ref={password} />
-      <button onClick={() => doLogin(null)} type="button">
-        Login with Password
-      </button>
-      <div>
-        <h2>Google Login</h2>
-        {profile?.id ? (
-          <div>
-            <img src={profile.picture} alt="user" />
-            <h3>User Logged in</h3>
-            <p>
-              Name:
-              {profile.name}
-            </p>
-            <p>
-              Email Address:
-              {profile.email}
-            </p>
-            <br />
-            <br />
-            {/* <button onClick={logOut} type="button">Log out</button> */}
-          </div>
-        ) : (
-          <button onClick={() => login()} type="button">Sign in with Google</button>
-        )}
-      </div>
-    </div>
+      {
+        showForm && (
+          <>
+            <div className="App">
+              <h1>Login</h1>
+            </div>
+            <span>User</span>
+            <input type="text" ref={username} />
+            <span>Password</span>
+            <input type="password" ref={password} />
+            <button onClick={() => doLogin(null)} type="button">
+              Login with Password
+            </button>
+            <div>
+              <h2>Google Login</h2>
+              {profile?.id ? (
+                <div>
+                  <img src={profile.picture} alt="user" />
+                  <h3>User Logged in</h3>
+                  <p>
+                    Name:
+                    {profile.name}
+                  </p>
+                  <p>
+                    Email Address:
+                    {profile.email}
+                  </p>
+                  <br />
+                  <br />
+                  {/* <button onClick={logOut} type="button">Log out</button> */}
+                </div>
+              ) : (
+                <button onClick={() => login()} type="button">Sign in with Google</button>
+              )}
+            </div>
+          </>
+        )
+      }
+      {profile}
+      {login}
+    </>
   );
-};
+});
 
 export default LoginForm;
 
-// LoginForm.propTypes = {
-// };
+LoginForm.propTypes = {
+  showForm: PropTypes.bool.isRequired,
+  validUser: PropTypes.func.isRequired,
+};
