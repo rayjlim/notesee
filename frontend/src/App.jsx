@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
-// import { marked } from 'marked';
+import React, { useState, useRef, useEffect } from 'react';
 import './App.css';
 import MdEditor from './components/MdEditor';
 import SlideDrawer from './components/SlideDrawer';
 import Backdrop from './components/Backdrop';
+import LoginForm from './components/LoginForm';
 
-import { ENVIRONMENT, STORAGE_KEY, REST_ENDPOINT } from './constants';
+import { STORAGE_KEY, REST_ENDPOINT } from './constants';
 import './ribbon.css';
 
 const BREADCRUMB_MAX = 10;
-const showDevRibbon = ENVIRONMENT === 'development';
 
 const App = () => {
+  const ref = useRef();
   const [markdown, setMarkdown] = useState('');
   const [isFavorite, setFavorite] = useState(false);
   const [modifiedDate, setModifiedDate] = useState(null);
@@ -21,9 +21,6 @@ const App = () => {
   const [favorites, setFavorites] = useState([]);
 
   const [isLoggedIn, setLoggedIn] = useState(false);
-
-  const [user, setUser] = useState('');
-  const [password, setPassword] = useState('');
 
   const [mode, setMode] = useState('read');
   const [breadcrumb, setBreadcrumb] = useState([]);
@@ -35,9 +32,8 @@ const App = () => {
   const [showSideBar, setShowSideBar] = useState(false);
 
   const load = async (_breadcrumb = []) => {
-    console.log('load');
     let { pathname } = window.location;
-    console.log(pathname);
+    console.log('load ', pathname);
 
     if (pathname === '/') {
       pathname = '/index.md';
@@ -92,14 +88,11 @@ const App = () => {
       });
 
       if (response.ok) {
-        console.log('load response ok');
         document.title = `Notesee - ${pathname.substring(
           1,
           pathname.length - 3,
         )}`;
         const results = await response.json();
-
-        console.log('results', results);
         let showCreateButton = false;
         if (results.source === '') {
           setVisual({ ...visual, showCreateButton: true });
@@ -113,7 +106,6 @@ const App = () => {
           results.source = `# ${title}`;
           showCreateButton = true;
         }
-        console.log('results', results);
 
         setMarkdown(results.source);
         setFavorite(results.isFavorite);
@@ -127,67 +119,6 @@ const App = () => {
     } catch (error) {
       console.error('Error: ', error);
     }
-  };
-
-  const checkLogin = async (formUser = '', formPass = '') => {
-    const prefix = REST_ENDPOINT;
-    const formData = new URLSearchParams();
-
-    formData.append('username', formUser);
-    formData.append('password', formPass);
-    formData.append('login', true);
-
-    try {
-      const response = await fetch(`${prefix}/index.md`, {
-        method: 'POST',
-        mode: 'cors',
-        cache: 'no-cache',
-        body: formData,
-      });
-
-      if (response.ok) {
-        const results = await response.json();
-
-        console.log('login results', results);
-        if (results.token !== 'undefined') {
-          window.localStorage.setItem(STORAGE_KEY, results.token);
-          setLoggedIn(true);
-        }
-        return results.token;
-      }
-
-      console.log(response);
-      console.log(response.status);
-      const body = await response.json();
-      alert(`login failed : ${body.message} (${response.status})`);
-    } catch (error) {
-      console.log('Error when parsing means not logged in, ', error, prefix);
-    }
-    return true;
-  };
-
-  const doLogin = async () => {
-    const token = await checkLogin(user, password);
-    setUser('');
-    setPassword('');
-    if (!token) {
-      alert('invalid login');
-      return;
-    }
-    console.log(token);
-    await load();
-  };
-
-  const doLogout = () => {
-    window.localStorage.setItem(STORAGE_KEY, null);
-    setLoggedIn(false);
-  };
-
-  const switchMode = () => {
-    const newMode = mode === 'edit' ? 'read' : 'edit';
-    console.log('switchMode', mode, ' to ', newMode);
-    window.localStorage.setItem('mode', newMode);
-    setMode(newMode);
   };
 
   const createPage = async () => {
@@ -214,15 +145,11 @@ const App = () => {
 
       if (response.ok) {
         const results = await response.json();
-
-        console.log(results);
         if (results.status === 'success') {
           setVisual({ ...visual, showCreateButton: false });
-        } else {
-          alert('Server Error on create');
+          return;
         }
-      } else {
-        console.log('Network response was not ok.');
+        throw new Error('Server Error on create');
       }
     } catch (error) {
       console.error('Error: ', error);
@@ -230,8 +157,6 @@ const App = () => {
   };
 
   const getFavorites = async () => {
-    console.log('getFavorites');
-
     const token = window.localStorage.getItem(STORAGE_KEY);
     try {
       const response = await fetch(
@@ -252,11 +177,10 @@ const App = () => {
 
       if (response.ok) {
         const results = await response.json();
-        console.log(results);
         setFavorites(results.paths);
-      } else {
-        console.log('Network response was not ok.');
+        return;
       }
+      throw new Error('Network response was not ok.');
     } catch (error) {
       console.error('Error: ', error);
     }
@@ -286,12 +210,19 @@ const App = () => {
 
       if (response.ok) {
         setFavorite(!isFavorite);
-      } else {
-        console.log('Network response was not ok.');
+        return;
       }
+      throw new Error('Network response was not ok.');
     } catch (error) {
       console.error('Error: ', error);
     }
+  };
+
+  const switchMode = () => {
+    const newMode = mode === 'edit' ? 'read' : 'edit';
+    console.log('switchMode', mode, ' to ', newMode);
+    window.localStorage.setItem('mode', newMode);
+    setMode(newMode);
   };
 
   const handleKeyDown = e => {
@@ -327,9 +258,7 @@ const App = () => {
       }
 
       const token = window.localStorage.getItem(STORAGE_KEY);
-      if (token && token !== '' && token !== 'null' && token !== 'undefined') {
-        console.log('logged in:', token);
-
+      if (token) {
         setLoggedIn(true);
         await load(localBreadcrumb);
         await getFavorites();
@@ -353,8 +282,7 @@ const App = () => {
 
   return (
     <div className="App">
-      {showDevRibbon && <a className="github-fork-ribbon" href="#dev" data-ribbon="Development" title="Development">Development</a>}
-      {isLoggedIn ? (
+      {isLoggedIn && (
         <>
           {visual.loading ? (
             <span>Loading</span>
@@ -469,26 +397,27 @@ const App = () => {
             </ul>
           </div>
           <div className="childDiv">
-            <button onClick={() => doLogout()} type="button">Logout</button>
+            <button
+              onClick={() => {
+                setLoggedIn(false);
+                ref.current.logout();
+              }}
+              type="button"
+            >
+              Logout
+            </button>
           </div>
         </>
-      ) : (
-        <>
-          <span>User</span>
-          <input
-            type="text"
-            value={user}
-            onChange={e => setUser(e.target.value)}
-          />
-          <span>Password</span>
-          <input
-            type="text"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-          />
-          <button onClick={() => doLogin()} type="button">Login</button>
-        </>
       )}
+      <LoginForm
+        ref={ref}
+        showForm={!isLoggedIn}
+        validUser={async () => {
+          setLoggedIn(true);
+          await load([]);
+          await getFavorites();
+        }}
+      />
     </div>
   );
 };
