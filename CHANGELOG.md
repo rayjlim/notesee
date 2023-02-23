@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.8](https://github.com/rayjlim/notesee/compare/v0.2.7...v0.2.8) (2023-02-23)
+
+
+### Bug Fixes
+
+* update secrets ([3786a31](https://github.com/rayjlim/notesee/commit/3786a316d62a9d7208fa6f5e2efccb6d31ab075d))
+
 ### [0.2.7](https://github.com/rayjlim/notesee/compare/v0.2.6...v0.2.7) (2023-02-23)
 
 
