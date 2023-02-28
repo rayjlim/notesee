@@ -52,14 +52,14 @@ const App = () => {
       if (response.ok) {
         document.title = `Notesee - ${pathname.substring(
           1,
-          pathname.length - 3,
+          pathname.length,
         )}`;
         const results = await response.json();
         const showCreateButton = results.source === '';
         if (showCreateButton) {
           // content is blank means new page content
           const title = pathname
-            .substring(1, pathname.length - 3)
+            .substring(1, pathname.length)
             .replace(/-/g, ' ')
             .toLowerCase()
             .split(' ')

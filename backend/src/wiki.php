@@ -214,10 +214,10 @@ class Wiki
                 throw new Exception('No Extension');
             }
 
-            if ($extension != 'md') {
-                $path = realpath(LIBRARY . DIRECTORY_SEPARATOR . $pagePath);
+            // if ($extension != 'md') {
+            //     $path = realpath(LIBRARY . DIRECTORY_SEPARATOR . $pagePath);
                 // echo "path: " .$path;
-                $finfo = finfo_open(FILEINFO_MIME);
+                // $finfo = finfo_open(FILEINFO_MIME);
                 // $mime_type = trim(finfo_file($finfo, $path));
 
 
@@ -229,8 +229,8 @@ class Wiki
                 // header("Content-Length: " . filesize($path));
 
                 // fpassthru($file);
-                exit();
-            }
+            //     exit();
+            // }
 
             // echo "Page: ". $page;
             $entrys = $ORM->getByPath($pagePath);

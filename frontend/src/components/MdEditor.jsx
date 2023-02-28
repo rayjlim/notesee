@@ -78,7 +78,7 @@ const MdEditor = ({ content, path, mode, onSave }) => {
 
       const title = match['1'].replace(/-/g, ' ');
       const filename = match['1'].replace(/ /g, '-').toLowerCase();
-      modified = modified.replace(regex, `[${title}](${filename}.md)`);
+      modified = modified.replace(regex, `[${title}](${filename})`);
 
       // place the cursor
       mdEditor.current.setSelection(mdEditor.current.getSelection());
