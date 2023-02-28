@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.10](https://github.com/rayjlim/notesee/compare/v0.2.9...v0.2.10) (2023-02-28)
+
+
+### Features
+
+* remove usage of .md extension ([43fc357](https://github.com/rayjlim/notesee/commit/43fc357919e9c217d22ad0b409eb2d0add22648b))
+
+
+### Bug Fixes
+
+* typo in doc info isFavorite ([3c22d24](https://github.com/rayjlim/notesee/commit/3c22d24b73c7ab17763fa9b2606b74e0c5c9b4b9))
+
 ### [0.2.9](https://github.com/rayjlim/notesee/compare/v0.2.8...v0.2.9) (2023-02-23)
 
 

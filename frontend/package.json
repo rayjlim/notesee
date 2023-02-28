@@ -1,6 +1,6 @@
 {
   "name": "@lilplaytime/notesee",
-  "version": "0.2.9",
+  "version": "0.2.10",
   "private": true,
   "dependencies": {
     "@react-oauth/google": "^0.7.1",
