@@ -2,6 +2,7 @@
   "name": "@lilplaytime/notesee",
   "version": "0.2.10",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "@react-oauth/google": "^0.7.1",
     "caniuse-lite": "^1.0.30001265",
@@ -29,7 +30,7 @@
   },
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "start": "REACT_APP_API_ENDPOINT=http://localhost/projects/notesee/backend REACT_APP_IMG_PATH=http://localhost/projects/notesee/uploads PORT=3002 react-scripts start",
+    "start": "PORT=3002 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
