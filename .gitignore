@@ -17,14 +17,12 @@ frontend/node_modules
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-scripts/env_vars.sh
 
 frontend/build/*
 
 backend/vendor/*
 backend/build/*
 
-frontend/.env
 backend/.env
 backend/.env.production
 backend/config/.htaccess
@@ -33,3 +31,5 @@ scripts/passfile.txt
 uploads/*
 backend/_logs/*
 frontend/public/.htaccess
+frontend/.env.production
+frontend/.env.development
