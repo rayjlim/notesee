@@ -1,5 +1,8 @@
 RewriteEngine On
 
+RewriteCond %{HTTPS} off
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
 RewriteCond %{THE_REQUEST} !^GET\ /.*?static/(css|js|img)
 RewriteCond %{THE_REQUEST} !^GET\ /.*\.(png|jpg|jpeg|gif)
 RewriteCond %{REQUEST_FILENAME} !-f

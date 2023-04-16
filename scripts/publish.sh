@@ -35,7 +35,7 @@ if [ -z "$NOBACKENDBUILD" ]; then
   cd ../backend
   rsync -ravz --exclude-from '../scripts/exclude-from-prep.txt' --delete . ./build
   rsync -avz  ".env.production"  ./build/.env
-  rsync -avz  "config/.htaccess"  ./build
+  rsync -avz  ".htaccess.production"  ./build/.htaccess
   rsync -avz  "../scripts/exclude-from-prod.txt"   ./build
 
   cd ./build
