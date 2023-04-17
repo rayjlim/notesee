@@ -5,7 +5,7 @@
 
 *.md
 .env*
-.htaccess
+.htaccess*
 
 .phpunit-watcher.yml
 cs-ruleset.xml
