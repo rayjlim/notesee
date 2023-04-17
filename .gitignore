@@ -19,17 +19,19 @@ yarn-debug.log*
 yarn-error.log*
 
 frontend/build/*
+frontend/.env.production
+frontend/.env
+frontend/.htaccess.production
 
 backend/vendor/*
 backend/build/*
 
 backend/.env
 backend/.env.production
-backend/config/.htaccess
+backend/.htaccess.production
+backend/config/*
+backend/_logs/*
+
 scripts/.env
 scripts/passfile.txt
 uploads/*
-backend/_logs/*
-frontend/public/.htaccess
-frontend/.env.production
-frontend/.env.development
