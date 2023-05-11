@@ -82,19 +82,7 @@ class Wiki
         return array($source, $meta_data);
     }
 
-    protected function _getTree()
-    {
-        $ORM = new \Notesee\DocsRedbeanDAO();
-        $paths = $ORM->getPaths();
-        return $paths;
-    }
 
-    protected function _getFavorites()
-    {
-        $ORM = new \Notesee\DocsRedbeanDAO();
-        $paths = $ORM->getFavorites();
-        return $paths;
-    }
 
     protected function _getBacklinks($path)
     {
@@ -424,14 +412,28 @@ class Wiki
     public function getTreeAction()
     {
         $pageData = new stdClass();
-        $pageData->tree = $this->_getTree();
+        $ORM = new \Notesee\DocsRedbeanDAO();
+        $pageData->tree = $ORM->getPaths();
+        $this->_json($pageData);
+    }
+
+    public function getTreeSearchAction()
+    {
+        $pageData = new stdClass();
+        $ORM = new \Notesee\DocsRedbeanDAO();
+        $search = "NOSEARCH";
+        if (isset($_REQUEST['search'])) {
+            $search = $_REQUEST['search'];
+        } 
+        $pageData->tree = $ORM->getPathsWithSearch($search);
         $this->_json($pageData);
     }
 
     public function getFavoritesAction()
     {
         $pageData = new stdClass();
-        $pageData->paths = $this->_getFavorites();
+        $ORM = new \Notesee\DocsRedbeanDAO();
+        $pageData->paths = $ORM->getFavorites();
         $this->_json($pageData);
     }
 

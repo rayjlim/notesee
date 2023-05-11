@@ -13,10 +13,10 @@ const Tree = ({ items }) => {
           <span role="img" aria-label="file">
             📄
           </span>
-          <a href={`/${item}`}>
-            {`/${item}`}
+          <a href={`/${item.path}`}>
+            {`/${item.path}`}
             {' '}
-            {item.active ? '<---- 🔖' : ''}
+            {item.comtainsString === '1' ? '<---- 🔖' : ''}
           </a>
         </>
       ) : (

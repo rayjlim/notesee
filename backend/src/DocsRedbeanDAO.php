@@ -192,4 +192,20 @@ class DocsRedbeanDAO
         $found = R::find(DOCS, ' content LIKE ? ', ['%' . $text . '%']);
         return $found;
     }
+
+    /**
+     * Get All Paths with search option
+     *
+     * @return Array[Objects] Paths
+     */
+    public function getPathsWithSearch($searchParam)
+    {
+        $found = R::getAll('SELECT id, path, CASE WHEN content like \'%' 
+            . $searchParam
+            .'%\' THEN 1 ELSE 0 END as comtainsString FROM ' 
+            . DOCS 
+            . ' order by path');
+            return $found;
+    }
+    //SELECT id, title, CASE WHEN title like '%game%' THEN 1 ELSE 0 END as comtainsString FROM movies;
 }

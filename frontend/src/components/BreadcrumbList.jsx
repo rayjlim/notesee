@@ -10,7 +10,7 @@ const BreadcrumbList = () => {
     const { pathname } = window.location;
     const localBreadcrumbStr = window.localStorage.getItem('breadcrumb');
     console.log(localBreadcrumbStr);
-    let localBreadcrumb;
+    let localBreadcrumb = [];
     if (localBreadcrumbStr) {
       console.log('has breadcrumb', localBreadcrumbStr);
       localBreadcrumb = JSON.parse(localBreadcrumbStr);
