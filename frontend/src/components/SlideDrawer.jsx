@@ -18,7 +18,7 @@ const SlideDrawer = ({ show, documentInfo }) => {
   const searchText = useRef('');
 
   useEffect(() => {
-    if ((showTree || showGraph) && !tree.length) {
+    if (showTree || showGraph) {
       (async () => {
         console.log('#useEffect :');
         const token = window.localStorage.getItem(STORAGE_KEY);
