@@ -422,7 +422,7 @@ class Wiki
         $pageData = new stdClass();
         $ORM = new \Notesee\DocsRedbeanDAO();
         $search = "NOSEARCH";
-        if (isset($_REQUEST['search'])) {
+        if (isset($_REQUEST['search']) && $_REQUEST['search'] !== "") {
             $search = $_REQUEST['search'];
         } 
         $pageData->tree = $ORM->getPathsWithSearch($search);

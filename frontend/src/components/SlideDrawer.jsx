@@ -1,9 +1,9 @@
 // # SlideDrawer.js
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import './SlideDrawer.css';
 import pkg from '../../package.json';
-import constants from '../constants';
+import { REST_ENDPOINT, STORAGE_KEY } from '../constants';
 import SearchTextForm from './SearchTextForm';
 import Tree from './Tree';
 import NetworkGraph from './NetworkGraph';
@@ -15,15 +15,16 @@ const SlideDrawer = ({ show, documentInfo }) => {
   const [showGraph, toggleShowGraph] = useState(false);
 
   const [tree, setTree] = useState([]);
+  const searchText = useRef('');
 
   useEffect(() => {
     if ((showTree || showGraph) && !tree.length) {
       (async () => {
         console.log('#useEffect :');
-        const token = window.localStorage.getItem(constants.STORAGE_KEY);
+        const token = window.localStorage.getItem(STORAGE_KEY);
         try {
           const response = await fetch(
-            `${constants.REST_ENDPOINT}/search?a=getTree`,
+            `${REST_ENDPOINT}/?a=getTreeSearch&search=${searchText.current.value}`,
             {
               method: 'GET',
               mode: 'cors',
@@ -65,6 +66,8 @@ const SlideDrawer = ({ show, documentInfo }) => {
         <SearchTextForm />
       </div>
       <UploadForm />
+
+      <input type="text" ref={searchText} />
       <button onClick={() => toggleShowTree(!showTree)} type="button">Toggle Show Tree</button>
       {showTree ? (
         <div className="scroll">

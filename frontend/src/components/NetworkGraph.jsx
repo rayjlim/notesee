@@ -9,13 +9,21 @@ import constants from '../constants';
 
 const NetworkGraph = ({ nodes }) => {
   const [graph, setGraph] = useState({
-    // /network?a=network
     //   { id: 1, label: "Node 1", title: "node 1 tootip text" },
     nodes: nodes.map(item => {
-      const output = item
-        .substring(0, item.length - 3)
-        .replace(/^.+\/([^/]*)$/, '$1');
-      return { id: item, label: output, title: item };
+      const { path, hasString } = item;
+      const output = path
+        .replace(/^.+\/([^/]*)$/, '$1')
+        .replace(/\.md/, '');
+
+      const color = hasString === '1'
+        ? 'red' : 'aqua';
+      return {
+        id: path,
+        label: output,
+        title: path,
+        color,
+      };
     }),
     edges: [],
   });
@@ -48,7 +56,7 @@ const NetworkGraph = ({ nodes }) => {
       // TODO: convert to custom hook
       try {
         const token = window.localStorage.getItem(constants.STORAGE_KEY);
-        const response = await fetch(`${constants.REST_ENDPOINT}/network?a=network`, {
+        const response = await fetch(`${constants.REST_ENDPOINT}/?a=network`, {
           method: 'GET',
           mode: 'cors',
           cache: 'no-cache',
