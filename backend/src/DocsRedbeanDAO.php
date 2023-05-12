@@ -141,8 +141,8 @@ class DocsRedbeanDAO
 
     public function getMaps()
     {
-        $found = R::findAll(MAPPING);
-        return R::exportAll($found);
+        $found = R::getAll('select target, source from ' . MAPPING . '');
+        return $found;
 
     }
 
