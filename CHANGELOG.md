@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.11](https://github.com/rayjlim/notesee/compare/v0.2.10...v0.2.11) (2023-05-12)
+
+
+### Features
+
+* highlight search in graph ([e3bf10c](https://github.com/rayjlim/notesee/commit/e3bf10ce4e9f33c28b2c9fcc4f32e3cd53ea8b51))
+
+
+### Bug Fixes
+
+* license file ([dc07eb1](https://github.com/rayjlim/notesee/commit/dc07eb17fabada4b13329c688bb8cf024d2a122b))
+* move icons to assets ([b1b229b](https://github.com/rayjlim/notesee/commit/b1b229bf662e11af3db55e38be5fc97f6d99e2b7))
+* search param for tree ([d600a5a](https://github.com/rayjlim/notesee/commit/d600a5a3b32a2d8290b5ddd9b968cd69cb844084))
+* secrets update ([6c16561](https://github.com/rayjlim/notesee/commit/6c165612a09a1f92b9d582578fc5fbd5e31cac7b))
+* update build scripts htaccess ([83903cb](https://github.com/rayjlim/notesee/commit/83903cbd99f519e9be13ecce378bf792ab3c40ff))
+* update secrets ([944a047](https://github.com/rayjlim/notesee/commit/944a047efd51a1d4ac28d7c9672833f5c83e62eb))
+* use .env.development to remove vars from package.json ([1ce9904](https://github.com/rayjlim/notesee/commit/1ce9904b4f19187044357c8fdd69bcdf5a7e8329))
+
 ### [0.2.10](https://github.com/rayjlim/notesee/compare/v0.2.9...v0.2.10) (2023-02-28)
 
 
