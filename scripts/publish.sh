@@ -60,7 +60,7 @@ if [ -z "$NOFRONTENDBUILD" ]; then
     echo "REACT Build Fail"
     exit 1
   fi
-
+  rsync -avz  ".htaccess.production"  ./build/.htaccess
   cd ..
 fi
 
