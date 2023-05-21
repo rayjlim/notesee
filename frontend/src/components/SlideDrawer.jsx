@@ -23,8 +23,9 @@ const SlideDrawer = ({ show, documentInfo }) => {
         console.log('#useEffect :');
         const token = window.localStorage.getItem(STORAGE_KEY);
         try {
+          const queryText = searchText.current.value.replace('#', '%23');
           const response = await fetch(
-            `${REST_ENDPOINT}/?a=getTreeSearch&search=${searchText.current.value}`,
+            `${REST_ENDPOINT}/?a=getTreeSearch&search=${queryText}`,
             {
               method: 'GET',
               mode: 'cors',

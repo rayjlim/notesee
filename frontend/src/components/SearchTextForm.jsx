@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import constants from '../constants';
+import { REST_ENDPOINT, STORAGE_KEY } from '../constants';
 import './SearchTextForm.css';
 
 const SearchTextForm = () => {
@@ -19,10 +19,11 @@ const SearchTextForm = () => {
   const sendSearchText = () => {
     (async () => {
       console.log('send search for: ', query);
+      const queryText = query.replace('#', '%23');
       try {
-        const token = window.localStorage.getItem(constants.STORAGE_KEY);
+        const token = window.localStorage.getItem(STORAGE_KEY);
         const response = await fetch(
-          `${constants.REST_ENDPOINT}/search?a=search&text=${query}`,
+          `${REST_ENDPOINT}/search?a=search&text=${queryText}`,
           {
             method: 'GET',
             mode: 'cors',
@@ -78,9 +79,9 @@ const SearchTextForm = () => {
 
       console.log('getByUpdateDate: ');
       try {
-        const token = window.localStorage.getItem(constants.STORAGE_KEY);
+        const token = window.localStorage.getItem(STORAGE_KEY);
         const response = await fetch(
-          `${constants.REST_ENDPOINT}/search?a=getByUpdateDate${term}`,
+          `${REST_ENDPOINT}/search?a=getByUpdateDate${term}`,
           {
             method: 'GET',
             mode: 'cors',
