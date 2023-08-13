@@ -74,8 +74,7 @@
   
 }
 
-.favorites-list > ul {
-  list-style-type: none;
+.favorites-list > ol {
   text-align: left;
   padding: 0 2rem;
 }

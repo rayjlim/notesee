@@ -9,7 +9,6 @@ import MdEditor from './components/MdEditor';
 import SlideDrawer from './components/SlideDrawer';
 import Backdrop from './components/Backdrop';
 import LoginForm from './components/LoginForm';
-import FavoriteBtn from './components/FavoriteBtn';
 import FavoritesList from './components/FavoritesList';
 import BreadcrumbList from './components/BreadcrumbList';
 
@@ -239,10 +238,6 @@ const App = () => {
                             {documentInfo.path}
                           </button>
                         )}
-                        <FavoriteBtn
-                          path={documentInfo.path}
-                          isFavorite={documentInfo.isFavorite}
-                        />
                         <span>
                           Switch Mode:
                           {' '}
@@ -268,9 +263,12 @@ const App = () => {
                             ))}
                         </ul>
                       </div>
+                      <FavoritesList
+                        path={documentInfo.path}
+                        isFavorite={documentInfo.isFavorite}
+                      />
                     </>
                   )}
-                  <FavoritesList />
                   <BreadcrumbList />
                   <div className="logout-btn">
                     <button
