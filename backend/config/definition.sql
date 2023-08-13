@@ -39,7 +39,7 @@ CREATE TABLE `ns_documents` (
 -- Dumping data for table `ns_documents`
 --
 
-INSERT INTO `ns_documents` (`id`, `content`, `path`, `updateDate`) VALUES
+INSERT INTO `ns_documents` (`id`, `content`, `path`, `update_date`) VALUES
 (3, '# More\\n\\n[index](index.md)\\n', 'more.md', '2020-10-05'),
 (4, '# Index\\n\\n[more](more.md)\\n\\ngoing back and forth\\n[general/index](general/index.md)', 'index.md', '2020-10-05'),
 (5, '# General/index\\n\\nhere we go\\n\\n[more](../more.md)\\n\\n', 'general/index.md', '2020-10-05');
