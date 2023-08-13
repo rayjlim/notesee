@@ -1,5 +1,5 @@
 *.DS_Store
-/_config
+/build
 /node_modules
 
 serviceWorker.js

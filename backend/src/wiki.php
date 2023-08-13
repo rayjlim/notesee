@@ -121,7 +121,7 @@ class Wiki
     {
         header("Content-type: text/x-json");
         echo (is_string($data) ? $data : json_encode($data));
-        exit();
+        exit;
     }
 
     protected function _isXMLHttpRequest()
