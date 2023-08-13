@@ -278,8 +278,9 @@ const App = () => {
                   <div className="logout-btn">
                     <button
                       onClick={() => {
+                        window.localStorage.removeItem(STORAGE_KEY);
                         setLoggedIn(false);
-                        ref.current.logout();
+                        // ref.current.logout();
                       }}
                       type="button"
                     >
@@ -288,14 +289,15 @@ const App = () => {
                   </div>
                 </>
               )}
+              {!isLoggedIn && (
               <LoginForm
                 ref={ref}
-                showForm={!isLoggedIn}
                 validUser={async () => {
                   setLoggedIn(true);
                   await load([]);
                 }}
               />
+              )}
             </div>
           </GoogleOAuthProvider>
         </MyContext.Provider>
