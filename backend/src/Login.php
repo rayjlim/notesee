@@ -99,7 +99,7 @@ class Login
                 $token = $this->generateToken();
                 echo $token;
                 exit;
-            } 
+            }
             $this->loginError('Wrong id: '.$loginParams->id);
         }
         

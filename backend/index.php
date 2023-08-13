@@ -37,7 +37,13 @@ define('BASE_URL', "http" . ($https ? "s" : "") . "://" . $_SERVER['HTTP_HOST'] 
 
 // APP_DIR  ex. /projects/notesee/backend
 // BASE_URL ex. http://localhost/notesee/backend
-// echo 'Login 51';
+
+if(str_contains($request_uri['path'], 'notesee_settings')){
+    $page_data['IMG_PATH'] = $_ENV['FE_APP_IMG_PATH'];
+    $page_data['GOOGLE_OAUTH_CLIENTID'] = $_ENV['FE_APP_GOOGLE_OAUTH_CLIENTID'];
+    echo json_encode($page_data);
+    exit;
+}
+
 Login::instance()->dispatch();
-// echo 'wiki 53';
 Wiki::instance()->dispatch();
