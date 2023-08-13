@@ -253,7 +253,6 @@ class Wiki
      */
     public function editAction()
     {
-
         // Bail out early if we don't get the right request method && params
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
             header('HTTP/1.0 400 Bad Request');

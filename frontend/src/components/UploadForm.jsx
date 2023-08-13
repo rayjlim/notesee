@@ -1,10 +1,14 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 // # UploadForm.js
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import format from 'date-fns/format';
-import constants from '../constants';
+
+import MyContext from '../MyContext';
+import { REST_ENDPOINT, STORAGE_KEY } from '../constants';
 
 const UploadForm = () => {
+  const { IMG_PATH } = useContext(MyContext);
+
   const [selectFile, setSelectedFile] = useState(null);
   const [linkContent, setLinkContent] = useState([]);
 
@@ -19,9 +23,9 @@ const UploadForm = () => {
     console.log('send upload');
 
     try {
-      const token = window.localStorage.getItem(constants.STORAGE_KEY);
+      const token = window.localStorage.getItem(STORAGE_KEY);
       const response = await fetch(
-        `${constants.REST_ENDPOINT}/search?a=uploadImage`,
+        `${REST_ENDPOINT}/search?a=uploadImage`,
         {
           method: 'POST',
           body: formData,
@@ -34,7 +38,7 @@ const UploadForm = () => {
       console.log(response);
       const data = await response.json();
       console.log(data);
-      setLinkContent(`${constants.IMG_PATH}/${data.filePath}${data.fileName}`);
+      setLinkContent(`${IMG_PATH}/${data.filePath}${data.fileName}`);
       //   history.push(
       //     `/media?fileName=${data.fileName}&filePath=${data.filePath}`
       //   );
@@ -43,7 +47,7 @@ const UploadForm = () => {
       alert('Error uploading file ', error);
     }
   }
-
+  console.log(IMG_PATH);
   return (
     <div>
       <h3>Upload Form</h3>
