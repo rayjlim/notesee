@@ -150,7 +150,7 @@ const MdEditor = ({ content, path, mode, onSave }) => {
 
         {showEditor && (
           <Editor
-            style={{ height: '70vh' }}
+            style={{ height: '85vh' }}
             ref={mdEditor}
             value={markdown}
             renderHTML={text => mdParser.render(text)}
