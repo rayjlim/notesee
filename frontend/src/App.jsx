@@ -257,29 +257,27 @@ const App = () => {
                         onSave={markdown => setDocumentInfo({ ...documentInfo, markdown })}
                         mode={mode}
                       />
+                      <div className="half-row backlinks">
+                        <h2>Backlinks</h2>
+                        <ul>
+                          {documentInfo.backlinks
+                            && documentInfo.backlinks.map(item => (
+                              <li key={item}>
+                                <a href={`/${item}`}>{item}</a>
+                              </li>
+                            ))}
+                        </ul>
+                      </div>
                     </>
                   )}
-
-                  <div className="half-row backlinks">
-                    <h2>Backlinks</h2>
-                    <ul>
-                      {documentInfo.backlinks
-                        && documentInfo.backlinks.map(item => (
-                          <li key={item}>
-                            <a href={`/${item}`}>{item}</a>
-                          </li>
-                        ))}
-                    </ul>
-                  </div>
-                  <div className="half-row favorites-list">
-                    <FavoritesList />
-                  </div>
+                  <FavoritesList />
                   <BreadcrumbList />
                   <div className="logout-btn">
                     <button
                       onClick={() => {
+                        window.localStorage.removeItem(STORAGE_KEY);
                         setLoggedIn(false);
-                        ref.current.logout();
+                        // ref.current.logout();
                       }}
                       type="button"
                     >
@@ -288,14 +286,15 @@ const App = () => {
                   </div>
                 </>
               )}
+              {!isLoggedIn && (
               <LoginForm
                 ref={ref}
-                showForm={!isLoggedIn}
                 validUser={async () => {
                   setLoggedIn(true);
                   await load([]);
                 }}
               />
+              )}
             </div>
           </GoogleOAuthProvider>
         </MyContext.Provider>

@@ -35,7 +35,7 @@ const FavoritesList = () => {
   }, []);
 
   return (
-    <>
+    <div className="half-row favorites-list">
       <h2>Favorites</h2>
       <ul>
         {favorites.map(item => (
@@ -44,7 +44,7 @@ const FavoritesList = () => {
           </li>
         ))}
       </ul>
-    </>
+    </div>
   );
 };
 

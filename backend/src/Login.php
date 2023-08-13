@@ -94,6 +94,11 @@ class Login
         }
 
         if (isset($loginParams->id) && $loginParams->id !== '') {
+            if(!isset($_ENV['ACCESS_GOOGLE_ID'])) {
+                header('HTTP/1.0 500 Error');
+                echo "Missing .env config ACCESS_GOOGLE_ID";
+                exit;
+            }
             if ($loginParams->id == $_ENV['ACCESS_GOOGLE_ID']) {
                 Logger::log("login by id");
                 $token = $this->generateToken();
@@ -130,7 +135,7 @@ class Login
         Logger::log('User Login: '.$message.' from IP Address: ' . $ipaddress);
         header('HTTP/1.0 403 Forbidden');
         echo json_encode($response);
-        exit(0);
+        exit;
     }
 
     /**

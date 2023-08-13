@@ -11,7 +11,7 @@ if (isset($_SERVER['HTTP_ORIGIN'])) {
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
     header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
-    exit(0);
+    exit;
 }
 
 require_once __DIR__ . '/vendor/autoload.php';
@@ -39,8 +39,15 @@ define('BASE_URL', "http" . ($https ? "s" : "") . "://" . $_SERVER['HTTP_HOST'] 
 // BASE_URL ex. http://localhost/notesee/backend
 
 if(str_contains($request_uri['path'], 'notesee_settings')){
+    if(!isset($_ENV['FE_APP_IMG_PATH'])) {
+        header('HTTP/1.0 500 Error');
+        echo "Missing .env config FE_APP_IMG_PATH";
+        exit;
+    }
     $page_data['IMG_PATH'] = $_ENV['FE_APP_IMG_PATH'];
-    $page_data['GOOGLE_OAUTH_CLIENTID'] = $_ENV['FE_APP_GOOGLE_OAUTH_CLIENTID'];
+    if(isset($_ENV['FE_APP_GOOGLE_OAUTH_CLIENTID'])) {
+        $page_data['GOOGLE_OAUTH_CLIENTID'] = $_ENV['FE_APP_GOOGLE_OAUTH_CLIENTID'];
+    }
     echo json_encode($page_data);
     exit;
 }

@@ -1,5 +1,2 @@
 REACT_APP_API_ENDPOINT=https://www.mydomain.com/notesee-api
-REACT_APP_IMG_PATH=https://www.mydomain.com/notesee-uploads
-REACT_APP_SHOW_GH_CORNER=FALSE
-REACT_APP_GOOGLE_OAUTH_CLIENTID=""
 PUBLIC_URL=https://project-root  #must be set as an absolute reference 
