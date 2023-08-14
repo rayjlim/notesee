@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.12](https://github.com/rayjlim/notesee/compare/v0.2.11...v0.2.12) (2023-08-14)
+
+
+### Features
+
+* [#134](https://github.com/rayjlim/notesee/issues/134) move FE envs to BE ([b66f6fb](https://github.com/rayjlim/notesee/commit/b66f6fb26059d42cb9ffdacf19adedb1d7fa319f))
+* BE changes for var check before usage ([7adc0f7](https://github.com/rayjlim/notesee/commit/7adc0f76897e9e3562a86bda48eec93c4fd4bff2))
+* move fav btn to list, update list on click ([212ba60](https://github.com/rayjlim/notesee/commit/212ba60b03b662e937042915326e08835eb4ad30))
+
+
+### Bug Fixes
+
+* deployment root doc issues ([3b65cd7](https://github.com/rayjlim/notesee/commit/3b65cd75621d1649d8658dfd44149c97094ccaa7))
+* escape hash in searchs ([498bffa](https://github.com/rayjlim/notesee/commit/498bffad35f299f9b56657a9df342bda9bef5165))
+* performance upgrade on maps query ([0f3700d](https://github.com/rayjlim/notesee/commit/0f3700d8f4a8dc8fa5a5d17290a914512028e481))
+* reload tree data on hideshow ([ac058d7](https://github.com/rayjlim/notesee/commit/ac058d70f1964a9c804cbfe6d48d8a09b7ddce8d))
+
 ### [0.2.11](https://github.com/rayjlim/notesee/compare/v0.2.10...v0.2.11) (2023-05-12)
 
 
