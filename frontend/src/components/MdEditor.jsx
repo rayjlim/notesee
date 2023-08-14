@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import MarkdownIt from 'markdown-it';
 import Editor from 'react-markdown-editor-lite';
@@ -18,15 +18,13 @@ const MdEditor = ({ content, path, mode, onSave }) => {
   const [hasChanges, setHasChanges] = useState(false);
   const [showEditor, setShowEditor] = useState(true);
 
-  const mdEditor = React.useRef(null);
+  const mdEditor = useRef(null);
+  const cursorPosition = useRef(null);
 
   // TODO: convert to custom hook
   const save = async () => {
-    // console.log(markdown);
-    console.log(path);
     const ref = btoa(path);
 
-    // console.log(ref);
     const formData = new URLSearchParams();
     formData.append('ref', ref);
     formData.append('source', markdown);
@@ -47,7 +45,6 @@ const MdEditor = ({ content, path, mode, onSave }) => {
 
       if (response.ok) {
         const results = await response.json();
-        console.log(results);
         if (results.status === 'success') {
           setHasChanges(false);
           // props.onSave(markdown);
@@ -63,25 +60,29 @@ const MdEditor = ({ content, path, mode, onSave }) => {
   };
 
   const handleEditorChange = ({ text }) => {
-    console.log('editorOnchange');
+    console.log('editor onChange');
 
     let modified = text;
 
     const regex = /\[\[(.+?)\]\][ ]/g;
     const match = regex.exec(modified);
-    console.log(match);
     const found = modified.match(regex);
 
-    console.log(mdEditor.current.getSelection());
+    if (cursorPosition.current !== null) {
+      mdEditor.current.setSelection(cursorPosition.current);
+      cursorPosition.current = null;
+    }
     if (found) {
       console.log(match['1']);
 
       const title = match['1'].replace(/-/g, ' ');
       const filename = match['1'].replace(/ /g, '-').toLowerCase();
-      modified = modified.replace(regex, `[${title}](${filename})`);
+      modified = modified.replace(regex, `[${title}](${filename}) `);
 
       // place the cursor
-      mdEditor.current.setSelection(mdEditor.current.getSelection());
+      // mdEditor.current.setSelection({ start: 2, end: 5, text: '33' });
+      const newPosition = mdEditor.current.getSelection().start + filename.length;
+      cursorPosition.current = { start: newPosition, end: newPosition };
     }
 
     setMarkdown(modified);
@@ -107,7 +108,6 @@ const MdEditor = ({ content, path, mode, onSave }) => {
 
   const checkKeyPressed = e => {
     console.log('MdEditor: handle key presss ', e.key);
-    // console.log('131:' + markdown + ', hasChanges ' + hasChanges);
     if (e.altKey && e.key === 's') {
       console.log('S keybinding');
       document.getElementById('saveBtn').click();
@@ -119,7 +119,6 @@ const MdEditor = ({ content, path, mode, onSave }) => {
 
   useEffect(() => {
     console.log('Editor mode', mdEditor.current.getView());
-
     if (mode !== 'edit') {
       mdEditor.current.setView({ md: false, html: true });
     } else {
@@ -128,6 +127,7 @@ const MdEditor = ({ content, path, mode, onSave }) => {
     document.addEventListener('keydown', checkKeyPressed);
     return () => document.removeEventListener('resize', checkKeyPressed);
   }, []);
+
   const saveBarStyle = {
     width: '50%',
     display: 'inline-block',
