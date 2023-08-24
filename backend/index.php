@@ -45,9 +45,8 @@ if(str_contains($request_uri['path'], 'notesee_settings')){
         exit;
     }
     $page_data['IMG_PATH'] = $_ENV['FE_APP_IMG_PATH'];
-    if(isset($_ENV['FE_APP_GOOGLE_OAUTH_CLIENTID'])) {
-        $page_data['GOOGLE_OAUTH_CLIENTID'] = $_ENV['FE_APP_GOOGLE_OAUTH_CLIENTID'];
-    }
+    $page_data['GOOGLE_OAUTH_CLIENTID'] = $_ENV['FE_APP_GOOGLE_OAUTH_CLIENTID'] ?? '';
+    
     echo json_encode($page_data);
     exit;
 }

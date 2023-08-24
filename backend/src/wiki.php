@@ -7,7 +7,6 @@ define("LIBRARY", __DIR__ . "/library");
 
 class Wiki
 {
-
     protected $_ignore = "/^\..*|^CVS|.html|.jpg$/"; // Match dotfiles and CVS
     protected $_force_unignore = false; // always show these files (false to disable)
 
@@ -43,7 +42,7 @@ class Wiki
      * @param  string $source
      * @return array  array($remaining_source, $meta_data)
      */
-    protected function _extractJsonFrontMatter($source)
+    protected function _extractJsonFrontMatter(string $source): array
     {
         static $front_matter_regex = "/^---[\r\n](.*)[\r\n]---[\r\n](.*)/s";
 
@@ -82,16 +81,14 @@ class Wiki
         return array($source, $meta_data);
     }
 
-
-
-    protected function _getBacklinks($path)
+    protected function _getBacklinks(string $path): array
     {
         $ORM = new \Notesee\DocsRedbeanDAO();
         $links = $ORM->getBacklinks($path);
         return $links;
     }
 
-    public function dispatch()
+    public function dispatch(): void
     {
         $action = $this->_getAction();
         $actionMethod = "{$action}Action";
@@ -103,28 +100,24 @@ class Wiki
         $this->$actionMethod();
     }
 
-    protected function _getAction()
+    protected function _getAction(): string
     {
-        if (isset($_REQUEST['a'])) {
-            $action = $_REQUEST['a'];
+        $action = $_REQUEST['a'] ?? 'index';
 
-            if (in_array("{$action}Action", get_class_methods(get_class($this)))) {
-                $this->_action = $action;
-            }
-        } else {
-            $this->_action = 'index';
+        if (in_array("{$action}Action", get_class_methods(get_class($this)))) {
+            $this->_action = $action;
         }
         return $this->_action;
     }
 
-    protected function _json($data = array())
+    protected function _json(mixed $data): void
     {
         header("Content-type: text/x-json");
         echo (is_string($data) ? $data : json_encode($data));
         exit;
     }
 
-    protected function _isXMLHttpRequest()
+    protected function _isXMLHttpRequest(): bool
     {
         if ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
             return true;
@@ -132,15 +125,13 @@ class Wiki
 
         if (function_exists('apache_request_headers')) {
             $headers = apache_request_headers();
-            if ($headers['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
-                return true;
-            }
+            return $headers['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest';
         }
 
         return false;
     }
 
-    protected function _404($message = 'Page not found.')
+    protected function _404(string $message = 'Page not found.'): void
     {
         header('HTTP/1.0 404 Not Found', true);
         $page_data = $this->_default_page_data;
@@ -154,7 +145,7 @@ class Wiki
         exit;
     }
 
-    protected function _500($message = 'Server Error.')
+    protected function _500(string $message = 'Server Error.'): void
     {
         header('HTTP/1.0 500 Internal Server Error', true);
         $page_data = $this->_default_page_data;
@@ -168,7 +159,7 @@ class Wiki
         exit;
     }
 
-    protected function _ErrorCode($code, $message = 'Page not found.')
+    protected function _ErrorCode(string $code, string $message = 'Page not found.'): void
     {
         header('HTTP/1.0 ' . $code . ' ' . $message, true);
         $page_data = $this->_default_page_data;
@@ -182,7 +173,7 @@ class Wiki
         exit;
     }
 
-    public function indexAction()
+    public function indexAction(): void
     {
         $request = parse_url($_SERVER['REQUEST_URI']);
 
@@ -251,7 +242,7 @@ class Wiki
     /**
      * /?a=edit
      */
-    public function editAction()
+    public function editAction(): void
     {
         // Bail out early if we don't get the right request method && params
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
@@ -336,7 +327,7 @@ class Wiki
     /**
      * /?a=create
      */
-    public function createAction()
+    public function createAction(): void
     {
         $ORM = new \Notesee\DocsRedbeanDAO();
         $request    = parse_url($_SERVER['REQUEST_URI']);
@@ -360,7 +351,7 @@ class Wiki
         $this->_json($entry);
     }
 
-    public function deleteAction()
+    public function deleteAction(): void
     {
         if (!isset($_REQUEST['path'])) {
             header('HTTP/1.0 400 Bad Request');
@@ -385,14 +376,14 @@ class Wiki
         }
     }
 
-    public function networkAction()
+    public function networkAction(): void
     {
         $ORM = new \Notesee\DocsRedbeanDAO();
         $entrys = $ORM->getMaps();
         $this->_json($entrys);
     }
 
-    public function searchAction()
+    public function searchAction(): void
     {
         if (!isset($_REQUEST['text'])) {
             header('HTTP/1.0 400 Bad Request');
@@ -408,7 +399,7 @@ class Wiki
         $this->_json($reduced_columns);
     }
 
-    public function getTreeAction()
+    public function getTreeAction(): void
     {
         $pageData = new stdClass();
         $ORM = new \Notesee\DocsRedbeanDAO();
@@ -416,7 +407,7 @@ class Wiki
         $this->_json($pageData);
     }
 
-    public function getTreeSearchAction()
+    public function getTreeSearchAction(): void
     {
         $pageData = new stdClass();
         $ORM = new \Notesee\DocsRedbeanDAO();
@@ -428,7 +419,7 @@ class Wiki
         $this->_json($pageData);
     }
 
-    public function getFavoritesAction()
+    public function getFavoritesAction(): void
     {
         $pageData = new stdClass();
         $ORM = new \Notesee\DocsRedbeanDAO();
@@ -436,7 +427,7 @@ class Wiki
         $this->_json($pageData);
     }
 
-    public function uploadImageAction()
+    public function uploadImageAction(): void
     {
         // DevHelp::debugMsg('upload' . __FILE__);
 
@@ -491,7 +482,7 @@ class Wiki
         }
     }
 
-    public function favoriteAction()
+    public function favoriteAction(): void
     {
         // Check if the required parameters (path, favorite) are set in the request
         if (!isset($_REQUEST['path'], $_REQUEST['favorite'])) {
@@ -513,7 +504,7 @@ class Wiki
         }
     }
 
-    public function getByUpdateDateAction()
+    public function getByUpdateDateAction(): void
     {
         $startDate = $_REQUEST["startDate"] ?? date(DATE_FORMAT, strtotime('-1 week'));
         $endDate = $_REQUEST["endDate"] ?? date(DATE_FORMAT);$pageData = new stdClass();
@@ -526,7 +517,7 @@ class Wiki
         $this->_json($pageData);
     }
 
-    protected function _getTargetLinks($source)
+    protected function _getTargetLinks(string $source): array
     {
         preg_match_all('/\[([^]]*)\] *\(([^)]*)\)/', $source, $matches);
         return $matches;
@@ -542,7 +533,7 @@ class Wiki
      * Singleton
      * @return Wiki
      */
-    public static function instance()
+    public static function instance(): Wiki
     {
         static $instance;
         if (!($instance instanceof self)) {

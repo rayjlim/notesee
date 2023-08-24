@@ -27,16 +27,16 @@
 interface ResourceInterface
 {
     public function session();
-    public function issetSession($key);
+    public function issetSession(string $key);
     public function destroySession();
-    public function issetCookie($key);
+    public function issetCookie(string $key);
     public function cookie();
-    public function writeFile($filename, $fileData);
-    public function readdir($logDirectory);
-    public function readfile($logfile);
-    public function removefile($logfile);
-    public function putToFile($filepath, $content);
-    public function exists($filepath);
+    public function writeFile(string $filename, string $fileData);
+    public function readdir(string $logDirectory);
+    public function readfile(string $logfile);
+    public function removefile(string $logfile);
+    public function putToFile(string $filepath, string $content);
+    public function exists(string $filepath);
 
     public function getDateTime();
     /**
@@ -45,6 +45,6 @@ interface ResourceInterface
      * @param string $url site url
      * @return site content 
      */
-    public function load($url);
-    public function grab_image($url, $path);
+    public function load(string $url);
+    public function grab_image(string $url, string $path);
 }

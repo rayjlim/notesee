@@ -21,12 +21,12 @@ class DocsRedbeanDAO
     /**
      * Insert a Record
      * 
-     * @param $path    Logical Path
-     * @param $content Markdown content
+     * @param string $path    Logical Path
+     * @param string $content Markdown content
      *
-     * @return Document Object
+     * @return object Document with new id
      */
-    public function insert($path, $content)
+    public function insert(string $path, string $content): object
     {
         $doc = R::getRedBean()->dispense(DOCS);
         $doc->path = $path;
@@ -43,12 +43,12 @@ class DocsRedbeanDAO
     /**
      * Update a Record
      * 
-     * @param $path    Logical Path
-     * @param $content markdown content
+     * @param string $path    Logical Path
+     * @param string $content Markdown content
      *
-     * @return Document Object
+     * @return object Document Object
      */
-    public function update($path, $content)
+    public function update(string $path, string $content): object
     {
         $doc  = R::findOne(DOCS, ' path = ? ', [$path]);
         if ($doc) {
@@ -59,18 +59,17 @@ class DocsRedbeanDAO
         } else {
             throw new \Exception("Document not found");
         }
-
     }
 
     /**
      * Favorite a Record
      * 
-     * @param $path    Logical Path
-     * @param $content markdown content
+     * @param string $path    Logical Path
+     * @param bool $favorite  is setting/unsetting to favorite 
      *
-     * @return Document Object
+     * @return object Document Object
      */
-    public function favoriteByPath($path, $favorite)
+    public function favoriteByPath(string $path, bool $favorite): object
     {
         $doc = R::findOne(DOCS, ' path = ? ', [$path]);
 
@@ -83,12 +82,12 @@ class DocsRedbeanDAO
     /**
      * Get Docs By Update Date
      * 
-     * @param $path    Logical Path
-     * @param $content markdown content
+     * @param string $startDate    Range Starting Date
+     * @param string $endDate Range End date
      *
-     * @return Document Object
+     * @return array Documents found
      */
-    public function getDocsByUpdateDate($startDate, $endDate)
+    public function getDocsByUpdateDate($startDate, $endDate): array
     {
         $found = R::find(DOCS, ' update_date >= ? AND update_date <= ? ORDER BY `update_date` ASC', [$startDate, $endDate]);
 
@@ -101,9 +100,9 @@ class DocsRedbeanDAO
      * 
      * @param $path logical folder location
      *
-     * @return Array Log entries
+     * @return array Log entries
      */
-    public function getByPath($path)
+    public function getByPath(string $path): array
     {
         $found = R::findAll(
             DOCS,
@@ -117,11 +116,11 @@ class DocsRedbeanDAO
     /**
      * Delete a Document by Path
      * 
-     * @param $path logical folder location
+     * @param string $path logical folder location
      *
-     * @return Boolean was successful
+     * @return bool was successful?
      */
-    public function deleteByPath($path)
+    public function deleteByPath(string $path): bool
     {
         $doc  = R::findOne(DOCS, ' path = ? ', [$path]);
         R::trash($doc);
@@ -131,39 +130,39 @@ class DocsRedbeanDAO
     /**
      * Get All Paths
      *
-     * @return Array[Strings] Paths
+     * @return array[Strings] Paths
      */
-    public function getPaths()
+    public function getPaths(): array
     {
         $found = R::getCol('SELECT path from ' . DOCS . ' order by path');
         return $found;
     }
 
-    public function getMaps()
+    public function getMaps(): array
     {
         $found = R::getAll('select target, source from ' . MAPPING . '');
         return $found;
 
     }
 
-    public function getBacklinks($path)
+    public function getBacklinks($path): array
     {
         $found = R::getCol('SELECT source from ' . MAPPING . ' where target = \'' . $path . '\'');
         return $found;
     }
 
-    public function getFavorites()
+    public function getFavorites(): array
     {
         $found = R::getCol('SELECT path FROM ' . DOCS . ' WHERE `is_favorite` = 1 ORDER BY `path` ASC');
         return $found;
     }
 
-    public function getForwardlinks($path)
+    public function getForwardlinks(string $path): array
     {
         $found = R::getCol('SELECT target from ' . MAPPING . ' where source = \'' . $path . '\'');
         return $found;
     }
-    public function addMapping($source, $target)
+    public function addMapping(string $source, string $target): int
     {
         $mapping = R::getRedBean()->dispense(MAPPING);
         $mapping->source = $source;
@@ -172,13 +171,13 @@ class DocsRedbeanDAO
         return $id;
     }
 
-    public function deleteMapping($source, $target)
+    public function deleteMapping(string $source, string $target): void
     {
         $mapping  = R::findOne(MAPPING, ' source = ? AND target = ?', [$source, $target]);
         R::trash($mapping);
     }
 
-    public function deleteSourceMapping($source)
+    public function deleteSourceMapping(string $source): void
     {
         $mappings  = R::find(MAPPING, ' source = ? ', [$source]);
         foreach ($mappings as $mapping) {
@@ -187,7 +186,7 @@ class DocsRedbeanDAO
     }
     
     // SEARCH
-    public function contentsContains($text)
+    public function contentsContains(string $text): array
     {
         $found = R::find(DOCS, ' content LIKE ? ', ['%' . $text . '%']);
         return $found;
@@ -196,9 +195,9 @@ class DocsRedbeanDAO
     /**
      * Get All Paths with search option
      *
-     * @return Array[Objects] Paths
+     * @return array[Objects] Paths
      */
-    public function getPathsWithSearch($searchParam)
+    public function getPathsWithSearch(string $searchParam): array
     {
         $found = R::getAll('SELECT id, path, CASE WHEN content like \'%' 
             . $searchParam

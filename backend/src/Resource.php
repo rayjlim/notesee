@@ -31,9 +31,9 @@ class Resource implements ResourceInterface
    /**
      * Content from URL
      *
-     * @param string $url site url
+     * @param string(s) $key $value
      *
-     * @return site content
+     * @return mixed value of $key 
      */
     public function session()
     {
@@ -55,7 +55,7 @@ class Resource implements ResourceInterface
         }
     }
 
-    public function issetSession($key)
+    public function issetSession(string $key)
     {
         if (session_id() == '') {
             session_start();// session isn't started
@@ -79,7 +79,7 @@ class Resource implements ResourceInterface
         }
     }
 
-    public function issetCookie($key)
+    public function issetCookie(string $key)
     {
         return isset($_COOKIE[$key]);
     }
@@ -89,7 +89,7 @@ class Resource implements ResourceInterface
         session_destroy();
     }
 
-    public function writeFile($filename, $content)
+    public function writeFile(string $filename, string $content)
     {
         $filehandler = fopen($filename, 'a');
         //or throw new("can't open file");
@@ -97,7 +97,7 @@ class Resource implements ResourceInterface
         fclose($filehandler);
     }
 
-    public function readdir($logDirectory)
+    public function readdir(string $logDirectory): array
     {
         $filelist = array();
         if ($handle = opendir($logDirectory)) {
@@ -117,7 +117,7 @@ class Resource implements ResourceInterface
         return $filelist;
     }
 
-    public function readfile($logfile)
+    public function readfile(string $logfile): string
     {
         $myFile = $logfile;
         $fileHandle = fopen($myFile, 'r');
@@ -127,7 +127,7 @@ class Resource implements ResourceInterface
         return $fileContents;
     }
 
-    public function removefile($myFile)
+    public function removefile(string $myFile): void
     {
         unlink($myFile);
     }
@@ -142,10 +142,9 @@ class Resource implements ResourceInterface
      *
      * @return n/a
      */
-    public function putToFile($filepath, $content)
+    public function putToFile(string $filepath, string $content)
     {
         file_put_contents($filepath, $content);
-        return;
     }
 
     /**
@@ -155,17 +154,17 @@ class Resource implements ResourceInterface
      *
      * @return boolean file exists
      */
-    public function exists($filepath)
+    public function exists(string $filepath): bool
     {
         return file_exists($filepath);
     }
 
-    public function getDateTime()
+    public function getDateTime(): DateTime
     {
         return new DateTime();
     }
 
-    public function load($url)
+    public function load(string $url): string
     {
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
@@ -181,11 +180,11 @@ class Resource implements ResourceInterface
         return $response;
     }
 
-    function grab_image($url, $saveto){
+    function grab_image(string $url, string $saveto): void
+    {
         $ch = curl_init ($url);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_BINARYTRANSFER,1);
         $raw=curl_exec($ch);
         curl_close ($ch);
         if(file_exists($saveto)){
