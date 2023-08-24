@@ -3,8 +3,6 @@ if (!defined('APP_STARTED')) {
     die('Forbidden!');
 }
 
-
-
 // Sanitize html content:
 function e($dirty)
 {
@@ -20,7 +18,5 @@ $output->source = $source;
 $tree = include('tree.php');
 $output->tree = $tree;
 echo json_encode($output);
-
-
 ?>
  

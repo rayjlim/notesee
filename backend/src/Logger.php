@@ -2,7 +2,7 @@
 defined('ABSPATH') OR exit('No direct script access allowed');
 class Logger
 {
-    public static function log($message)
+    public static function log(string $message): void
     {
       $iResource = new \Resource();
       $date = $iResource->getDateTime();

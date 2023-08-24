@@ -26,7 +26,7 @@ class Login
      * Check if the user is logged
      * @return boolean
      */
-    private function isLogged()
+    private function isLogged(): bool
     {
         $headers = getallheaders();
         $token = $_ENV['HEADER_APP_TOKEN'];
@@ -54,9 +54,9 @@ class Login
 
     /**
      * Get the IP address of the visitor
-     * @return string
+     * @return string Identifier for the client
      */
-    private function getRealIpAddr()
+    private function getRealIpAddr(): string
     {
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
             return $_SERVER['HTTP_CLIENT_IP'];
@@ -70,8 +70,9 @@ class Login
 
     /**
      * Render the login page, if the authentication is not performed
+     * @return string Identifier for the client
      */
-    public function dispatch()
+    public function dispatch(): bool
     {
         // CHECK if Login is enabled
         if (!array_key_exists('ACCESS_USER', $_ENV)){
@@ -117,7 +118,8 @@ class Login
         $this->loginError('Wrong username/password: '. $username.' '. $password);
     }
 
-    private function generateToken(){
+    private function generateToken(): string
+    {
         $tokenObj = new stdClass();
         $tokenObj->username = $_ENV['ACCESS_USER'];
         $tokenObj->password = $_ENV['ACCESS_PASSWORD'];
@@ -126,7 +128,8 @@ class Login
         return json_encode($responseObj);
     }
 
-    private function loginError($message){
+    private function loginError(string $message)
+    {
         $ipaddress = $this->getRealIpAddr();
         $response = new stdClass();
         $response->status = "fail";
@@ -152,7 +155,7 @@ class Login
     }
 }
 
-function encrypt($simple_string)
+function encrypt(string $simple_string): string
 {
     $ciphering = "AES-128-CTR"; // the cipher method
 
@@ -174,7 +177,7 @@ function encrypt($simple_string)
     return $encryption;
 }
 
-function decrypt($encryption)
+function decrypt(string $encryption): string
 {
     $ciphering = "AES-128-CTR"; // the cipher method
     // Non-NULL Initialization Vector for decryption
