@@ -32,7 +32,7 @@ class Login
         $token = $_ENV['HEADER_APP_TOKEN'];
 
         if(!isset ($headers[$token]) )  {
-            return null; 
+            return false; 
         }
         $headerStringValue = $headers[$token];
         $decryptedString = decrypt($headerStringValue);
