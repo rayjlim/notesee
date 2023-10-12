@@ -1,22 +1,17 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Notesee",
+  "name": "Notesee a Markdown format wiki",
   "icons": [
     {
-      "src": "./assets/favicon.ico",
+      "src": "./assets/notesee-logo.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "./assets/logo192.png",
+      "src": "./assets/notesee-logo.png",
       "type": "image/png",
       "sizes": "192x192",
       "purpose": "any maskable"
-    },
-    {
-      "src": "./assets/logo512.png",
-      "type": "image/png",
-      "sizes": "512x512"
     }
   ],
   "start_url": ".",
