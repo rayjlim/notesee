@@ -1,7 +1,8 @@
 import React, {
   forwardRef,
   useImperativeHandle,
-  useState, useRef,
+  useState,
+  useRef,
   useEffect,
 } from 'react';
 import PropTypes from 'prop-types';
@@ -17,7 +18,7 @@ const LoginForm = forwardRef(({ validUser }, ref) => {
   const [profile, setProfile] = useState(null);
 
   useImperativeHandle(ref, () => ({
-    logout() {
+    logout: () => {
       console.log('logout function');
       window.localStorage.removeItem(STORAGE_KEY);
       googleLogout();

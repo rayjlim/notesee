@@ -1,8 +1,4 @@
-import React, {
-  useState,
-  useRef,
-  useEffect,
-} from 'react';
+import React from 'react';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import MyContext from './MyContext';
 import MdEditor from './components/MdEditor';
@@ -11,291 +7,133 @@ import Backdrop from './components/Backdrop';
 import LoginForm from './components/LoginForm';
 import FavoritesList from './components/FavoritesList';
 import BreadcrumbList from './components/BreadcrumbList';
-
-import { STORAGE_KEY, REST_ENDPOINT } from './constants';
+import useApp from './hooks/useApp';
 import './App.css';
 import './ribbon.css';
 
 const App = () => {
-  const ref = useRef();
-  const [globalContext, setGlobalContext] = useState(null);
-  const [documentInfo, setDocumentInfo] = useState({ path: '' });
-  const [isLoggedIn, setLoggedIn] = useState(false);
-
-  const [mode, setMode] = useState('read');
-  const [visual, setVisual] = useState({
-    loading: true,
-    showCreateButton: false,
-  });
-  const [showSideBar, setShowSideBar] = useState(false);
-
-  const load = async () => {
-    let { pathname } = window.location;
-    console.log('load ', pathname);
-
-    if (pathname === '/') {
-      pathname = '/index.md';
-    }
-
-    // TODO: convert to custom hook
-    try {
-      // handle history
-      const token = window.localStorage.getItem(STORAGE_KEY);
-      const response = await fetch(`${REST_ENDPOINT}${pathname}`, {
-        method: 'GET',
-        mode: 'cors',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-App-Token': token,
-        },
-        redirect: 'follow',
-        referrerPolicy: 'no-referrer',
-      });
-
-      if (response.ok) {
-        document.title = `Notesee - ${pathname.substring(
-          1,
-          pathname.length,
-        )}`;
-        const results = await response.json();
-        const showCreateButton = results.source === '';
-        if (showCreateButton) {
-          // content is blank means new page content
-          const title = pathname
-            .substring(1, pathname.length)
-            .replace(/-/g, ' ')
-            .toLowerCase()
-            .split(' ')
-            .map(word => word.charAt(0).toUpperCase() + word.substring(1))
-            .join(' ');
-          results.source = `# ${title}`;
-        }
-        setDocumentInfo({
-          markdown: results.source,
-          isFavorite: results.isFavorite,
-          modifiedDate: results.modifiedDate,
-          path: pathname.substring(1),
-          backlinks: results.backlinks,
-        });
-        // TODO: auto call create page if showCreateButton is true
-        setVisual({ ...visual, loading: false, showCreateButton });
-        return;
-      }
-      throw new Error(`response was not ok. ${response?.status}`);
-    } catch (error) {
-      console.error('Error: ', error);
-    }
-  };
-
-  const createPage = async () => {
-    let { pathname } = window.location;
-    if (pathname === '/') {
-      pathname = '/index.md';
-    }
-    console.log('create page');
-
-    const token = window.localStorage.getItem(STORAGE_KEY);
-    try {
-      const response = await fetch(
-        `${REST_ENDPOINT}${pathname}?a=create`,
-        {
-          method: 'GET',
-          mode: 'cors',
-          cache: 'no-cache',
-          credentials: 'same-origin',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-App-Token': token,
-          },
-          redirect: 'follow', // manual, *follow, error
-          referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        },
-      );
-
-      if (response.ok) {
-        const results = await response.json();
-        if (results.status === 'success') {
-          setVisual({ ...visual, showCreateButton: false });
-          return;
-        }
-        throw new Error(`createPage resulted in . ${results?.message}`);
-      }
-      throw new Error(`createPage was not ok. ${response?.status}`);
-    } catch (error) {
-      console.error('Error: ', error);
-    }
-  };
-
-  const switchMode = () => {
-    const newMode = mode === 'edit' ? 'read' : 'edit';
-    console.log('switchMode', mode, ' to ', newMode);
-    window.localStorage.setItem('mode', newMode);
-    setMode(newMode);
-  };
-
-  const handleKeyDown = e => {
-    if (e.altKey && e.which === 66) {
-      console.log(`B keybinding - Side bar ${showSideBar}`);
-      document.getElementById('sideBarBtn').click();
-    } else if (e.altKey && e.which === 77) {
-      console.log('M keybinding');
-      switchMode();
-    } else if (e.altKey && e.shiftKey && e.which === 70) {
-      // F will toggle favorite
-      console.log('shift F keybinding');
-    }
-  };
-
-  useEffect(() => {
-    (async () => {
-      const localMode = window.localStorage.getItem('mode');
-      if (localMode) {
-        console.log('localMode', localMode);
-        setMode(localMode);
-      }
-
-      if (!globalContext) {
-        try {
-          const response = await fetch(
-            `${REST_ENDPOINT}/notesee_settings`,
-            {
-              method: 'GET',
-              mode: 'cors',
-              credentials: 'same-origin',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            },
-          );
-
-          if (response.ok) {
-            const results = await response.json();
-            setGlobalContext(results);
-          }
-        } catch (error) {
-          console.error('Error: ', error);
-        }
-      }
-      const token = window.localStorage.getItem(STORAGE_KEY);
-      if (token) {
-        setLoggedIn(true);
-        await load();
-      }
-    })();
-    // eslint-disable-next-line
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  const {
+    isLoggedIn,
+    setLoggedIn,
+    loginRef,
+    documentInfo,
+    setDocumentInfo,
+    showSideBar,
+    setShowSideBar,
+    createPage,
+    globalContext,
+    visual,
+    mode,
+    switchMode,
+    load,
+  } = useApp();
 
   return (
     <>
       {globalContext !== null
         && (
-        <MyContext.Provider value={globalContext}>
-          <GoogleOAuthProvider clientId={globalContext.GOOGLE_OAUTH_CLIENTID}>
-            <div className="App">
-              {isLoggedIn && (
-                <>
-                  {visual.loading ? (
-                    <span>Loading</span>
-                  ) : (
-                    <>
-                      <div style={{ display: 'flex', flexDirection: 'row' }}>
-                        {showSideBar && (
-                          <>
-                            <SlideDrawer
-                              show={showSideBar}
-                              documentInfo={documentInfo}
-                            />
-                            <Backdrop
-                              close={
-                              () => setShowSideBar(!showSideBar)
-                              }
-                            />
-                          </>
-                        )}
-                        <button
-                          id="sideBarBtn"
-                          onClick={() => { setShowSideBar(!showSideBar); }}
-                          title="Alt/Opt + B"
-                          type="button"
-                          style={{ margin: '0 1rem' }}
-                        >
-                          Side Bar
-                        </button>
-                        {' '}
-                        <span>
-                          Modified Date:
+          <MyContext.Provider value={globalContext}>
+            <GoogleOAuthProvider clientId={globalContext.GOOGLE_OAUTH_CLIENTID}>
+              <div className="App">
+                {isLoggedIn && (
+                  <>
+                    {visual.loading ? (
+                      <span>Loading</span>
+                    ) : (
+                      <>
+                        <div style={{ display: 'flex', flexDirection: 'row' }}>
+                          {showSideBar && (
+                            <>
+                              <SlideDrawer
+                                show={showSideBar}
+                                documentInfo={documentInfo}
+                              />
+                              <Backdrop
+                                close={
+                                  () => setShowSideBar(!showSideBar)
+                                }
+                              />
+                            </>
+                          )}
+                          <button
+                            id="sideBarBtn"
+                            onClick={() => { setShowSideBar(!showSideBar); }}
+                            title="Alt/Opt + B"
+                            type="button"
+                            style={{ margin: '0 1rem' }}
+                          >
+                            Side Bar
+                          </button>
                           {' '}
-                          {documentInfo.modifiedDate}
-                        </span>
-                        {visual.showCreateButton && (
-                          <button onClick={() => createPage()} className="create-btn" type="button">
-                            Create
+                          <span>
+                            Modified Date:
                             {' '}
-                            {documentInfo.path}
-                          </button>
-                        )}
-                        <span>
-                          Switch Mode:
-                          {' '}
-                          <button onClick={() => switchMode()} title="Alt/Opt + M" type="button">
-                            {mode === 'edit' ? 'Editor' : 'Read'}
-                          </button>
-                        </span>
-                      </div>
-                      <MdEditor
-                        content={documentInfo.markdown}
-                        path={documentInfo.path}
-                        onSave={markdown => setDocumentInfo({ ...documentInfo, markdown })}
-                        mode={mode}
-                      />
-                      <div className="half-row backlinks">
-                        <h2>Backlinks</h2>
-                        <ul>
-                          {documentInfo.backlinks
-                            && documentInfo.backlinks.map(item => (
-                              <li key={item}>
-                                <a href={`/${item}`}>{item}</a>
-                              </li>
-                            ))}
-                        </ul>
-                      </div>
-                      <FavoritesList
-                        path={documentInfo.path}
-                        isFavorite={documentInfo.isFavorite}
-                      />
-                    </>
-                  )}
-                  <BreadcrumbList />
-                  <div className="logout-btn">
-                    <button
-                      onClick={() => {
-                        window.localStorage.removeItem(STORAGE_KEY);
-                        setLoggedIn(false);
-                        // ref.current.logout();
-                      }}
-                      type="button"
-                    >
-                      Logout
-                    </button>
-                  </div>
-                </>
-              )}
-              {!isLoggedIn && (
-              <LoginForm
-                ref={ref}
-                validUser={async () => {
-                  setLoggedIn(true);
-                  await load([]);
-                }}
-              />
-              )}
-            </div>
-          </GoogleOAuthProvider>
-        </MyContext.Provider>
+                            {documentInfo.modifiedDate}
+                          </span>
+                          {visual.showCreateButton && (
+                            <button onClick={() => createPage()} className="create-btn" type="button">
+                              Create
+                              {' '}
+                              {documentInfo.path}
+                            </button>
+                          )}
+                          <span>
+                            Switch Mode:
+                            {' '}
+                            <button onClick={() => switchMode()} title="Alt/Opt + M" type="button">
+                              {mode === 'edit' ? 'Editor' : 'Read'}
+                            </button>
+                          </span>
+                        </div>
+                        <MdEditor
+                          content={documentInfo.markdown}
+                          path={documentInfo.path}
+                          onSave={markdown => setDocumentInfo({ ...documentInfo, markdown })}
+                          mode={mode}
+                        />
+                        <div className="half-row backlinks">
+                          <h2>Backlinks</h2>
+                          <ul>
+                            {documentInfo.backlinks
+                              && documentInfo.backlinks.map(item => (
+                                <li key={item}>
+                                  <a href={`/${item}`}>{item}</a>
+                                </li>
+                              ))}
+                          </ul>
+                        </div>
+                        <FavoritesList
+                          path={documentInfo.path}
+                          isFavorite={documentInfo.isFavorite}
+                        />
+                      </>
+                    )}
+                    <BreadcrumbList />
+                    <div className="logout-btn">
+                      <button
+                        onClick={() => {
+                          setLoggedIn(false);
+                          loginRef?.current.logout();
+                        }}
+                        type="button"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  </>
+                )}
+                <div className={!isLoggedIn ? '' : 'hide'}>
+                  <LoginForm
+                    ref={loginRef}
+                    validUser={async () => {
+                      setLoggedIn(true);
+                      await load([]);
+                    }}
+                  />
+                </div>
+              </div>
+            </GoogleOAuthProvider>
+          </MyContext.Provider>
         )}
       <span />
     </>
