@@ -4,7 +4,7 @@ import './SearchTextForm.css';
 
 const SearchTextForm = () => {
   const [results, setResults] = useState({});
-  const [query, setQuery] = useState('react hooks');
+  const [isLoading, setIsLoading] = useState(false);
   const searchInput = useRef(null);
 
   function handleClearSearch() {
@@ -17,9 +17,10 @@ const SearchTextForm = () => {
     searchInput.current.focus();
   }
   const sendSearchText = () => {
+    setIsLoading(true);
     (async () => {
-      console.log('send search for: ', query);
-      const queryText = query.replace('#', '%23');
+      console.log('send search for: ', searchInput.current.value);
+      const queryText = searchInput.current.value.replace('#', '%23');
       try {
         const token = window.localStorage.getItem(STORAGE_KEY);
         const response = await fetch(
@@ -44,6 +45,7 @@ const SearchTextForm = () => {
           console.log('results', fetchResults);
 
           setResults(fetchResults);
+          setIsLoading(false);
         } else {
           console.log('Network response was not ok.');
         }
@@ -53,6 +55,7 @@ const SearchTextForm = () => {
     })();
   };
   const getByUpdateDate = range => {
+    setIsLoading(true);
     (async () => {
       let term = range;
       if (term === 'last month') {
@@ -102,6 +105,7 @@ const SearchTextForm = () => {
           console.log('results', fetchResults);
 
           setResults(fetchResults.paths.map(x => x.path));
+          setIsLoading(false);
         } else {
           console.log('Network response was not ok.');
         }
@@ -128,7 +132,6 @@ const SearchTextForm = () => {
       {'Search: '}
       <input
         type="text"
-        onChange={event => setQuery(event.target.value)}
         ref={searchInput}
       />
       <button onClick={() => sendSearchText()} type="button">Search Form</button>
@@ -142,7 +145,8 @@ const SearchTextForm = () => {
         <a href="#blank" onClick={() => getByUpdateDate('last 30')}> 30 days</a>
         <a href="#blank" onClick={() => getByUpdateDate('last month')}> Prev. Month</a>
       </p>
-      {Object.keys(results).length !== 0 ? (
+      {isLoading && <h2>Loading...</h2>}
+      {!isLoading && Object.keys(results).length !== 0 ? (
         <>
           <span style={{ padding: '0 1em' }}>
             {`Found ${Object.keys(results).length} Result(s)`}

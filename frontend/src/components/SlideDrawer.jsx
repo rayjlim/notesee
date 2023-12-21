@@ -63,9 +63,7 @@ const SlideDrawer = ({ show, documentInfo }) => {
   return (
     <div className={drawerClasses}>
       <h1>Side Bar</h1>
-      <div style={{ textAlign: 'center' }}>
-        <SearchTextForm />
-      </div>
+      <SearchTextForm />
       <UploadForm />
 
       <span>Tree Search: </span>
