@@ -3,11 +3,12 @@ import constants from '../constants';
 
 const useMdEditor = (content, path, mode, onSave) => {
   const [markdown, setMarkdown] = useState(content);
-  const [hasChanges, setHasChanges] = useState(false);
   const [showEditor, setShowEditor] = useState(true);
+  const [hasChanges, setHasChanges] = useState(false);
 
   const mdEditor = useRef(null);
   const cursorPosition = useRef(null);
+  const hasChanged = useRef(false); // this is used when checking beforeunload
 
   const handleEditorChange = ({ text }) => {
     console.log('editor onChange');
@@ -36,11 +37,14 @@ const useMdEditor = (content, path, mode, onSave) => {
     }
 
     setMarkdown(modified);
+    console.log('hasChanged: true');
+    hasChanged.current = true;
     setHasChanges(true);
     onSave(modified);
   };
 
   const save = async () => {
+    console.log(hasChanged.current);
     const ref = btoa(path);
 
     const formData = new URLSearchParams();
@@ -64,6 +68,8 @@ const useMdEditor = (content, path, mode, onSave) => {
       if (response.ok) {
         const results = await response.json();
         if (results.status === 'success') {
+          console.log(`hasChanged: ${hasChanged.current}`);
+          hasChanged.current = false;
           setHasChanges(false);
           // props.onSave(markdown);
         } else {
@@ -98,9 +104,16 @@ const useMdEditor = (content, path, mode, onSave) => {
     if (e.altKey && e.key === 's') {
       console.log('S keybinding');
       document.getElementById('saveBtn').click();
-    } else if (e.ctrlKey && e.shiftKey && e.key === '1') {
+    } else if (e.altKey && e.shiftKey && e.key === '!') {
+      e.preventDefault();
       console.log('shift 1 - template keybinding');
       firstTemplate();
+    }
+  };
+  const pageUnload = e => {
+    console.log(`hasChanged.current ${hasChanged.current}`);
+    if (hasChanged.current) {
+      e.preventDefault();
     }
   };
 
@@ -112,11 +125,17 @@ const useMdEditor = (content, path, mode, onSave) => {
       mdEditor.current.setView({ md: true, html: true });
     }
     document.addEventListener('keydown', checkKeyPressed);
-    return () => document.removeEventListener('resize', checkKeyPressed);
+    window.addEventListener('beforeunload', pageUnload);
+
+    return () => {
+      document.removeEventListener('resize', checkKeyPressed);
+      window.removeEventListener('beforeunload', pageUnload);
+    };
   }, []);
 
   return {
     hasChanges,
+    hasChanged,
     save,
     showEditor,
     handleEditorChange,

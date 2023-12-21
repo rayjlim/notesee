@@ -110,9 +110,9 @@ const LoginForm = forwardRef(({ validUser }, ref) => {
     <div className="App">
       <h1>Login</h1>
       <span>User</span>
-      <input type="text" ref={username} />
+      <input type="text" name="username" ref={username} autoComplete="off" />
       <span>Password</span>
-      <input type="password" ref={password} />
+      <input type="password" name="password" ref={password} />
       <button onClick={() => doLogin(null)} type="button">
         Login with Password
       </button>

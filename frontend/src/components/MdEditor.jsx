@@ -7,7 +7,7 @@ import useMdEditor from '../hooks/useMdEditor';
 import 'react-markdown-editor-lite/lib/index.css';
 import './MdEditor.css';
 
-import Prompt from './Prompt';
+// import Prompt from './Prompt';
 
 // Initialize a markdown parser
 const mdParser = new MarkdownIt(/* Markdown-it options */);
@@ -30,41 +30,39 @@ const MdEditor = ({ content, path, mode, onSave }) => {
   };
 
   return (
-    <>
-      <Prompt dataUnsaved={hasChanges} />
-      <div className={hasChanges ? 'changed' : 'unchanged'}>
-        <div style={saveBarStyle}>
-          <button
-            onClick={() => save()}
-            title="Alt/Opt + S"
-            id="saveBtn"
-            type="button"
-          >
-            {hasChanges ? 'Save changes' : 'unchanged'}
-          </button>
-        </div>
 
-        {showEditor && (
-          <Editor
-            style={{ height: '85vh' }}
-            ref={mdEditor}
-            value={markdown}
-            renderHTML={text => mdParser.render(text)}
-            onChange={handleEditorChange}
-          />
-        )}
-        <button onClick={() => save()} title="Alt/Opt + S" type="button">
-          Save
-        </button>
+    <div className={hasChanges === true ? 'changed' : 'unchanged'}>
+      <div style={saveBarStyle}>
         <button
-          onClick={() => firstTemplate()}
-          title="Ctrl + Shift + 1"
+          onClick={() => save()}
+          title="Alt/Opt + S"
+          id="saveBtn"
           type="button"
         >
-          Dev Template
+          {hasChanges === true ? 'Save changes' : 'unchanged'}
         </button>
       </div>
-    </>
+
+      {showEditor && (
+        <Editor
+          style={{ height: '85vh' }}
+          ref={mdEditor}
+          value={markdown}
+          renderHTML={text => mdParser.render(text)}
+          onChange={handleEditorChange}
+        />
+      )}
+      <button onClick={() => save()} title="Alt/Opt + S" type="button">
+        Save
+      </button>
+      <button
+        onClick={() => firstTemplate()}
+        title="Ctrl + Shift + 1"
+        type="button"
+      >
+        Dev Template
+      </button>
+    </div>
   );
 };
 
