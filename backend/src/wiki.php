@@ -195,19 +195,19 @@ class Wiki
 
             // if ($extension != 'md') {
             //     $path = realpath(LIBRARY . DIRECTORY_SEPARATOR . $pagePath);
-                // echo "path: " .$path;
-                // $finfo = finfo_open(FILEINFO_MIME);
-                // $mime_type = trim(finfo_file($finfo, $path));
+            // echo "path: " .$path;
+            // $finfo = finfo_open(FILEINFO_MIME);
+            // $mime_type = trim(finfo_file($finfo, $path));
 
 
-                // echo ('pass through: ' . $mime_type);
-                // not an ASCII file, send it directly to the browser
-                // $file = fopen($path, 'rb');
+            // echo ('pass through: ' . $mime_type);
+            // not an ASCII file, send it directly to the browser
+            // $file = fopen($path, 'rb');
 
-                // header("Content-Type: $mime_type");
-                // header("Content-Length: " . filesize($path));
+            // header("Content-Type: $mime_type");
+            // header("Content-Length: " . filesize($path));
 
-                // fpassthru($file);
+            // fpassthru($file);
             //     exit();
             // }
 
@@ -414,7 +414,7 @@ class Wiki
         $search = "NOSEARCH";
         if (isset($_REQUEST['search']) && $_REQUEST['search'] !== "") {
             $search = $_REQUEST['search'];
-        } 
+        }
         $pageData->tree = $ORM->getPathsWithSearch($search);
         $this->_json($pageData);
     }
@@ -492,12 +492,12 @@ class Wiki
         }
 
         $ORM = new \Notesee\DocsRedbeanDAO();
-        $status = $ORM->favoriteByPath($_REQUEST['path'], $_REQUEST['favorite']);
+        $status = $ORM->favoriteByPath($_REQUEST['path'], $_REQUEST['favorite'] == 'true');
 
         if ($status) {
             // header('HTTP/1.0 204 No Content');
             header('HTTP/1.0 200 OK');
-            echo $_REQUEST['path'] . $_REQUEST['favorite'];
+            echo $_REQUEST['path'] . ", " . $_REQUEST['favorite'];
         } else {
             header('HTTP/1.0 500 Server Error');
             echo "Unable to Favorite : " . $_REQUEST['path'];
@@ -507,10 +507,11 @@ class Wiki
     public function getByUpdateDateAction(): void
     {
         $startDate = $_REQUEST["startDate"] ?? date(DATE_FORMAT, strtotime('-1 week'));
-        $endDate = $_REQUEST["endDate"] ?? date(DATE_FORMAT);$pageData = new stdClass();
+        $endDate = $_REQUEST["endDate"] ?? date(DATE_FORMAT);
+        $pageData = new stdClass();
         $ORM = new \Notesee\DocsRedbeanDAO();
-        
-        $pageData = new stdClass();        
+
+        $pageData = new stdClass();
         $pageData->startDate = $startDate;
         $pageData->endDate = $endDate;
         $pageData->paths = $ORM->getDocsByUpdateDate($startDate, $endDate);

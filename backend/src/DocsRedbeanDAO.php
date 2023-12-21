@@ -72,9 +72,7 @@ class DocsRedbeanDAO
     public function favoriteByPath(string $path, bool $favorite): object
     {
         $doc = R::findOne(DOCS, ' path = ? ', [$path]);
-
-        $doc->isFavorite = $favorite == 'true' ? 1 : 0;
-        // echo $doc;
+        $doc->isFavorite = $favorite ? 1 : 0;
         R::store($doc);
         return $doc;
     }
