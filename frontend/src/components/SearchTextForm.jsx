@@ -125,8 +125,7 @@ const SearchTextForm = () => {
 
   return (
     <>
-      Search:
-      {' '}
+      {'Search: '}
       <input
         type="text"
         onChange={event => setQuery(event.target.value)}
@@ -146,20 +145,15 @@ const SearchTextForm = () => {
       {Object.keys(results).length !== 0 ? (
         <>
           <span style={{ padding: '0 1em' }}>
-            Found
-            {' '}
-            {Object.keys(results).length}
-            {' '}
-            Result(s)
+            {`Found ${Object.keys(results).length} Result(s)`}
           </span>
           <div className={Object.keys(results).length < 15 ? 'results' : 'results scroll'}>
             <ul>
               {Object.keys(results).map(index => (
                 <li key={index}>
-                  <button onClick={() => copyToClipboard(`${results[index]}`)} type="button">
+                  <button onClick={() => copyToClipboard(`${results[index]}`)} type="button" style={{ marginRight: '0.5rem' }}>
                     [clip]
                   </button>
-                  {' '}
                   <a href={`/${results[index]}`}>{`/${results[index]}`}</a>
                 </li>
               ))}
@@ -167,7 +161,7 @@ const SearchTextForm = () => {
           </div>
         </>
       ) : (
-        <span style={{ padding: '0 1em' }}>No Result(s)</span>
+        <span style={{ padding: '0 1em' }}>No Results</span>
       )}
     </>
   );

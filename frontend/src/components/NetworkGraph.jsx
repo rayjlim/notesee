@@ -28,16 +28,6 @@ const NetworkGraph = ({ nodes }) => {
     edges: [],
   });
 
-  const graphOptions = {
-    layout: {
-      hierarchical: false,
-    },
-    edges: {
-      color: '#000000',
-    },
-    height: '500px',
-  };
-
   const events = {
     select: event => {
       const localNodes = event.nodes;
@@ -53,20 +43,15 @@ const NetworkGraph = ({ nodes }) => {
 
   useEffect(() => {
     (async () => {
-      // TODO: convert to custom hook
       try {
         const token = window.localStorage.getItem(constants.STORAGE_KEY);
         const response = await fetch(`${constants.REST_ENDPOINT}/?a=network`, {
           method: 'GET',
           mode: 'cors',
-          cache: 'no-cache',
-          credentials: 'same-origin',
           headers: {
             'Content-Type': 'application/json',
             'X-App-Token': token,
           },
-          redirect: 'follow',
-          referrerPolicy: 'no-referrer',
         });
 
         if (response.ok) {
@@ -87,7 +72,16 @@ const NetworkGraph = ({ nodes }) => {
     })();
   }, []);
 
-  console.log(graph);
+  const graphOptions = {
+    layout: {
+      hierarchical: false,
+    },
+    edges: {
+      color: '#000000',
+    },
+    height: '500px',
+  };
+
   return (
     <div>
       {(graph.nodes.length && graph.edges.length) ? (

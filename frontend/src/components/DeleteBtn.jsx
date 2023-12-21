@@ -15,13 +15,10 @@ const DeleteBtn = ({ path }) => {
             method: 'GET',
             mode: 'cors',
             cache: 'no-cache',
-            credentials: 'same-origin',
             headers: {
               'Content-Type': 'application/json',
               'X-App-Token': token,
             },
-            redirect: 'follow',
-            referrerPolicy: 'no-referrer',
           },
         );
 
@@ -38,9 +35,7 @@ const DeleteBtn = ({ path }) => {
 
   return (
     <button onClick={() => sendDelete()} type="button">
-      Delete
-      {' '}
-      {path}
+      {`Delete ${path}`}
     </button>
   );
 };

@@ -64,22 +64,16 @@ const App = () => {
                           >
                             Side Bar
                           </button>
-                          {' '}
                           <span>
-                            Modified Date:
-                            {' '}
-                            {documentInfo.modifiedDate}
+                            {`Modified Date: ${documentInfo.modifiedDate} `}
                           </span>
                           {visual.showCreateButton && (
                             <button onClick={() => createPage()} className="create-btn" type="button">
-                              Create
-                              {' '}
-                              {documentInfo.path}
+                              {`Create ${documentInfo.path}`}
                             </button>
                           )}
-                          <span>
-                            Switch Mode:
-                            {' '}
+                          <span style={{ margin: '0 1rem' }}>
+                            {'Switch Mode: '}
                             <button onClick={() => switchMode()} title="Alt/Opt + M" type="button">
                               {mode === 'edit' ? 'Editor' : 'Read'}
                             </button>

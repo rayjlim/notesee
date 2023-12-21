@@ -68,6 +68,7 @@ const SlideDrawer = ({ show, documentInfo }) => {
       </div>
       <UploadForm />
 
+      <span>Tree Search: </span>
       <input type="text" ref={searchText} />
       <button onClick={() => toggleShowTree(!showTree)} type="button">Toggle Show Tree</button>
       {showTree ? (

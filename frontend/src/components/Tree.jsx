@@ -14,9 +14,7 @@ const Tree = ({ items }) => {
             📄
           </span>
           <a href={`/${item.path}`}>
-            {`/${item.path}`}
-            {' '}
-            {item.hasString === '1' ? '<---- 🔖' : ''}
+            {`/${item.path} ${item.hasString === '1' ? '<---- 🔖' : ''}`}
           </a>
         </>
       ) : (
