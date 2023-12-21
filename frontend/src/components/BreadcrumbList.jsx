@@ -51,13 +51,7 @@ const BreadcrumbList = () => {
         onClick={() => setShowBreadcrumb(!showBreadcrumb)}
         type="button"
       >
-        {showBreadcrumb ? (
-          <>Hide</>
-        ) : (
-          <>Show</>
-        )}
-        {' '}
-        Breadcrumb
+        {`${showBreadcrumb ? 'Hide' : 'Show'} Breadcrumb`}
       </button>
       {showBreadcrumb
         && breadcrumb
