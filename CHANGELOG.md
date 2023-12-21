@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.15](https://github.com/rayjlim/notesee/compare/v0.2.14...v0.2.15) (2023-12-21)
+
+
+### Features
+
+* [#149](https://github.com/rayjlim/notesee/issues/149) shortcut keys to faves ([56e34b2](https://github.com/rayjlim/notesee/commit/56e34b21957e1f15404955595690995d23dce444))
+* [#151](https://github.com/rayjlim/notesee/issues/151) cusom hook for favorites ([cc271d1](https://github.com/rayjlim/notesee/commit/cc271d1d0e1e912ebd4e64023a90a8fe86dd77e2))
+* add loading text to search ([600c05f](https://github.com/rayjlim/notesee/commit/600c05f852dab3c9e870c47ec03755845ad806a6))
+* useApp custom hook, fix loginform ref ([d5b321f](https://github.com/rayjlim/notesee/commit/d5b321f415372988e5c40ef7d26253da21e05ef3))
+
+
+### Bug Fixes
+
+* [#148](https://github.com/rayjlim/notesee/issues/148) use window beforeunload ([b0f18e0](https://github.com/rayjlim/notesee/commit/b0f18e08a0fc9119383b553330eb5b8887c30f5d))
+* [#150](https://github.com/rayjlim/notesee/issues/150) mdeditor custom hook ([2dc3861](https://github.com/rayjlim/notesee/commit/2dc3861195dc174965f11d9ee2c6fbdfccc92223))
+* [#152](https://github.com/rayjlim/notesee/issues/152) separate component for Page ([c747161](https://github.com/rayjlim/notesee/commit/c7471619fbdbc6fc16c413ff7bcf7ed9f7a4d3a0))
+
 ### [0.2.14](https://github.com/rayjlim/notesee/compare/v0.2.13...v0.2.14) (2023-10-12)
 
 ### [0.2.13](https://github.com/rayjlim/notesee/compare/v0.2.12...v0.2.13) (2023-08-24)
