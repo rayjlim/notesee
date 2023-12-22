@@ -6,6 +6,8 @@ import FavoritesList from './FavoritesList';
 import BreadcrumbList from './BreadcrumbList';
 import usePage from '../hooks/usePage';
 
+import './Page.css';
+
 const Page = () => {
   const {
     documentInfo,
@@ -23,21 +25,21 @@ const Page = () => {
       {visual.loading ? (
         <span>Loading</span>
       ) : (
-        <>
+        <div style={{ display: 'flex', flexDirection: 'column' }} className={document.isArchive ? 'archive' : ''}>
+          {showSideBar && (
+            <>
+              <SlideDrawer
+                show={showSideBar}
+                documentInfo={documentInfo}
+              />
+              <Backdrop
+                close={
+                  () => setShowSideBar(!showSideBar)
+                }
+              />
+            </>
+          )}
           <div style={{ display: 'flex', flexDirection: 'row' }}>
-            {showSideBar && (
-              <>
-                <SlideDrawer
-                  show={showSideBar}
-                  documentInfo={documentInfo}
-                />
-                <Backdrop
-                  close={
-                    () => setShowSideBar(!showSideBar)
-                  }
-                />
-              </>
-            )}
             <button
               id="sideBarBtn"
               onClick={() => { setShowSideBar(!showSideBar); }}
@@ -68,22 +70,24 @@ const Page = () => {
             onSave={markdown => setDocumentInfo({ ...documentInfo, markdown })}
             mode={mode}
           />
-          <div className="half-row backlinks">
-            <h2>Backlinks</h2>
-            <ul>
-              {documentInfo.backlinks
-                && documentInfo.backlinks.map(item => (
-                  <li key={item}>
-                    <a href={`/${item}`}>{item}</a>
-                  </li>
-                ))}
-            </ul>
+          <div style={{ display: 'flex', flexDirection: 'row' }}>
+            <div className="half-row backlinks">
+              <h2>Backlinks</h2>
+              <ul>
+                {documentInfo.backlinks
+                  && documentInfo.backlinks.map(item => (
+                    <li key={item}>
+                      <a href={`/${item}`}>{item}</a>
+                    </li>
+                  ))}
+              </ul>
+            </div>
+            <FavoritesList
+              path={documentInfo.path}
+              isFavorite={documentInfo.isFavorite}
+            />
           </div>
-          <FavoritesList
-            path={documentInfo.path}
-            isFavorite={documentInfo.isFavorite}
-          />
-        </>
+        </div>
       )}
       <BreadcrumbList />
     </>

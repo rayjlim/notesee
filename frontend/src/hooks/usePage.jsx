@@ -87,11 +87,9 @@ const usePage = () => {
           results.source = `# ${title}`;
         }
         setDocumentInfo({
+          ...results,
           markdown: results.source,
-          isFavorite: results.isFavorite,
-          modifiedDate: results.modifiedDate,
           path: pathname.substring(1),
-          backlinks: results.backlinks,
         });
         setVisual({ ...visual, loading: false, showCreateButton });
         if (showCreateButton) {
