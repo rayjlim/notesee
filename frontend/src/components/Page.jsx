@@ -25,7 +25,7 @@ const Page = () => {
       {visual.loading ? (
         <span>Loading</span>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column' }} className={document.isArchive ? 'archive' : ''}>
+        <div style={{ display: 'flex', flexDirection: 'column' }} className={documentInfo.isArchive ? 'archive' : ''}>
           {showSideBar && (
             <>
               <SlideDrawer

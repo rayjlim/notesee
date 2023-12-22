@@ -232,6 +232,7 @@ class Wiki
             $pageData->source = str_replace("\\n", "\n", $source);
             $pageData->isFavorite = $entrys[0]['is_favorite'] == '1';
             $pageData->modifiedDate = $entrys[0]['update_date'];
+            $pageData->isArchive = strstr($source, '#archive') !== false;
 
             $this->_json($pageData);
         } catch (Exception $e) {
